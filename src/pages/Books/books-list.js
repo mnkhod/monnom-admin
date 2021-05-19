@@ -151,7 +151,7 @@ let BookCard = props => {
 }
 
 const Books = () => {
-  var ITEMS_PER_PAGE = 2
+  var ITEMS_PER_PAGE = 12
 
   const [booksList, setBooksList] = useState([])
   const [admins_info, set_admins_info] = useState([])
@@ -266,10 +266,10 @@ const Books = () => {
               <Container fluid>
                 <Row>
                   <Col lg={4}>
-                    {/* <AddBook
+                    <AddBook
                       admins_info={admins_info}
                       setIsNetworkingError={setIsNetworkingError}
-                    /> */}
+                    />
                   </Col>
 
                   <Col xl={4} lg={4} md={6} xs={6} sm={6}>
