@@ -96,8 +96,8 @@ const AddBook = props => {
     data["book_price"] = sale_price
 
     formData.append("data", JSON.stringify(data))
-    formData.append("files.pdf_book_path", book_files[0])
-    formData.append("files.picture", book_picture)
+    formData.append("files.pdf_book_path", book_files[0], book_files[0].name)
+    formData.append("files.picture", book_picture, book_picture.name)
     for (let i = 0; i < selectedFiles.length; i++) {
       formData.append(
         "files.picture_comment",

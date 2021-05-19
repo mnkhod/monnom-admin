@@ -152,7 +152,7 @@ const Live = () => {
               audio_duration: audio_duration.toString(),
             }
             tempFormData.append("data", JSON.stringify(data))
-            tempFormData.append("files.audio", audio_files_for_save[index])
+            tempFormData.append("files.audio", audio_files_for_save[index].name)
             tempAudioRequests.push({
               url: `${process.env.REACT_APP_STRAPI_BASE_URL}/radio-channel-audios`,
               formdata: tempFormData,

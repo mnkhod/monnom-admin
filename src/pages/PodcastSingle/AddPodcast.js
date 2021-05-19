@@ -59,8 +59,8 @@ const AddPodcast = props => {
   const createPodcast = async () => {
     const url = `${process.env.REACT_APP_STRAPI_BASE_URL}/podcast-episodes`
     const podcastDataToUpload = new FormData()
-    podcastDataToUpload.append("files.audio_file_path", selectedFiles)
-    podcastDataToUpload.append("files.picture", episode_picture)
+    podcastDataToUpload.append("files.audio_file_path", selectedFiles, selectedFiles.name)
+    podcastDataToUpload.append("files.picture", episode_picture, episode_picture.name)
 
     const tempSendData = {
       episode_name: podcast_name_value,

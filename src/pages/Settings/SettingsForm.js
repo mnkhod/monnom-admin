@@ -300,7 +300,7 @@ const SettingsForm = () => {
     }
 
     formData.append("data", JSON.stringify(data))
-    formData.append("files.cover_pic", channel_cover_pic)
+    formData.append("files.cover_pic", channel_cover_pic, channel_cover_pic.name)
 
     const config = {
       headers: {

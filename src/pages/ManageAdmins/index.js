@@ -145,7 +145,7 @@ const ManageAdmins = () => {
         let tempResponse = res.data
         let imageData = new FormData()
 
-        imageData.append(`files`, profile_picture_create)
+        imageData.append("files", profile_picture_create, profile_picture_create.name)
         imageData.append("refId", res.data.id)
         imageData.append("ref", "user")
         imageData.append("field", "profile_picture")
