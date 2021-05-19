@@ -21,7 +21,7 @@ const getItems = files => {
     tempArray.push({
       id: `item-${files[key].id}`,
       content: files[key].audio_name,
-      size: files[key].audio.size,
+      size: files[key].audio?.size,
       audio_id: files[key].id,
     })
   })
@@ -152,7 +152,7 @@ const Live = () => {
               audio_duration: audio_duration.toString(),
             }
             tempFormData.append("data", JSON.stringify(data))
-            tempFormData.append("files.audio", audio_files_for_save[index].name)
+            tempFormData.append("files.audio", audio_files_for_save[index], audio_files_for_save[index].name)
             tempAudioRequests.push({
               url: `${process.env.REACT_APP_STRAPI_BASE_URL}/radio-channel-audios`,
               formdata: tempFormData,
