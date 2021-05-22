@@ -73,6 +73,14 @@ const SidebarContent = props => {
     <React.Fragment>
       <div id="sidebar-menu">
         <ul className="metismenu list-unstyled" id="side-menu">
+          <li className="menu-title">{props.t("Мэдээлэл")} </li>
+          <li>
+            <Link to="/blogs-list" className=" waves-effect">
+              <i className="bx bx-spreadsheet "></i>
+              <span>{props.t("Мэдээний жагсаалт")}</span>
+            </Link>
+          </li>
+
           <li className="menu-title">{props.t("Статистик")} </li>
           <li>
             <Link to="/dashboard" className=" waves-effect">
