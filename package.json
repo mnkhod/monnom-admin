@@ -3,6 +3,10 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@ckeditor/ckeditor5-build-balloon": "^27.1.0",
+    "@ckeditor/ckeditor5-build-classic": "^27.1.0",
+    "@ckeditor/ckeditor5-react": "^3.0.2",
+    "@ckeditor/ckeditor5-upload": "^27.1.0",
     "@fullcalendar/bootstrap": "^5.4.0",
     "@fullcalendar/core": "^5.4.0",
     "@fullcalendar/daygrid": "^5.4.0",
@@ -21,6 +25,7 @@
     "bootstrap": "^4.5.3",
     "chart.js": "^2.9.4",
     "chartist": "^0.11.4",
+    "ckeditor5-custom-build": "file:ckeditor5-custom-build",
     "classnames": "^2.2.6",
     "dotenv": "^8.2.0",
     "draft-js": "^0.11.7",

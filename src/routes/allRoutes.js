@@ -23,12 +23,13 @@ import Customers from "../pages/Customers"
 import Books from "../pages/Books/books-list"
 import BlogSingle from "../pages/BlogSingle"
 import BlogsList from "../pages/BlogsList"
+
 // import Logout from "../pages/Authentication/Logout"
 
 const userRoutes = [
   { path: "/app-users", component: Customers },
   { path: "/blogs-list", component: BlogsList },
-  { path: "/blogSingle/:id", component: BlogSingle },
+  { path: "/blog/:id?", component: BlogSingle },
   { path: "/settings", component: Settings },
   {
     path: "/manage-admins",
