@@ -9,7 +9,7 @@ const PAGINATION = 8;
 const BlogsList = props => {
   const [blogs, setBlogs] = useState([]);
   const [paginationPages, setPaginationPages] = useState([1]);
-  const [paginationCurrent, setPaginationCurrent] = useState(0);
+  const [paginationCurrent, setPaginationCurrent] = useState(1);
   const [search, setSearch] = useState('');
   const [visibleBlogs, setVisibleBlogs] = useState([]);
 
@@ -66,7 +66,6 @@ const BlogsList = props => {
                     Мэдээ нэмэх
                 </Button>
               </Link>
-              
             </Col>
             <Col xl={4} lg={4} md={6} xs={6} sm={6}>
               <form className="app-search d-none d-lg-block">
@@ -92,14 +91,13 @@ const BlogsList = props => {
                 <PaginationItem
                   disabled={paginationCurrent == 1}
                   onClick={() => {
-                    paginate(Math.max(idx - 1, 0), PAGINATION);
+                    paginate(Math.max(paginationCurrent - 1, 1), PAGINATION);
                   }}
                 >
                   <PaginationLink>
                     <i className="mdi mdi-chevron-left" />
                   </PaginationLink>
                 </PaginationItem>
-
                 {paginationPages.map(page => (
                   <PaginationItem
                     onClick={() => {
@@ -115,13 +113,12 @@ const BlogsList = props => {
                     paginationCurrent ==
                     paginationPages[paginationPages.length - 1]
                   }
+                  onClick={() => {
+                      paginate(Math.min(paginationCurrent + 1, paginationPages.length), PAGINATION);
+                    }
+                  }
                 >
                   <PaginationLink
-                    href="#"
-                    onClick={() => {
-                      paginate(Math.min(idx + 1, paginationPages, PAGINATION));
-                    }
-                    }
                   >
                     <i className="mdi mdi-chevron-right" />
                   </PaginationLink>
