@@ -23,11 +23,13 @@ import Customers from "../pages/Customers"
 import Books from "../pages/Books/books-list"
 import BlogSingle from "../pages/BlogSingle"
 import BlogsList from "../pages/BlogsList"
+import LandingAdmin from '../pages/LandingAdmin';
 
 // import Logout from "../pages/Authentication/Logout"
 
 const userRoutes = [
   { path: "/app-users", component: Customers },
+  // { path: "/landing-admin", component: LandingAdmin },
   { path: "/blogs-list", component: BlogsList },
   { path: "/blog/:id?", component: BlogSingle },
   { path: "/settings", component: Settings },

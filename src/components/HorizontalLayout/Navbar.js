@@ -90,6 +90,9 @@ const Navbar = props => {
                     <Link to="/blogs-list" className="dropdown-item">
                       {props.t("Мэдээний жагсаалт")}
                     </Link>
+                    {/* <Link to="/landing-admin" className="dropdown-item">
+                      {props.t("Веб админ")}
+                    </Link> */}
                   </div>
                 </li>
                 {/* ------------------- STATISTICS END ------------------- */}

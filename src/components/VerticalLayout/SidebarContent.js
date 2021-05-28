@@ -80,7 +80,12 @@ const SidebarContent = props => {
               <span>{props.t("Мэдээний жагсаалт")}</span>
             </Link>
           </li>
-
+          {/* <li>
+            <Link to="/landing-admin" className=" waves-effect">
+              <i className="bx bx-spreadsheet "></i>
+              <span>{props.t("Веб админ")}</span>
+            </Link>
+          </li> */}
           <li className="menu-title">{props.t("Статистик")} </li>
           <li>
             <Link to="/dashboard" className=" waves-effect">
