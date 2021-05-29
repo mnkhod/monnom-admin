@@ -5,11 +5,13 @@ WORKDIR /app
 COPY package.json .
 
 RUN npm install --legacy-peer-deps
+
 RUN npm install serve -g
 
 COPY . .
 
-RUN npm build
+ENV GENERATE_SOURCEMAP=false
+RUN npm run build
 
 EXPOSE 3000
 
