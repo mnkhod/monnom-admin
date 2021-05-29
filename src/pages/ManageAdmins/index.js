@@ -31,7 +31,7 @@ const userTypes = {
 
 const ManageAdmins = () => {
   const [state, set_state] = useContext(ResultPopUp)
-  
+
   const [isNetworkError, SetIsNetworkError] = useState(false)
   const [isNetworkLoading, SetIsNetworkLoading] = useState(true)
   const [usersList, setUsersList] = useState([])
@@ -148,7 +148,11 @@ const ManageAdmins = () => {
         let tempResponse = res.data
         let imageData = new FormData()
 
-        imageData.append("files", profile_picture_create, profile_picture_create.name)
+        imageData.append(
+          "files",
+          profile_picture_create,
+          profile_picture_create.name
+        )
         imageData.append("refId", res.data.id)
         imageData.append("ref", "user")
         imageData.append("field", "profile_picture")
@@ -162,26 +166,25 @@ const ManageAdmins = () => {
           )
           .then(res => {
             tempResponse.profile_picture = res.data[0]
-            set_state({loading: false})
-            set_state({success: true})
+            set_state({ loading: false })
+            set_state({ success: true })
             SetIsNetworkLoading(false)
             setTimeout(() => {
               window.location.reload()
             }, 2000)
           })
           .catch(err => {
-            set_state({loading: false})
-            set_state({error: true})
+            set_state({ loading: false })
+            set_state({ error: true })
             setAddAdminStep1(false)
             // SetIsNetworkError(true)
           })
         initializeUsersList([tempResponse])
       })
       .catch(err => {
-        set_state({loading: false})
-        set_state({error: true})
+        set_state({ loading: false })
+        set_state({ error: true })
         setAddAdminStep1(false)
-        log(err)
         SetIsNetworkLoading(false)
       })
   }
@@ -240,10 +243,13 @@ const ManageAdmins = () => {
                 </button>
               </div>
               <div className="modal-body">
-                <AvForm className="needs-validation" onSubmit={() => {
-                  set_state({loading: true})
-                  createUser()
-                }}>
+                <AvForm
+                  className="needs-validation"
+                  onSubmit={() => {
+                    set_state({ loading: true })
+                    createUser()
+                  }}
+                >
                   <Row>
                     <Col md="6">
                       <FormGroup className="select2-container">

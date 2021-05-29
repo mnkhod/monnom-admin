@@ -38,7 +38,7 @@ const columns = [
 
 const GivePermission = props => {
   const [state, set_state] = useContext(ResultPopUp)
-  
+
   const [books, set_books] = useState([])
   const [book_data, set_book_data] = useState([])
   const [paid_online_books, set_paid_online_books] = useState([])
@@ -110,7 +110,7 @@ const GivePermission = props => {
 
   async function givePermissionToCustomer() {
     if (selected_book_id == null || props.selected_user_id == null) {
-      set_state({error: true})
+      set_state({ error: true })
       return
     }
 
@@ -128,13 +128,13 @@ const GivePermission = props => {
       },
     })
       .then(res => {
-        set_state({loading: false})
-        set_state({success: true})
+        set_state({ loading: false })
+        set_state({ success: true })
         set_paid_online_books([...paid_online_books, res.data])
       })
       .catch(err => {
-        set_state({loading: false})
-        set_state({error: true})
+        set_state({ loading: false })
+        set_state({ error: true })
       })
   }
 
@@ -152,7 +152,7 @@ const GivePermission = props => {
         set_books(res.data)
       })
       .catch(err => {
-        props.setIsNetworking(true)
+        props.setIsNetworkError(true)
       })
     await axios({
       url: `${process.env.REACT_APP_STRAPI_BASE_URL}/customer-paid-ebooks?users_permissions_user.id=${props.selected_user_id}`,
@@ -167,7 +167,7 @@ const GivePermission = props => {
         set_paid_online_books(book.data)
       })
       .catch(err => {
-        props.setIsNetworking(true)
+        props.setIsNetworkError(true)
       })
 
     await axios({
@@ -183,7 +183,7 @@ const GivePermission = props => {
         set_paid_books(paidBook.data)
       })
       .catch(err => {
-        props.setIsNetworking(true)
+        props.setIsNetworkError(true)
       })
   }
 
@@ -240,7 +240,7 @@ const GivePermission = props => {
           />
         </div>
       </Modal>
-      
+
       {confirm_allow ? (
         <SweetAlert
           title="Та хэрэглэгчид номын эрх нээх гэж байна. Итгэлтэй байна уу ?"
@@ -252,7 +252,7 @@ const GivePermission = props => {
           cancelBtnBsStyle="danger"
           onConfirm={() => {
             set_confirm_allow(false)
-            set_state({loading: true})
+            set_state({ loading: true })
             givePermissionToCustomer()
           }}
           onCancel={() => {

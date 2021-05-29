@@ -97,7 +97,7 @@ const delivered_columns = [
 
 export default function Delivery() {
   const [state, set_state] = useContext(ResultPopUp)
-  
+
   const [delivered_data, set_delivered_data] = useState([])
   const [not_delivered_data, set_not_delivered_data] = useState([])
   const [update_data, set_update_data] = useState(null)
@@ -130,15 +130,15 @@ export default function Delivery() {
         config
       )
       .then(async res => {
-        set_state({loading: false})
-        set_state({success: true})
+        set_state({ loading: false })
+        set_state({ success: true })
         setTimeout(() => {
           window.location.reload()
         }, 2000)
       })
       .catch(e => {
-        set_state({loading: false})
-        set_state({error: true})
+        set_state({ loading: false })
+        set_state({ error: true })
       })
   }
 
@@ -357,7 +357,7 @@ export default function Delivery() {
               confirmBtnBsStyle="success"
               cancelBtnBsStyle="danger"
               onConfirm={() => {
-                set_state({loading:true})
+                set_state({ loading: true })
                 set_confirm_order(false)
                 removeFromNotDelivered(id)
               }}
@@ -390,7 +390,7 @@ export default function Delivery() {
             </div>
             <div className="modal-body">
               <Row>
-                <Col xs={5}>
+                <Col xs={4}>
                   {book_for_description?.picture ? (
                     <img
                       alt={book_for_description?.name + " name"}
@@ -400,7 +400,7 @@ export default function Delivery() {
                     />
                   ) : null}
                 </Col>
-                <Col xs={7}>
+                <Col xs={8}>
                   <table style={{ width: "100%" }}>
                     <tr>
                       <td>
