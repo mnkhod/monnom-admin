@@ -28,6 +28,8 @@ const BookAuthor = () => {
       },
     })
       .then(res => {
+        console.log("res.data")
+        console.log(res.data)
         set_data(res.data)
         SetIsNetworkLoading(true)
         setIsNetworkError(false)

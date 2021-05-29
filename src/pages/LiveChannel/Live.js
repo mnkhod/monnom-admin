@@ -1,9 +1,10 @@
-import React, { useEffect, useState } from "react"
-import { Row, Col, Form, Container, Button } from "reactstrap"
+import React, { useEffect, useState, useContext } from "react"
+import { Row, Col, Button } from "reactstrap"
 import SweetAlert from "react-bootstrap-sweetalert"
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd"
 import { useLiveChannelStates } from "../../contexts/LiveChannelContext"
 import axios from "axios"
+import { ResultPopUp } from "../../contexts/CheckActionsContext"
 
 const GRID = 8
 
@@ -65,7 +66,7 @@ const getListStyle = isDraggingOver => ({
 })
 
 const Live = () => {
-  // const { liveState, setLiveState, setSelectedCard } = useLiveChannelStates();
+  const [state, set_state] = useContext(ResultPopUp)
 
   const {
     selectedCard,
@@ -82,9 +83,6 @@ const Live = () => {
   const [channel_name, set_channel_name] = useState("")
   const [remove_upload_file_name, set_remove_upload_file_name] = useState("")
   const [confirm_remove_file, set_confirm_remove_file] = useState(false)
-  const [success_dialog, setsuccess_dialog] = useState(false)
-  const [error_dialog, seterror_dialog] = useState(false)
-  const [loading_dialog, setloading_dialog] = useState(false)
   const [remove_old_file_id, set_remove_old_file_id] = useState("")
   const [upload_files, set_upload_files] = useState([])
   const [is_stack_sequence_changed, set_is_stack_sequence_changed] =
@@ -94,7 +92,7 @@ const Live = () => {
 
   // delete old file
   const deleteFile = async () => {
-    setloading_dialog(true)
+    set_state({ loading: true })
 
     const config = {
       headers: {
@@ -109,21 +107,22 @@ const Live = () => {
         config
       )
       .then(async res => {
-        setloading_dialog(true)
-        setsuccess_dialog(true)
+        set_state({ loading: false })
+        set_success({ success: true })
         setTimeout(() => {
           window.location.reload()
         }, 2000)
       })
       .catch(() => {
-        setloading_dialog(true)
-        seterror_dialog(true)
+        set_state({ loading: false })
+        set_state({ error: true })
       })
   }
 
   // add file from live
   const createFile = async () => {
-    setloading_dialog(true)
+    set_state({ loading: true })
+
     const config = {
       headers: {
         "content-type": "multipart/form-data",
@@ -152,19 +151,23 @@ const Live = () => {
               audio_duration: audio_duration.toString(),
             }
             tempFormData.append("data", JSON.stringify(data))
-            tempFormData.append("files.audio", audio_files_for_save[index], audio_files_for_save[index].name)
+            tempFormData.append(
+              "files.audio",
+              audio_files_for_save[index],
+              audio_files_for_save[index].name
+            )
             tempAudioRequests.push({
               url: `${process.env.REACT_APP_STRAPI_BASE_URL}/radio-channel-audios`,
               formdata: tempFormData,
             })
           })
-          .catch(err => {
-          })
+          .catch(err => {})
       )
     })
 
     Promise.all(promises)
       .then(() => {
+        set_state({ loading: false })
         axios
           .all(
             tempAudioRequests.map(tempRequest =>
@@ -172,25 +175,22 @@ const Live = () => {
             )
           )
           .then(() => {
-            setloading_dialog(false)
-            setsuccess_dialog(true)
+            set_state({ success: true })
             setTimeout(() => {
               window.location.reload()
             }, 2000)
           })
           .catch(err => {
-            setloading_dialog(false)
-            seterror_dialog(true)
+            set_state({ error: true })
           })
       })
       .catch(e => {
-        setloading_dialog(false)
-        seterror_dialog(true)
+        set_state({ loading: false })
+        set_state({ error: true })
       })
   }
 
   const updateFiles = async () => {
-    setloading_dialog(true)
     const config = {
       headers: {
         Authorization: `Bearer ${
@@ -198,6 +198,7 @@ const Live = () => {
         }`,
       },
     }
+
     let tempStackSequence = old_files.map((file, index) => {
       return {
         id: file.audio_id,
@@ -216,15 +217,15 @@ const Live = () => {
         )
       )
       .then(() => {
-        setloading_dialog(false)
-        setsuccess_dialog(true)
+        set_state({ loading: false })
+        set_state({ success: true })
         setTimeout(() => {
           window.location.reload()
         }, 2000)
       })
       .catch(err => {
-        setloading_dialog(false)
-        seterror_dialog(true)
+        set_state({ loading: false })
+        set_state({ error: true })
       })
   }
 
@@ -249,7 +250,7 @@ const Live = () => {
           window.webkitAudioContext)()
         audioContext.decodeAudioData(event.target.result).then(buffer => {
           let duration = buffer.duration
-          
+
           resolve(duration)
         })
       }
@@ -366,7 +367,9 @@ const Live = () => {
                   className="btn py-2 px-4"
                   color="success"
                   onClick={() => {
-                    if (audio_files_for_save.length != 0) createFile()
+                    if (audio_files_for_save.length != 0) {
+                      createFile()
+                    }
                   }}
                 >
                   Лайвд нэмэх
@@ -531,60 +534,14 @@ const Live = () => {
             <Button
               className="btn py-2 px-4"
               color="success"
-              onClick={updateFiles}
+              onClick={() => {
+                set_state({ loading: true })
+                updateFiles()
+              }}
             >
               Өөрчлөх
             </Button>
           )}
-          {loading_dialog ? (
-            <SweetAlert
-              title="Түр хүлээнэ үү"
-              info
-              showCloseButton={false}
-              showConfirm={false}
-              success
-            ></SweetAlert>
-          ) : null}
-          {success_dialog ? (
-            <SweetAlert
-              title={"Амжилттай"}
-              timeout={2000}
-              style={{
-                position: "absolute",
-                top: "center",
-                right: "center",
-              }}
-              showCloseButton={false}
-              showConfirm={false}
-              success
-              onConfirm={() => {
-                // createPodcast()
-                setsuccess_dialog(false)
-              }}
-            >
-              {"Үйлдэл амжилттай боллоо"}
-            </SweetAlert>
-          ) : null}
-          {error_dialog ? (
-            <SweetAlert
-              title={"Амжилтгүй"}
-              timeout={2000}
-              style={{
-                position: "absolute",
-                top: "center",
-                right: "center",
-              }}
-              showCloseButton={false}
-              showConfirm={false}
-              error
-              onConfirm={() => {
-                // createPodcast()
-                seterror_dialog(false)
-              }}
-            >
-              {"Үйлдэл амжилтгүй боллоо"}
-            </SweetAlert>
-          ) : null}
           {confirm_remove_file ? (
             <SweetAlert
               title="Та итгэлтэй байна уу ?"

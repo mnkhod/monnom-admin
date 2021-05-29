@@ -1,11 +1,15 @@
-import React, { useEffect, useState } from "react"
+import React, { useEffect, useState, useContext} from "react"
 import axios from "axios"
 import { Card, CardBody, Button, Label, Input } from "reactstrap"
 import SweetAlert from "react-bootstrap-sweetalert"
 import Switch from "react-switch"
 import { useLiveChannelStates } from "../../contexts/LiveChannelContext"
+import {ResultPopUp} from "../../contexts/CheckActionsContext"
 
 const RighBar = () => {
+
+  const [state, set_state] = useContext(ResultPopUp)
+
   const {
     selectedCard,
     setSelectedCard,
@@ -15,9 +19,6 @@ const RighBar = () => {
 
   const [confirm_edit, set_confirm_edit] = useState(false)
   const [confirm_delete, set_confirm_delete] = useState(false)
-  const [success_dlg, set_success_dlg] = useState(false)
-  const [error_dialog, set_error_dialog] = useState(false)
-  const [loading_dialog, set_loading_dialog] = useState(false)
 
   // edit hiih state
   const [edit_live_name, set_edit_live_name] = useState("")
@@ -25,6 +26,7 @@ const RighBar = () => {
   const [edit_live_state, set_edit_live_state] = useState(false)
 
   const editLiveInfo = async () => {
+    set_state({loading: true})
     const config = {
       headers: {
         Authorization: `Bearer ${
@@ -43,20 +45,21 @@ const RighBar = () => {
         config
       )
       .then(res => {
-        set_loading_dialog(false)
-        set_success_dlg(true)
+        set_state({loading: false})
+        set_state({success: true})
         setTimeout(() => {
           window.location.reload()
         }, 2000)
       })
       .catch(err => {
-        set_loading_dialog(false)
-        set_error_dialog(true)
+        set_state({loading: false})
+        set_state({error: true})
       })
   }
 
   // delete live channel
   const deleteLive = async () => {
+    set_state({loading: true})
     const config = {
       headers: {
         Authorization: `Bearer ${
@@ -71,15 +74,15 @@ const RighBar = () => {
         config
       )
       .then(async res => {
-        set_loading_dialog(false)
-        set_success_dlg(true)
+        set_state({loading: false})
+        set_state({success: true})
         setTimeout(() => {
           window.location.reload()
         }, 2000)
       })
       .catch(res => {
-        set_loading_dialog(false)
-        set_error_dialog(true)
+        set_state({loading: false})
+        set_state({error: true})
       })
   }
 
@@ -164,7 +167,6 @@ const RighBar = () => {
           cancelBtnBsStyle="danger"
           onConfirm={() => {
             deleteLive()
-            set_loading_dialog(true)
             set_confirm_delete(false)
           }}
           onCancel={() => {
@@ -182,62 +184,12 @@ const RighBar = () => {
           confirmBtnBsStyle="success"
           cancelBtnBsStyle="danger"
           onConfirm={() => {
-            // setSelectedCard(edit_live_name);
             editLiveInfo()
-            set_loading_dialog(true)
             set_confirm_edit(false)
           }}
           onCancel={() => {
             set_confirm_edit(false)
           }}
-        ></SweetAlert>
-      ) : null}
-      {success_dlg ? (
-        <SweetAlert
-          success
-          title="Амжилттай"
-          timeout={1500}
-          style={{
-            position: "absolute",
-            top: "center",
-            right: "center",
-          }}
-          showCloseButton={false}
-          showConfirm={false}
-          onConfirm={() => {
-            set_success_dlg(false)
-          }}
-        >
-          Шинэчлэлт амжилттай хийгдлээ.
-        </SweetAlert>
-      ) : null}
-      {error_dialog ? (
-        <SweetAlert
-          title={"Амжилтгүй"}
-          timeout={2000}
-          style={{
-            position: "absolute",
-            top: "center",
-            right: "center",
-          }}
-          showCloseButton={false}
-          showConfirm={false}
-          error
-          onConfirm={() => {
-            // createPodcast()
-            set_error_dialog(false)
-          }}
-        >
-          {"Үйлдэл амжилтгүй боллоо"}
-        </SweetAlert>
-      ) : null}
-      {loading_dialog ? (
-        <SweetAlert
-          title="Түр хүлээнэ үү"
-          info
-          showCloseButton={false}
-          showConfirm={false}
-          success
         ></SweetAlert>
       ) : null}
     </React.Fragment>

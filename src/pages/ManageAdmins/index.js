@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react"
+import React, { useEffect, useState, useContext } from "react"
 import { Link } from "react-router-dom"
 import {
   Card,
@@ -19,6 +19,7 @@ import Breadcrumbs from "../../components/Common/Breadcrumb"
 import CardContact from "./card-contact"
 import axios from "axios"
 import SweetAlert from "react-bootstrap-sweetalert"
+import { ResultPopUp } from "../../contexts/CheckActionsContext"
 
 const userTypes = {
   Админ: 1,
@@ -29,6 +30,8 @@ const userTypes = {
 }
 
 const ManageAdmins = () => {
+  const [state, set_state] = useContext(ResultPopUp)
+  
   const [isNetworkError, SetIsNetworkError] = useState(false)
   const [isNetworkLoading, SetIsNetworkLoading] = useState(true)
   const [usersList, setUsersList] = useState([])
@@ -159,21 +162,24 @@ const ManageAdmins = () => {
           )
           .then(res => {
             tempResponse.profile_picture = res.data[0]
-            setsuccess_dialog(true)
+            set_state({loading: false})
+            set_state({success: true})
             SetIsNetworkLoading(false)
             setTimeout(() => {
               window.location.reload()
             }, 2000)
           })
           .catch(err => {
-            seterror_dialog(true)
+            set_state({loading: false})
+            set_state({error: true})
             setAddAdminStep1(false)
             // SetIsNetworkError(true)
           })
         initializeUsersList([tempResponse])
       })
       .catch(err => {
-        seterror_dialog(true)
+        set_state({loading: false})
+        set_state({error: true})
         setAddAdminStep1(false)
         log(err)
         SetIsNetworkLoading(false)
@@ -234,7 +240,10 @@ const ManageAdmins = () => {
                 </button>
               </div>
               <div className="modal-body">
-                <AvForm className="needs-validation" onSubmit={createUser}>
+                <AvForm className="needs-validation" onSubmit={() => {
+                  set_state({loading: true})
+                  createUser()
+                }}>
                   <Row>
                     <Col md="6">
                       <FormGroup className="select2-container">
@@ -309,7 +318,7 @@ const ManageAdmins = () => {
                         </Label>
                         <AvField
                           name="phone"
-                          placeholder="Бүтэн нэр"
+                          placeholder=" Утасны дугаар"
                           type="text"
                           errorMessage="Бүтэн нэр"
                           className="form-control"
@@ -504,55 +513,6 @@ const ManageAdmins = () => {
               )}
             </>
           )}
-          {loading_dialog ? (
-            <SweetAlert
-              title="Түр хүлээнэ үү"
-              info
-              showCloseButton={false}
-              showConfirm={false}
-              success
-            ></SweetAlert>
-          ) : null}
-          {success_dialog ? (
-            <SweetAlert
-              title={"Амжилттай"}
-              timeout={2000}
-              style={{
-                position: "absolute",
-                top: "center",
-                right: "center",
-              }}
-              showCloseButton={false}
-              showConfirm={false}
-              success
-              onConfirm={() => {
-                // createPodcast()
-                setsuccess_dialog(false)
-              }}
-            >
-              {"Үйлдэл амжилттай боллоо"}
-            </SweetAlert>
-          ) : null}
-          {error_dialog ? (
-            <SweetAlert
-              title={"Амжилтгүй"}
-              timeout={2000}
-              style={{
-                position: "absolute",
-                top: "center",
-                right: "center",
-              }}
-              showCloseButton={false}
-              showConfirm={false}
-              error
-              onConfirm={() => {
-                // createPodcast()
-                seterror_dialog(false)
-              }}
-            >
-              {"Үйлдэл амжилтгүй боллоо"}
-            </SweetAlert>
-          ) : null}
         </Container>
       </div>
     </React.Fragment>

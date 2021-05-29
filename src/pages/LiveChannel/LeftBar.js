@@ -1,5 +1,5 @@
 import axios from "axios"
-import React, { useState } from "react"
+import React, { useState, useContext } from "react"
 import SweetAlert from "react-bootstrap-sweetalert"
 import { Link } from "react-router-dom"
 import {
@@ -10,22 +10,21 @@ import {
   Input,
   Row,
   Col,
-  Collapse,
 } from "reactstrap"
 
 import { useLiveChannelStates } from "../../contexts/LiveChannelContext"
+import {ResultPopUp} from "../../contexts/CheckActionsContext"
 
 const LeftBar = () => {
   const { live_channels, set_live_channels } = useLiveChannelStates()
   const { edit_live_channel, set_edit_live_channel } = useLiveChannelStates()
 
+  const [state, set_state] = useContext(ResultPopUp)
+
   const [isOpen, setIsOpen] = useState(false)
 
   const [add_live_channel, set_add_live_channel] = useState(false)
   const [confirm_add, set_confirm_add] = useState(false)
-  const [success_dlg, set_success_dlg] = useState(false)
-  const [error_dialog, set_error_dialog] = useState(false)
-  const [loading_dialog, set_loading_dialog] = useState(false)
 
   const [create_live_name, set_create_live_name] = useState("")
   const [create_live_desc, set_create_live_desc] = useState("")
@@ -39,7 +38,7 @@ const LeftBar = () => {
         }`,
       },
     }
-
+    set_state({loading: false})
     await axios
       .post(
         `${process.env.REACT_APP_STRAPI_BASE_URL}/radio-channels/`,
@@ -50,15 +49,14 @@ const LeftBar = () => {
         config
       )
       .then(res => {
-        set_loading_dialog(false)
-        set_success_dlg(true)
+        
+        set_state({success: true})
         setTimeout(() => {
           window.location.reload()
         }, 2000)
       })
       .catch(err => {
-        set_loading_dialog(false)
-        set_error_dialog(true)
+        set_state({error: true})
       })
   }
 
@@ -153,7 +151,7 @@ const LeftBar = () => {
           cancelBtnBsStyle="danger"
           onConfirm={() => {
             createLive()
-            set_loading_dialog(true)
+            set_state({loading: true})
             set_confirm_add(false)
           }}
           onCancel={() => {
@@ -161,53 +159,7 @@ const LeftBar = () => {
           }}
         ></SweetAlert>
       ) : null}
-      {success_dlg ? (
-        <SweetAlert
-          title="Амжилттай"
-          timeout={1500}
-          style={{
-            position: "absolute",
-            top: "center",
-            right: "center",
-          }}
-          showCloseButton={false}
-          showConfirm={false}
-          success
-          onConfirm={() => {
-            setsuccess_dlg(false)
-          }}
-        >
-          Шинэчлэлт амжилттай хийгдлээ.
-        </SweetAlert>
-      ) : null}
-      {error_dialog ? (
-        <SweetAlert
-          title={"Амжилтгүй"}
-          timeout={2000}
-          style={{
-            position: "absolute",
-            top: "center",
-            right: "center",
-          }}
-          showCloseButton={false}
-          showConfirm={false}
-          error
-          onConfirm={() => {
-            set_error_dialog(false)
-          }}
-        >
-          {"Үйлдэл амжилтгүй боллоо"}
-        </SweetAlert>
-      ) : null}
-      {loading_dialog ? (
-        <SweetAlert
-          title="Түр хүлээнэ үү"
-          info
-          showCloseButton={false}
-          showConfirm={false}
-          success
-        ></SweetAlert>
-      ) : null}
+     
     </React.Fragment>
   )
 }

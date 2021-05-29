@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react"
+import React, { useState, useEffect, useContext } from "react"
 import SweetAlert from "react-bootstrap-sweetalert"
 import { Link } from "react-router-dom"
 import {
@@ -9,14 +9,16 @@ import {
   CardImg,
   CardText,
   Row,
-  Alert,
   Pagination,
   PaginationItem,
   PaginationLink,
 } from "reactstrap"
 import axios from "axios"
+import { ResultPopUp } from "../../contexts/CheckActionsContext"
 
 const ContactsGrid = props => {
+  const [state, set_state] = useContext(ResultPopUp)
+  
   const [data, set_data] = useState([])
   const ITEMS_PER_PAGE = 12
 
@@ -29,9 +31,6 @@ const ContactsGrid = props => {
     id: null,
     state: null,
   })
-  const [success_dialog, setsuccess_dialog] = useState(false)
-  const [error_dialog, seterror_dialog] = useState(false)
-  const [loading_dialog, setloading_dialog] = useState(false)
 
   async function featurePodcastChannel() {
     await axios({
@@ -47,15 +46,15 @@ const ContactsGrid = props => {
       },
     })
       .then(res => {
-        setloading_dialog(false)
-        setsuccess_dialog(true)
+        set_state({loading: false})
+        set_state({success: true})
         let tempChannels = Object.assign(data)
         tempChannels.find(channel => channel.id === res.data.id).is_featured =
           res.data.is_featured
       })
       .catch(err => {
-        setloading_dialog(false)
-        seterror_dialog(true)
+        set_state({loading: false})
+        set_state({error: true})
       })
   }
 
@@ -264,15 +263,6 @@ const ContactsGrid = props => {
           : null}
       </Row>
 
-      {loading_dialog ? (
-        <SweetAlert
-          title="Түр хүлээнэ үү"
-          info
-          showCloseButton={false}
-          showConfirm={false}
-          success
-        ></SweetAlert>
-      ) : null}
       {confirm_allow ? (
         <SweetAlert
           title={are_you_sure_title}
@@ -284,7 +274,7 @@ const ContactsGrid = props => {
           cancelBtnBsStyle="danger"
           onConfirm={() => {
             set_confirm_allow(false)
-            setloading_dialog(true)
+            set_state({loading: true})
             featurePodcastChannel()
           }}
           onCancel={() => {
@@ -292,46 +282,6 @@ const ContactsGrid = props => {
             set_confirm_allow(false)
           }}
         ></SweetAlert>
-      ) : null}
-      {success_dialog ? (
-        <SweetAlert
-          title={"Амжилттай"}
-          timeout={2000}
-          style={{
-            position: "absolute",
-            top: "center",
-            right: "center",
-          }}
-          showCloseButton={false}
-          showConfirm={false}
-          success
-          onConfirm={() => {
-            // createPodcast()
-            setsuccess_dialog(false)
-          }}
-        >
-          {"Үйлдэл амжилттай боллоо"}
-        </SweetAlert>
-      ) : null}
-      {error_dialog ? (
-        <SweetAlert
-          title={"Амжилтгүй"}
-          timeout={2000}
-          style={{
-            position: "absolute",
-            top: "center",
-            right: "center",
-          }}
-          showCloseButton={false}
-          showConfirm={false}
-          error
-          onConfirm={() => {
-            // createPodcast()
-            seterror_dialog(false)
-          }}
-        >
-          {"Үйлдэл амжилтгүй боллоо"}
-        </SweetAlert>
       ) : null}
     </React.Fragment>
   )

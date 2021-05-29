@@ -1,5 +1,4 @@
-import React, { useEffect, useState } from "react"
-import { useParams } from "react-router-dom"
+import React, { useEffect, useState, useContext } from "react"
 import SweetAlert from "react-bootstrap-sweetalert"
 import { Link } from "react-router-dom"
 import {
@@ -15,19 +14,18 @@ import {
   Pagination,
   PaginationLink,
   PaginationItem,
-  FormGroup,
-  Button,
 } from "reactstrap"
 
 import AddBook from "./AddBook"
 import Breadcrumbs from "../../components/Common/Breadcrumb"
 
 import axios from "axios"
+import { ResultPopUp } from "../../contexts/CheckActionsContext"
 require("dotenv").config()
 
 let BookCard = props => {
   return (
-    <Col xl={3} lg={4} md={4} sm={4}>
+    <Col xl={3} lg={4} md={4} sm={6}>
       <Card>
         <CardImg
           top
@@ -153,6 +151,8 @@ let BookCard = props => {
 const Books = () => {
   var ITEMS_PER_PAGE = 12
 
+  const [state, set_state] = useContext(ResultPopUp)
+
   const [booksList, setBooksList] = useState([])
   const [admins_info, set_admins_info] = useState([])
   const [book_info, set_book_info] = useState(null)
@@ -171,8 +171,6 @@ const Books = () => {
     id: null,
     state: null,
   })
-  const [success_dialog, setsuccess_dialog] = useState(false)
-  const [error_dialog, seterror_dialog] = useState(false)
 
   async function featureBook() {
     // setLoad(true)
@@ -189,17 +187,17 @@ const Books = () => {
       },
     })
       .then(res => {
-        // setLoad(false)
         set_confirm_allow(false)
         let tempBook = Object.assign(booksList)
         tempBook.find(book => book.id === res.data.id).is_featured =
           res.data.is_featured
-        setsuccess_dialog(true)
+        set_state({ loading: false })
+        set_state({ success: true })
       })
       .catch(err => {
         set_confirm_allow(false)
-        // setLoad(false)
-        seterror_dialog(true)
+        set_state({ loading: false })
+        set_state({ error: true })
       })
   }
 
@@ -390,52 +388,13 @@ const Books = () => {
             confirmBtnBsStyle="success"
             cancelBtnBsStyle="danger"
             onConfirm={() => {
+              set_state({ loading: true })
               featureBook()
             }}
             onCancel={() => {
               set_confirm_allow(false)
             }}
           ></SweetAlert>
-        ) : null}
-        {success_dialog ? (
-          <SweetAlert
-            title={"Амжилттай"}
-            timeout={2000}
-            style={{
-              position: "absolute",
-              top: "center",
-              right: "center",
-            }}
-            showCloseButton={false}
-            showConfirm={false}
-            success
-            onConfirm={() => {
-              // createPodcast()
-              setsuccess_dialog(false)
-            }}
-          >
-            {"Үйлдэл амжилттай боллоо"}
-          </SweetAlert>
-        ) : null}
-        {error_dialog ? (
-          <SweetAlert
-            title={"Амжилтгүй"}
-            timeout={2000}
-            style={{
-              position: "absolute",
-              top: "center",
-              right: "center",
-            }}
-            showCloseButton={false}
-            showConfirm={false}
-            error
-            onConfirm={() => {
-              // createPodcast()
-              seterror_dialog(false)
-            }}
-          >
-            {"Үйлдэл амжилтгүй боллоо"}
-          </SweetAlert>
         ) : null}
       </div>
     </React.Fragment>

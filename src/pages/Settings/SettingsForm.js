@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react"
+import React, { useState, useEffect, useContext } from "react"
 import axios from "axios"
 import SweetAlert from "react-bootstrap-sweetalert"
 import {
@@ -22,8 +22,11 @@ import {
   ContentState,
 } from "draft-js"
 import draftToHtml from "draftjs-to-html"
+import { ResultPopUp } from "../../contexts/CheckActionsContext"
 
 const SettingsForm = () => {
+  const [state, set_state ] = useContext(ResultPopUp)
+  
   // Check network
   const [isNetworkingError, setIsNetworkingError] = useState(false)
   const [isNetworkLoading, setIsNetworkLoading] = useState(true)
@@ -77,9 +80,6 @@ const SettingsForm = () => {
     set_confirm_add_podcast_channel,
   ] = useState(false)
 
-  const [success_dialog, setsuccess_dialog] = useState(false)
-  const [error_dialog, seterror_dialog] = useState(false)
-  const [loading_dialog, setloading_dialog] = useState(false)
 
   const [wysiwyg_content, set_wysiwyg_content] = useState(
     EditorState.createEmpty()
@@ -107,15 +107,15 @@ const SettingsForm = () => {
         config
       )
       .then(res => {
-        setloading_dialog(false)
-        setsuccess_dialog(true)
+        set_state({loading: false})
+        set_state({success: true})
         setTimeout(() => {
           window.location.reload()
         }, 2000)
       })
       .catch(err => {
-        setloading_dialog(false)
-        seterror_dialog(true)
+        set_state({loading: false})
+        set_state({error: true})
       })
   }
 
@@ -137,15 +137,15 @@ const SettingsForm = () => {
         config
       )
       .then(res => {
-        setloading_dialog(false)
-        setsuccess_dialog(true)
+        set_state({loading: false})
+        set_state({success: true})                
         setTimeout(() => {
           window.location.reload()
         }, 2000)
       })
       .catch(err => {
-        setloading_dialog(false)
-        seterror_dialog(true)
+        set_state({loading: false})
+        set_state({error: true})
       })
   }
 
@@ -164,15 +164,15 @@ const SettingsForm = () => {
         config
       )
       .then(async res => {
-        setloading_dialog(false)
-        setsuccess_dialog(true)
+        set_state({loading: false})
+        set_state({success: true})
         setTimeout(() => {
           window.location.reload()
         }, 2000)
       })
       .catch(res => {
-        setloading_dialog(false)
-        seterror_dialog(true)
+        set_state({loading: false})
+        set_state({error: true})
       })
   }
 
@@ -190,15 +190,15 @@ const SettingsForm = () => {
         config
       )
       .then(async res => {
-        setloading_dialog(false)
-        setsuccess_dialog(true)
+        set_state({loading: false})
+        set_state({success: true})
         setTimeout(() => {
           window.location.reload()
         }, 2000)
       })
       .catch(res => {
-        setloading_dialog(false)
-        seterror_dialog(true)
+        set_state({loading: false})
+        set_state({error: true})
       })
   }
 
@@ -216,15 +216,15 @@ const SettingsForm = () => {
         config
       )
       .then(async res => {
-        setloading_dialog(false)
-        setsuccess_dialog(true)
+        set_state({loading: false})
+        set_state({success: true})
         setTimeout(() => {
           window.location.reload()
         }, 2000)
       })
       .catch(res => {
-        setloading_dialog(false)
-        seterror_dialog(true)
+        set_state({loading: false})
+        set_state({error: true})
       })
   }
 
@@ -245,15 +245,15 @@ const SettingsForm = () => {
         config
       )
       .then(res => {
-        setloading_dialog(false)
-        setsuccess_dialog(true)
+        set_state({loading: false})
+        set_state({success: true})
         setTimeout(() => {
           window.location.reload()
         }, 2000)
       })
       .catch(err => {
-        setloading_dialog(false)
-        seterror_dialog(true)
+        set_state({loading: false})
+        set_state({error: true})
       })
   }
 
@@ -275,15 +275,15 @@ const SettingsForm = () => {
         config
       )
       .then(async => {
-        setloading_dialog(false)
-        setsuccess_dialog(true)
+        set_state({loading: false})
+        set_state({success: true})
         setTimeout(() => {
           window.location.reload()
         }, 2000)
       })
       .catch(err => {
-        setloading_dialog(false)
-        seterror_dialog(true)
+        set_state({loading: false})
+        set_state({error: true})
       })
   }
 
@@ -318,15 +318,15 @@ const SettingsForm = () => {
         config
       )
       .then(async res => {
-        setloading_dialog(false)
-        setsuccess_dialog(true)
+        set_state({loading: false})
+        set_state({success: true})
         setTimeout(() => {
           window.location.reload()
         }, 2000)
       })
       .catch(err => {
-        setloading_dialog(false)
-        seterror_dialog(true)
+        set_state({loading: false})
+        set_state({error: true})
       })
   }
 
@@ -348,16 +348,16 @@ const SettingsForm = () => {
     axios
       .put(url, formData, config)
       .then(res => {
-        setloading_dialog(false)
-        setsuccess_dialog(true)
-        set_wysiwyg_content(JSON.parse(res.data.TermsAndConditions))
+        set_state({loading: false})
+        set_state({success: true})
+        set_wysiwyg_content(res.data.TermsAndConditions)
         setTimeout(() => {
           window.location.reload()
         }, 2000)
       })
       .catch(err => {
-        setloading_dialog(false)
-        seterror_dialog(true)
+        set_state({loading: false})
+        set_state({error: true})
       })
   }
 
@@ -365,15 +365,15 @@ const SettingsForm = () => {
     await axios
       .delete(`${process.env.REACT_APP_STRAPI_BASE_URL}/podcast-channels/${id}`)
       .then(async res => {
-        setloading_dialog(false)
-        setsuccess_dialog(true)
+        set_state({loading: false})
+        set_state({success: true})
         setTimeout(() => {
           window.location.reload()
         }, 2000)
       })
       .catch(res => {
-        setloading_dialog(false)
-        seterror_dialog(true)
+        set_state({loading: false})
+        set_state({error: true})
       })
   }
 
@@ -556,6 +556,7 @@ const SettingsForm = () => {
                         toolbarClassName="toolbarClassName"
                         wrapperClassName="wrapperClassName"
                         editorClassName="editorClassName"
+                        
                       />
                     ) : null}
                   </CardBody>
@@ -566,7 +567,6 @@ const SettingsForm = () => {
               <Col lg={12} className="text-right mb-3">
                 <Button
                   className="btn btn-success text-dark"
-                  style={{ height: "40px" }}
                   color="success"
                   onClick={() => {
                     set_confirm_terms(true)
@@ -1026,15 +1026,6 @@ const SettingsForm = () => {
       )}
 
       <Row>
-        {loading_dialog ? (
-          <SweetAlert
-            title="Түр хүлээнэ үү"
-            info
-            showCloseButton={false}
-            showConfirm={false}
-            success
-          ></SweetAlert>
-        ) : null}
         {confirm_terms ? (
           <SweetAlert
             title="Үйлчилгээний нөхцөлөө өөрчлөх гэж байна"
@@ -1045,7 +1036,7 @@ const SettingsForm = () => {
             confirmBtnBsStyle="success"
             cancelBtnBsStyle="danger"
             onConfirm={() => {
-              setloading_dialog(true)
+              set_state({loading: true})
               updateTerms()
               set_confirm_terms(false)
             }}
@@ -1064,7 +1055,7 @@ const SettingsForm = () => {
             confirmBtnBsStyle="success"
             cancelBtnBsStyle="danger"
             onConfirm={() => {
-              setloading_dialog(true)
+              set_state({loading: true})
               set_confirm_add_author(false)
               addBookAuthor()
             }}
@@ -1083,7 +1074,7 @@ const SettingsForm = () => {
             confirmBtnBsStyle="success"
             cancelBtnBsStyle="danger"
             onConfirm={() => {
-              setloading_dialog(true)
+              set_state({loading: true})
               set_confirm_remove_author(false)
               deleteBookAuthor(author_category_id)
             }}
@@ -1102,7 +1093,7 @@ const SettingsForm = () => {
             confirmBtnBsStyle="success"
             cancelBtnBsStyle="danger"
             onConfirm={() => {
-              setloading_dialog(true)
+              set_state({loading: true})
               set_confirm_add_book_category(false)
               addBookCategory()
             }}
@@ -1121,7 +1112,7 @@ const SettingsForm = () => {
             confirmBtnBsStyle="success"
             cancelBtnBsStyle="danger"
             onConfirm={() => {
-              setloading_dialog(true)
+              set_state({loading: true})
               set_confirm_remove_book_category(false)
               deleteBookCategory(book_category_id)
             }}
@@ -1140,7 +1131,7 @@ const SettingsForm = () => {
             confirmBtnBsStyle="success"
             cancelBtnBsStyle="danger"
             onConfirm={() => {
-              setloading_dialog(true)
+              set_state({loading: true})
               set_confirm_add_podcast_category(false)
               addPodcastCategory()
             }}
@@ -1159,7 +1150,7 @@ const SettingsForm = () => {
             confirmBtnBsStyle="success"
             cancelBtnBsStyle="danger"
             onConfirm={() => {
-              setloading_dialog(true)
+              set_state({loading: true})
               set_confirm_remove_podcast_category(false)
               deletePodcastCategory(podcast_category_id)
             }}
@@ -1178,7 +1169,7 @@ const SettingsForm = () => {
             confirmBtnBsStyle="success"
             cancelBtnBsStyle="danger"
             onConfirm={() => {
-              setloading_dialog(true)
+              set_state({loading: true})
               set_confirm_add_podcast_channel(false)
               if (channel_cover_pic == null || admin_selected == null)
                 seterror_dialog(false)
@@ -1201,7 +1192,10 @@ const SettingsForm = () => {
             confirmBtnBsStyle="success"
             cancelBtnBsStyle="danger"
             onConfirm={() => {
-              if (special_book_id != null) saveBook()
+              if (special_book_id != null) {
+                set_state({loading: true})
+                saveBook() 
+              }
               set_confirm_save_book(false)
             }}
             onCancel={() => {
@@ -1220,7 +1214,7 @@ const SettingsForm = () => {
             confirmBtnBsStyle="success"
             cancelBtnBsStyle="danger"
             onConfirm={() => {
-              setloading_dialog(true)
+              set_state({loading: true})
               set_confirm_delete_channel(false)
               deletePodcastChannel(insert_channels_id)
             }}
@@ -1228,45 +1222,6 @@ const SettingsForm = () => {
               set_confirm_delete_channel(false)
             }}
           ></SweetAlert>
-        ) : null}
-        {success_dialog ? (
-          <SweetAlert
-            title="Амжилттай"
-            timeout={2000}
-            style={{
-              position: "absolute",
-              top: "center",
-              right: "center",
-            }}
-            showCloseButton={false}
-            showConfirm={false}
-            success
-            onConfirm={() => {
-              setsuccess_dialog(false)
-            }}
-          >
-            {"Хэрэглэгчид эрх олгогдлоо"}
-          </SweetAlert>
-        ) : null}
-        {error_dialog ? (
-          <SweetAlert
-            title={"Амжилтгүй"}
-            timeout={2000}
-            style={{
-              position: "absolute",
-              top: "center",
-              right: "center",
-            }}
-            showCloseButton={false}
-            showConfirm={false}
-            error
-            onConfirm={() => {
-              // createPodcast()
-              seterror_dialog(false)
-            }}
-          >
-            {"Эрх олгох үйлдэл амжилтгүй боллоо"}
-          </SweetAlert>
         ) : null}
       </Row>
     </React.Fragment>

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react"
+import React, { useState, useEffect, useContext } from "react"
 import {
   Card,
   CardBody,
@@ -17,16 +17,17 @@ import profile1 from "../../assets/images/profile-img.png"
 import PodcastAnalysis from "./PodcastAnalysis.js"
 import List from "./List"
 import axios from "axios"
+import { ResultPopUp } from "../../contexts/CheckActionsContext"
+import { truncate } from "lodash"
 
 const PodcastDetail = props => {
+  const [state, set_state] = useContext(ResultPopUp)
+  
   const [data, set_data] = useState(null)
 
   const [edit_detail, set_edit_detail] = useState(false)
   const [confirm_edit, set_confirm_edit] = useState(false)
   const [delete_confirm_comment, set_delete_confirm_comment] = useState(false)
-  const [success_dialog, setsuccess_dialog] = useState(false)
-  const [error_dialog, seterror_dialog] = useState(false)
-  const [loading_dialog, setloading_dialog] = useState(false)
 
   // update hiih state
   const [edit_podcast_channel, set_edit_podcast_channel] = useState("")
@@ -49,13 +50,15 @@ const PodcastDetail = props => {
       },
     })
       .then(async res => {
-        setsuccess_dialog(true)
+        set_state({loading: false})
+        set_state({success: true})
         setTimeout(() => {
           window.location.reload()
         }, 2000)
       })
       .catch(err => {
-        seterror_dialog(true)
+        set_state({loading: false})
+        set_state({error: true})
       })
   }
 
@@ -63,15 +66,15 @@ const PodcastDetail = props => {
     await axios
       .delete(`${process.env.REACT_APP_STRAPI_BASE_URL}/`)
       .then(async res => {
-        setloading_dialog(false)
-        setsuccess_dialog(true)
+        set_state({loading: false})
+        set_state({success: true})
         setTimeout(() => {
           window.location.reload()
         }, 2000)
       })
       .catch(res => {
-        setloading_dialog(false)
-        seterror_dialog(true)
+        set_state({loading: false})
+        set_state({error: true})
       })
   }
 
@@ -293,9 +296,9 @@ const PodcastDetail = props => {
               borderRadius: "20px",
             }}
             onConfirm={() => {
+              set_state({loading: true})
               deleteChannelComment()
               set_delete_confirm_comment(false)
-              setloading_dialog(true)
             }}
             onCancel={() => {
               set_delete_confirm_comment(false)
@@ -321,63 +324,12 @@ const PodcastDetail = props => {
             cancelBtnBsStyle="danger"
             onConfirm={() => {
               set_confirm_edit(false)
-              // setsuccess_dlg(true)
-              // setdynamic_title("Амжилттай")
-              // setdynamic_description("Шинэчлэлт амжилттай хийгдлээ.")
+              set_state({loading: true})
               updatePodcastInfo()
             }}
             onCancel={() => {
               set_confirm_edit(false)
             }}
-          ></SweetAlert>
-        ) : null}
-        {success_dialog ? (
-          <SweetAlert
-            title={"Амжилттай"}
-            timeout={2000}
-            style={{
-              position: "absolute",
-              top: "center",
-              right: "center",
-            }}
-            showCloseButton={false}
-            showConfirm={false}
-            success
-            onConfirm={() => {
-              // createPodcast()
-              setsuccess_dialog(false)
-            }}
-          >
-            {"Үйлдэл амжилттай боллоо"}
-          </SweetAlert>
-        ) : null}
-        {error_dialog ? (
-          <SweetAlert
-            title={"Амжилтгүй"}
-            timeout={2000}
-            style={{
-              position: "absolute",
-              top: "center",
-              right: "center",
-            }}
-            showCloseButton={false}
-            showConfirm={false}
-            error
-            onConfirm={() => {
-              // createPodcast()
-              seterror_dialog(false)
-            }}
-          >
-            {"Үйлдэл амжилтгүй боллоо"}
-          </SweetAlert>
-        ) : null}
-        {loading_dialog ? (
-          <SweetAlert
-            title="Түр хүлээнэ үү"
-            info
-            showCloseButton={false}
-            showConfirm={false}
-            success
           ></SweetAlert>
         ) : null}
       </Container>

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react"
+import React, { useState, useEffect, useContext } from "react"
 import {
   Row,
   Col,
@@ -25,8 +25,11 @@ import classnames from "classnames"
 import { Link } from "react-router-dom"
 import SweetAlert from "react-bootstrap-sweetalert"
 import Select from "react-select"
+import { ResultPopUp } from "contexts/CheckActionsContext"
 
 const AddBook = props => {
+  const [state, set_state] = useContext(ResultPopUp)
+
   const [netWork, set_netWork] = useState(false)
   const [modal, setModal] = useState(false)
   const [activeTab, set_activeTab] = useState(1)
@@ -36,7 +39,6 @@ const AddBook = props => {
   const [progress_mp3, set_progress_mp3] = useState(0)
   const [next_button_label, set_next_button_label] = useState("Дараах")
   const [profileImage, set_profileImage] = useState("")
-  const [success_dlg, setsuccess_dlg] = useState(false)
   const [confirm_edit, set_confirm_edit] = useState(false)
   const [file_upload_name_message, set_file_upload_name_message] = useState("")
   const [youtube_url_name, set_youtube_url_name] = useState("")
@@ -45,13 +47,14 @@ const AddBook = props => {
   const [optionGroup_authors, set_optionGroup_authors] = useState([])
   const [optionGroup_categories, set_optionGroup_categories] = useState([])
   const [is_pdf_price, set_is_pdf_price] = useState(false)
-  const [book_introduction_message, set_book_introduction_message] = useState("")
-  const [success_dialog, setsuccess_dialog] = useState(false)
-  const [error_dialog, seterror_dialog] = useState(false)
-  const [loading_dialog, setloading_dialog] = useState(false)
+  const [book_introduction_message, set_book_introduction_message] =
+    useState("")
+  const [files_checked, set_files_checked] = useState("")
 
   // axios -oor damjuulah state set
   const [pdf_price, set_pdf_price] = useState(0)
+  const [ebook_price, set_ebook_price] = useState(0)
+  const [audio_book_price, set_audio_book_price] = useState(0)
   const [youtube_url_value, set_youtube_url_value] = useState("")
   const [book_introduction_value, set_book_introduction_value] = useState("")
 
@@ -60,7 +63,9 @@ const AddBook = props => {
   const [book_name_value, set_book_name_value] = useState("")
   const [book_picture, set_book_picture] = useState(null)
   const [audio_book_files, set_audio_book_files] = useState([])
-  const [audio_book_files_for_save, set_audio_book_files_for_save] = useState([])
+  const [audio_book_files_for_save, set_audio_book_files_for_save] = useState(
+    []
+  )
   const [book_files, set_book_files] = useState([])
   const [selectedMulti_category, setselectedMulti_category] = useState(null)
   const [selectedMulti_author, setselectedMulti_author] = useState(null)
@@ -88,9 +93,11 @@ const AddBook = props => {
     data["book_authors"] = authors
     data["online_book_price"] = pdf_price
     data["book_price"] = sale_price
+    data["audio_book_price"] = audio_book_price
 
     formData.append("data", JSON.stringify(data))
-    formData.append("files.pdf_book_path", book_files[0], book_files[0].name)
+    if (book_files[0] != undefined)
+      formData.append("files.pdf_book_path", book_files[0], book_files[0].name)
     formData.append("files.picture", book_picture, book_picture.name)
     for (let i = 0; i < selectedFiles.length; i++) {
       formData.append(
@@ -139,8 +146,7 @@ const AddBook = props => {
                   formdata: tempFormData,
                 })
               })
-              .catch(err => {
-              })
+              .catch(err => {})
           )
         })
 
@@ -153,19 +159,19 @@ const AddBook = props => {
                 )
               )
               .then(() => {
-                setloading_dialog(false)
-                setsuccess_dialog(true)
+                set_state({ loading: false })
+                set_state({ success: true })
                 setTimeout(() => {
                   window.location.reload()
-                }, 2000)
+                }, 1500)
               })
               .catch(err => {
-                setloading_dialog(false)
-                seterror_dialog(true)
+                set_state({ loading: false })
+                set_state({ error: true })
               })
           })
           .catch(e => {
-            setloading_dialog(false)
+            set_state({ loading: false })
             seterror_dialog(true)
           })
       })
@@ -180,7 +186,7 @@ const AddBook = props => {
           window.webkitAudioContext)()
         audioContext.decodeAudioData(event.target.result).then(buffer => {
           let duration = buffer.duration
-         
+
           resolve(duration)
         })
       }
@@ -314,10 +320,6 @@ const AddBook = props => {
     } else {
       set_book_introduction_message("")
     }
-    if (selectedFiles != "") {
-    } else {
-      set_file_upload_name_message("Хоосон утгатай байна !")
-    }
   }
 
   // mp3 file upload hiih, nemeh
@@ -329,11 +331,7 @@ const AddBook = props => {
     }
     set_audio_book_files_for_save(tempfiles)
     set_audio_book_files(getItems(files))
-    if (audio_book_files.length == 0 && book_files.length == 0) {
-      set_next_button_label("Алгасах")
-    } else {
-      set_next_button_label("Дараах")
-    }
+    set_next_button_label("Дараах")
   }
 
   // upload hiij bga mp3 file aa ustgah
@@ -344,7 +342,11 @@ const AddBook = props => {
         file => file.name != f.content
       )
     )
-    if (audio_book_files.length == 0 && book_files.length == 0) {
+    console.log("audio_book_files.length")
+    console.log(audio_book_files.length)
+    console.log("book_files.length")
+    console.log(book_files.length)
+    if (audio_book_files.length == 1 && book_files.length == 0) {
       set_next_button_label("Алгасах")
     } else {
       set_next_button_label("Дараах")
@@ -370,7 +372,7 @@ const AddBook = props => {
     set_progress_mp3(0)
     set_book_files(book_files.filter(x => x !== f))
     set_is_pdf_price(false)
-    if (book_files.length == 0 && audio_book_files.length == 0) {
+    if (audio_book_files.length == 0) {
       set_next_button_label("Алгасах")
     } else {
       set_next_button_label("Дараах")
@@ -426,7 +428,7 @@ const AddBook = props => {
               cancelBtnBsStyle="danger"
               onConfirm={() => {
                 set_confirm_edit(false)
-                setloading_dialog(true)
+                set_state({ loading: true })
                 createBook()
               }}
               onCancel={() => {
@@ -434,25 +436,6 @@ const AddBook = props => {
                 togglemodal()
               }}
             ></SweetAlert>
-          ) : null}
-          {success_dlg ? (
-            <SweetAlert
-              title={"Амжилттай"}
-              timeout={1500}
-              style={{
-                position: "absolute",
-                top: "center",
-                right: "center",
-              }}
-              showCloseButton={false}
-              showConfirm={false}
-              success
-              onConfirm={() => {
-                setsuccess_dlg(false)
-              }}
-            >
-              {"Та шинэ подкаст амжилттай нэмлээ."}
-            </SweetAlert>
           ) : null}
           <Card>
             <Modal
@@ -592,15 +575,22 @@ const AddBook = props => {
                                 </Col>
                               </Row>
                             </Col>
-                            <Col lg={4}>
-                              <FormGroup>
+                            <Col lg={5}>
+                              <FormGroup
+                                className="mx-auto"
+                                style={{ width: "85%" }}
+                              >
                                 <Label htmlFor="productdesc">Зураг</Label>
                                 <img
                                   className="rounded"
                                   src={profileImage}
-                                  alt=""
+                                  alt={book_name_value}
                                   id="img"
                                   className="img-fluid"
+                                  style={{
+                                    width: "100%",
+                                    height: "30vh",
+                                  }}
                                 />
                                 <input
                                   type="file"
@@ -666,7 +656,7 @@ const AddBook = props => {
                                 <Col lg={3}>
                                   <Input
                                     type="number"
-                                    // value="0"
+                                    value={sale_count}
                                     onChange={e =>
                                       set_sale_count(e.target.value)
                                     }
@@ -683,7 +673,7 @@ const AddBook = props => {
                                 <Col lg={3}>
                                   <Input
                                     type="number"
-                                    // value="0"
+                                    value={sale_price}
                                     onChange={e =>
                                       set_sale_price(e.target.value)
                                     }
@@ -712,18 +702,7 @@ const AddBook = props => {
                                 />
                                 <p class="text-danger">{youtube_url_name}</p>
                               </FormGroup>
-                              <Row>
-                                <Col lg={12}>
-                                  <Label>Онлайн номын үнэ</Label>
-                                  <Input
-                                    type="number"
-                                    value={pdf_price}
-                                    onChange={e =>
-                                      set_pdf_price(e.target.value)
-                                    }
-                                  />
-                                </Col>
-                              </Row>
+                              <Row></Row>
                             </Col>
                             <Col lg={6}>
                               <FormGroup>
@@ -812,12 +791,44 @@ const AddBook = props => {
                           Баталгаажуулахын тулд файлаа оруулна уу ?
                         </h5>
 
+                        <Row>
+                          <Col lg={6}>
+                            {book_files.length != 0 ? (
+                              <FormGroup>
+                                <Label>Эй бүүк үнэ</Label>
+                                <Input
+                                  type="number"
+                                  value={pdf_price}
+                                  onChange={e => set_pdf_price(e.target.value)}
+                                ></Input>
+                              </FormGroup>
+                            ) : null}
+                          </Col>
+                          <Col lg={6}>
+                            {audio_book_files.length != 0 ? (
+                              <FormGroup>
+                                <Label>Аудио бүүк үнэ</Label>
+                                <Input
+                                  type="number"
+                                  value={audio_book_price}
+                                  onChange={e =>
+                                    set_audio_book_price(e.target.value)
+                                  }
+                                ></Input>
+                              </FormGroup>
+                            ) : (
+                              []
+                            )}
+                          </Col>
+                        </Row>
+
                         <Row style={{ borderBottom: "1px solid #1f3bcc" }}>
                           <Col xl={8}>
-                            {book_files.map(file => (
+                            {book_files.map((file, index) => (
                               <div
                                 className="d-flex justify-content-between bg-light border  rounded py-2 px-3 mb-3 align-items-center"
                                 style={{ width: "450px", marginLeft: "10px" }}
+                                key={index}
                               >
                                 <i className="bx bxs-file font-size-22 text-danger mr-2" />
                                 <p
@@ -972,6 +983,10 @@ const AddBook = props => {
                             </label>
                           </Col>
                         </Row>
+                        <Col lg={12} className="text-danger">
+                          {" "}
+                          {files_checked}
+                        </Col>
                       </TabPane>
                     </TabContent>
                     <ul className="pager wizard twitter-bs-wizard-pager-link">
@@ -1009,7 +1024,16 @@ const AddBook = props => {
                               (next_button_label == "Алгасах" ||
                                 next_button_label == "Дараах")
                             ) {
-                              toggleTab(activeTab + 1)
+                              if (
+                                (book_files.length != 0 && ebook_price != 0) ||
+                                (audio_book_files.length != 0 &&
+                                  audio_book_price != 0)
+                              ) {
+                                toggleTab(activeTab + 1)
+                                set_files_checked("")
+                              } else {
+                                set_files_checked("Үнийн дүн оруулна уу ?")
+                              }
                             }
                             if (activeTab === 3) {
                               handle2(e)
@@ -1017,8 +1041,7 @@ const AddBook = props => {
                             if (
                               next_button_label == "Дуусгах" &&
                               youtube_url_value !== "" &&
-                              book_introduction_value !== "" &&
-                              selectedFiles != ""
+                              book_introduction_value !== ""
                             ) {
                               togglemodal()
 
@@ -1036,55 +1059,6 @@ const AddBook = props => {
             </Modal>
           </Card>
         </Col>
-      ) : null}
-      {loading_dialog ? (
-        <SweetAlert
-          title="Түр хүлээнэ үү"
-          info
-          showCloseButton={false}
-          showConfirm={false}
-          success
-        ></SweetAlert>
-      ) : null}
-      {success_dialog ? (
-        <SweetAlert
-          title={"Амжилттай"}
-          timeout={2000}
-          style={{
-            position: "absolute",
-            top: "center",
-            right: "center",
-          }}
-          showCloseButton={false}
-          showConfirm={false}
-          success
-          onConfirm={() => {
-            // createPodcast()
-            setsuccess_dialog(false)
-          }}
-        >
-          {"Үйлдэл амжилттай боллоо"}
-        </SweetAlert>
-      ) : null}
-      {error_dialog ? (
-        <SweetAlert
-          title={"Амжилтгүй"}
-          timeout={2000}
-          style={{
-            position: "absolute",
-            top: "center",
-            right: "center",
-          }}
-          showCloseButton={false}
-          showConfirm={false}
-          error
-          onConfirm={() => {
-            // createPodcast()
-            seterror_dialog(false)
-          }}
-        >
-          {"Үйлдэл амжилтгүй боллоо"}
-        </SweetAlert>
       ) : null}
     </React.Fragment>
   )
@@ -1111,13 +1085,13 @@ const reorder = (list, startIndex, endIndex) => {
   return result
 }
 
-const grid = 8
+const GRID = 8
 
 const getItemStyle = (isDragging, draggableStyle) => ({
   // some basic styles to make the items look a bit nicer
   userSelect: "none",
-  padding: grid * 2,
-  margin: `0 0 ${grid}px 0`,
+  padding: GRID * 2,
+  margin: `0 0 ${GRID}px 0`,
   width: 450,
   // styles we need to apply on draggables
   ...draggableStyle,
@@ -1125,7 +1099,7 @@ const getItemStyle = (isDragging, draggableStyle) => ({
 
 const getListStyle = isDraggingOver => ({
   background: isDraggingOver ? "lightgreen" : "white",
-  padding: grid,
+  padding: GRID,
   width: 460,
 })
 

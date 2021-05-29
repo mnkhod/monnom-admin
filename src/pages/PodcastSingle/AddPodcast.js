@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react"
+import React, { useState, useEffect, useContext } from "react"
 import {
   Row,
   Col,
@@ -24,15 +24,16 @@ import axios from "axios"
 import SweetAlert from "react-bootstrap-sweetalert"
 import Dropzone from "react-dropzone"
 import { useParams } from "react-router-dom"
+import { ResultPopUp } from "../../contexts/CheckActionsContext"
 // require('dotenv').config()
 
 const AddPodcast = props => {
+  const [state, set_state] = useContext(ResultPopUp)
+  
   const { id } = useParams()
   var latestEpisodeNumber = props.latestEpisodeNumber
   const [modal, setModal] = useState(false)
   const [activeTab, set_activeTab] = useState(1)
-  const [success_dialog, setsuccess_dialog] = useState(false)
-  const [error_dialog, seterror_dialog] = useState(false)
 
   const [progressValue, setprogressValue] = useState(33)
   const [podcast_name_message, set_podcast_name_message] = useState("")
@@ -42,7 +43,6 @@ const AddPodcast = props => {
   ] = useState("")
   const [file_upload_name_message, set_file_upload_name_message] = useState("")
   const [next_button_label, set_next_button_label] = useState("Дараах")
-  const [loading_dialog, setloading_dialog] = useState(false)
 
   // axios -oor damjuulah state uud
   const [podcast_name_value, set_podcast_name_value] = useState("")
@@ -83,16 +83,15 @@ const AddPodcast = props => {
     await axios
       .post(url, podcastDataToUpload, config)
       .then(async res => {
-        setloading_dialog(false)
-        setsuccess_dialog(true)
-
+        set_state({loading: false})
+        set_state({success: true})
         setTimeout(() => {
           window.location.reload()
         }, 1500)
       })
       .catch(e => {
-        setloading_dialog(false)
-        seterror_dialog(true)
+        set_state({loading: false})
+        set_state({error: true})
       })
   }
 
@@ -468,7 +467,7 @@ const AddPodcast = props => {
                           }
                           if (next_button_label == "Дуусгах") {
                             togglemodal()
-                            setloading_dialog(true)
+                            set_state({loading: true})
                             createPodcast()
 
                             // setsuccess_dlg(true)
@@ -485,55 +484,6 @@ const AddPodcast = props => {
           </Modal>
         </Card>
       </Col>
-      {loading_dialog ? (
-        <SweetAlert
-          title="Түр хүлээнэ үү"
-          info
-          showCloseButton={false}
-          showConfirm={false}
-          success
-        ></SweetAlert>
-      ) : null}
-      {success_dialog ? (
-        <SweetAlert
-          title={"Амжилттай"}
-          timeout={2000}
-          style={{
-            position: "absolute",
-            top: "center",
-            right: "center",
-          }}
-          showCloseButton={false}
-          showConfirm={false}
-          success
-          onConfirm={() => {
-            // createPodcast()
-            setsuccess_dialog(false)
-          }}
-        >
-          {"Үйлдэл амжилттай боллоо"}
-        </SweetAlert>
-      ) : null}
-      {error_dialog ? (
-        <SweetAlert
-          title={"Амжилтгүй"}
-          timeout={2000}
-          style={{
-            position: "absolute",
-            top: "center",
-            right: "center",
-          }}
-          showCloseButton={false}
-          showConfirm={false}
-          error
-          onConfirm={() => {
-            // createPodcast()
-            seterror_dialog(false)
-          }}
-        >
-          {"Үйлдэл амжилтгүй боллоо"}
-        </SweetAlert>
-      ) : null}
     </React.Fragment>
   )
 }

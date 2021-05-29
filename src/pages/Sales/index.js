@@ -7,7 +7,6 @@ import { Link } from "react-router-dom"
 import SalesList from "./List"
 
 const Sales = () => {
-  const [data, set_data] = useState([])
   const [ebook_data, set_ebook_data] = useState([])
   const [book_data, set_book_data] = useState([])
 

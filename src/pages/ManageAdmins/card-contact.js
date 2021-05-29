@@ -1,5 +1,6 @@
 import axios from "axios"
-import React, { useState } from "react"
+import { ResultPopUp } from "../../contexts/CheckActionsContext"
+import React, { useState, useContext } from "react"
 import { Link } from "react-router-dom"
 import {
   Card,
@@ -13,6 +14,8 @@ import {
 } from "reactstrap"
 
 const CardContact = props => {
+  const [state, set_state] = useContext(ResultPopUp)
+  
   const [user, set_user] = useState(props.user)
   const [user_desc_modal_center, set_user_desc_modal_center] = useState(false)
   const [user_delete_modal_center, set_user_delete_modal_center] =
@@ -74,8 +77,8 @@ const CardContact = props => {
       },
     })
       .then(res => {
-        props.setloading_dialog(false)
-        props.success(true)
+        set_state({loading: false})
+        set_state({success: true})
         set_edit_form_loading(false)
         set_user(props.initializeUsersList([res.data])[0])
         set_user_update_modal_center(false)
@@ -84,8 +87,8 @@ const CardContact = props => {
         }, 2000)
       })
       .catch(err => {
-        props.setloading_dialog(false)
-        props.error(true)
+        set_state({loading: false})
+        set_state({error: true})
         set_edit_form_loading(false)
         
       })
@@ -96,15 +99,15 @@ const CardContact = props => {
     await axios
       .delete(`${process.env.REACT_APP_STRAPI_BASE_URL}/users/${user.id}`)
       .then(res => {
-        props.setloading_dialog(false)
-        props.success(true)
+        set_state({loading: false})
+        set_state({success: true})
         setTimeout(() => {
           window.location.reload()
         }, 2000)
       })
       .catch(res => {
-        props.setloading_dialog(false)
-        props.error(true)
+        set_state({loading: false})
+        set_state({error: true})
       })
   }
 
@@ -353,6 +356,7 @@ const CardContact = props => {
                     <button
                       type="reset"
                       onClick={() => {
+                        set_state({loading: true})
                         sendEditUserRequest(user.id)
                       }}
                       className="btn btn-success waves-effect btn-label waves-light"
@@ -362,6 +366,7 @@ const CardContact = props => {
                     <button
                       onClick={e => {
                         e.preventDefault()
+                        set_state({loading: true})
                         sendDeleteUserRequest(user.id)
                       }}
                       style={{ marginLeft: "5px" }}

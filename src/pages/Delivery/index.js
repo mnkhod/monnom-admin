@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react"
+import React, { useEffect, useState, useContext } from "react"
 import axios from "axios"
 
 import { Link } from "react-router-dom"
@@ -16,6 +16,7 @@ import { MDBDataTable } from "mdbreact"
 import Breadcrumbs from "../../components/Common/Breadcrumb"
 import SweetAlert from "react-bootstrap-sweetalert"
 import { Alert } from "reactstrap"
+import { ResultPopUp } from "../../contexts/CheckActionsContext"
 require("dotenv").config()
 
 const not_delivered_columns = [
@@ -95,6 +96,8 @@ const delivered_columns = [
 ]
 
 export default function Delivery() {
+  const [state, set_state] = useContext(ResultPopUp)
+  
   const [delivered_data, set_delivered_data] = useState([])
   const [not_delivered_data, set_not_delivered_data] = useState([])
   const [update_data, set_update_data] = useState(null)
@@ -102,9 +105,6 @@ export default function Delivery() {
 
   const [isNetworkError, SetIsNetworkError] = useState(false)
   const [isNetworkLoading, SetIsNetworkLoading] = useState(true)
-  const [error_dialog, set_error_dialog] = useState(false)
-  const [success_dialog, set_success_dialog] = useState(false)
-  const [loading_dialog, set_loading_dialog] = useState(false)
   const [order_id, set_order_id] = useState(null)
   const [confirm_order, set_confirm_order] = useState(false)
   const [book_desc_modal_center, set_book_desc_modal_center] = useState(false)
@@ -130,15 +130,15 @@ export default function Delivery() {
         config
       )
       .then(async res => {
-        set_loading_dialog(false)
-        set_success_dialog(true)
-        // setTimeout(() => {
-        //   window.location.reload()
-        // }, 2000)
+        set_state({loading: false})
+        set_state({success: true})
+        setTimeout(() => {
+          window.location.reload()
+        }, 2000)
       })
       .catch(e => {
-        set_loading_dialog(false)
-        set_error_dialog(true)
+        set_state({loading: false})
+        set_state({error: true})
       })
   }
 
@@ -347,15 +347,6 @@ export default function Delivery() {
               )}
             </>
           )}
-          {loading_dialog ? (
-            <SweetAlert
-              title="Түр хүлээнэ үү"
-              info
-              showCloseButton={false}
-              showConfirm={false}
-              success
-            ></SweetAlert>
-          ) : null}
           {confirm_order ? (
             <SweetAlert
               title="Хүргэлт амжилттай болсон уу ?"
@@ -366,7 +357,7 @@ export default function Delivery() {
               confirmBtnBsStyle="success"
               cancelBtnBsStyle="danger"
               onConfirm={() => {
-                set_loading_dialog(true)
+                set_state({loading:true})
                 set_confirm_order(false)
                 removeFromNotDelivered(id)
               }}
@@ -374,45 +365,6 @@ export default function Delivery() {
                 set_confirm_order(false)
               }}
             ></SweetAlert>
-          ) : null}
-          {success_dialog ? (
-            <SweetAlert
-              title={"Амжилттай"}
-              timeout={2000}
-              style={{
-                position: "absolute",
-                top: "center",
-                right: "center",
-              }}
-              showCloseButton={false}
-              showConfirm={false}
-              success
-              onConfirm={() => {
-                // createPodcast()
-                set_success_dialog(false)
-              }}
-            >
-              {"Үйлдэл амжилттай боллоо"}
-            </SweetAlert>
-          ) : null}
-          {error_dialog ? (
-            <SweetAlert
-              title={"Амжилтгүй"}
-              timeout={1500}
-              style={{
-                position: "absolute",
-                top: "center",
-                right: "center",
-              }}
-              showCloseButton={false}
-              showConfirm={false}
-              error
-              onConfirm={() => {
-                set_error_dialog(false)
-              }}
-            >
-              {"Үйлдэл амжилтгүй боллоо"}
-            </SweetAlert>
           ) : null}
           <Modal
             size="lg"

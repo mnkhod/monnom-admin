@@ -7,6 +7,8 @@ import { withRouter, Link, useHistory } from "react-router-dom"
 import CarouselPage from "./CarouselPage"
 import axios from "axios"
 
+import SweetAlert from "react-bootstrap-sweetalert"
+
 import logo from "../../assets/images/logo.png"
 import ReactSwitch from "react-switch"
 require("dotenv").config()
@@ -17,6 +19,8 @@ const Login = props => {
   const [username, setUsername] = useState("")
   const [password, setPassword] = useState("")
   const [rememberMe, setRememberMe] = useState(false)
+
+  const [loading_dialog, set_loading_dialog] = useState(false)
 
   const redirectTo = () => {
     history.push("/dashboard")
@@ -37,6 +41,7 @@ const Login = props => {
       },
     })
       .then(res => {
+        set_loading_dialog(false)
         if (res.data.response == "error") {
           throw new Error("fuck you")
         }
@@ -48,6 +53,7 @@ const Login = props => {
         // redirectTo(res.data.data.role);
       })
       .catch(error => {
+        set_loading_dialog(false)
         setUsername("")
         setPassword("")
         setErrorMessage("Нэвтрэх нэр эсвэл нууц үг буруу")
@@ -123,7 +129,10 @@ const Login = props => {
                       </div>
 
                       <div className="mt-4">
-                        <Form onSubmit={login}>
+                        <Form onSubmit={
+                          login
+                          
+                        }>
                           <FormGroup>
                             <Label for="username">Нэвтрэх нэр</Label>
                             <Input
@@ -181,6 +190,7 @@ const Login = props => {
                             <button
                               className="btn btn-primary btn-block waves-effect waves-light"
                               type="submit"
+                              onClick={() => set_loading_dialog(true)}
                             >
                               Нэвтрэх
                             </button>
@@ -216,6 +226,15 @@ const Login = props => {
             </Col>
           </Row>
         </Container>
+        {loading_dialog ? (
+          <SweetAlert
+            title="Түр хүлээнэ үү"
+            info
+            showCloseButton={false}
+            showConfirm={false}
+            success
+          ></SweetAlert>
+  ) : null}
       </div>
     </React.Fragment>
   )

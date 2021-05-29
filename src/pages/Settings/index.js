@@ -1,7 +1,5 @@
-import axios from "axios"
-import React, { useState, useEffect } from "react"
-import { Container, Row, Col, Alert } from "reactstrap"
-import { Link } from "react-router-dom"
+import React from "react"
+import { Container } from "reactstrap"
 import Breadcrumbs from "../../components/Common/Breadcrumb"
 
 import SettingsForm from "./SettingsForm"

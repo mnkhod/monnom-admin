@@ -15,6 +15,8 @@ import VerticalLayout from "./components/VerticalLayout/"
 import HorizontalLayout from "./components/HorizontalLayout/"
 import NonAuthLayout from "./components/NonAuthLayout"
 
+import {PopUp} from "./contexts/CheckActionsContext"
+
 // Import scss
 import "./assets/scss/theme.scss"
 
@@ -58,6 +60,7 @@ const App = props => {
   const Layout = getLayout()
   return (
     <React.Fragment>
+      <PopUp>
       <Router>
         <Switch>
           {authRoutes.map((route, idx) => (
@@ -82,6 +85,7 @@ const App = props => {
           ))}
         </Switch>
       </Router>
+      </PopUp>
     </React.Fragment>
   )
 }

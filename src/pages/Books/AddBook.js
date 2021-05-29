@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react"
+import React, { useState, useEffect, useContext } from "react"
 import {
   Row,
   Col,
@@ -25,8 +25,11 @@ import classnames from "classnames"
 import { Link } from "react-router-dom"
 import SweetAlert from "react-bootstrap-sweetalert"
 import Select from "react-select"
+import { ResultPopUp } from "../../contexts/CheckActionsContext"
 
 const AddBook = props => {
+  const [state, set_state] = useContext(ResultPopUp)
+
   const [admin_id, set_admin_id] = useState(null)
 
   const [netWork, set_netWork] = useState(false)
@@ -47,12 +50,8 @@ const AddBook = props => {
   const [optionGroup_authors, set_optionGroup_authors] = useState([])
   const [optionGroup_categories, set_optionGroup_categories] = useState([])
   const [is_pdf_price, set_is_pdf_price] = useState(false)
-  const [book_introduction_message, set_book_introduction_message] = useState(
-    ""
-  )
-  const [success_dialog, setsuccess_dialog] = useState(false)
-  const [error_dialog, seterror_dialog] = useState(false)
-  const [loading_dialog, setloading_dialog] = useState(false)
+  const [book_introduction_message, set_book_introduction_message] =
+    useState("")
 
   // axios -oor damjuulah state set
   const [pdf_price, set_pdf_price] = useState(0)
@@ -145,8 +144,7 @@ const AddBook = props => {
                   formdata: tempFormData,
                 })
               })
-              .catch(err => {
-              })
+              .catch(err => {})
           )
         })
 
@@ -159,23 +157,22 @@ const AddBook = props => {
                 )
               )
               .then(() => {
-                setloading_dialog(false)
-                setsuccess_dialog(true)
+                set_state({ loading: false })
+                set_state({ success: true })
                 setTimeout(() => {
                   window.location.reload()
                 }, 2000)
               })
               .catch(err => {
-                setloading_dialog(false)
-                seterror_dialog(true)
+                set_state({ loading: false })
+                set_state({ error: true })
               })
           })
           .catch(e => {
-            setloading_dialog(false)
-            seterror_dialog(true)
+            set_state({ loading: false })
+            set_state({ error: true })
           })
       })
-
   }
 
   const getAudioFileDuration = file =>
@@ -187,13 +184,13 @@ const AddBook = props => {
           window.webkitAudioContext)()
         audioContext.decodeAudioData(event.target.result).then(buffer => {
           let duration = buffer.duration
-          
+
           resolve(duration)
         })
       }
       reader.readAsArrayBuffer(file)
     })
-  
+
   async function getBookInfo() {
     await axios({
       url: `${process.env.REACT_APP_EXPRESS_BASE_URL}/book-single-by-author/${admin_id}`,
@@ -538,7 +535,12 @@ const AddBook = props => {
                                     // getBookInfo()
                                   }}
                                 >
-                                  <option selected defaultValue hidden value={null}>
+                                  <option
+                                    selected
+                                    defaultValue
+                                    hidden
+                                    value={null}
+                                  >
                                     --Сонгох--
                                   </option>
                                   {props.admins_info.length != 0
@@ -1055,74 +1057,6 @@ const AddBook = props => {
             togglemodal()
           }}
         ></SweetAlert>
-      ) : null}
-      {success_dlg ? (
-        <SweetAlert
-          title={"Амжилттай"}
-          timeout={1500}
-          style={{
-            position: "absolute",
-            top: "center",
-            right: "center",
-          }}
-          showCloseButton={false}
-          showConfirm={false}
-          success
-          onConfirm={() => {
-            setsuccess_dlg(false)
-          }}
-        >
-          {"Та шинэ подкаст амжилттай нэмлээ."}
-        </SweetAlert>
-      ) : null}
-      {loading_dialog ? (
-        <SweetAlert
-          title="Түр хүлээнэ үү"
-          info
-          showCloseButton={false}
-          showConfirm={false}
-          success
-        ></SweetAlert>
-      ) : null}
-      {success_dialog ? (
-        <SweetAlert
-          title={"Амжилттай"}
-          timeout={2000}
-          style={{
-            position: "absolute",
-            top: "center",
-            right: "center",
-          }}
-          showCloseButton={false}
-          showConfirm={false}
-          success
-          onConfirm={() => {
-            // createPodcast()
-            setsuccess_dialog(false)
-          }}
-        >
-          {"Үйлдэл амжилттай боллоо"}
-        </SweetAlert>
-      ) : null}
-      {error_dialog ? (
-        <SweetAlert
-          title={"Амжилтгүй"}
-          timeout={2000}
-          style={{
-            position: "absolute",
-            top: "center",
-            right: "center",
-          }}
-          showCloseButton={false}
-          showConfirm={false}
-          error
-          onConfirm={() => {
-            // createPodcast()
-            seterror_dialog(false)
-          }}
-        >
-          {"Үйлдэл амжилтгүй боллоо"}
-        </SweetAlert>
       ) : null}
     </React.Fragment>
   )

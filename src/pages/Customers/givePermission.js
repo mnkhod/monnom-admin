@@ -1,10 +1,11 @@
-import React, { useEffect, useState } from "react"
+import React, { useEffect, useState, useContext } from "react"
 import { Badge, Modal } from "reactstrap"
 
 import axios from "axios"
 import { MDBDataTable } from "mdbreact"
 import { Link } from "react-router-dom"
 import SweetAlert from "react-bootstrap-sweetalert"
+import { ResultPopUp } from "../../contexts/CheckActionsContext"
 
 require("dotenv").config()
 
@@ -36,14 +37,13 @@ const columns = [
 ]
 
 const GivePermission = props => {
+  const [state, set_state] = useContext(ResultPopUp)
+  
   const [books, set_books] = useState([])
   const [book_data, set_book_data] = useState([])
   const [paid_online_books, set_paid_online_books] = useState([])
   const [paid_books, set_paid_books] = useState([])
   const [confirm_allow, set_confirm_allow] = useState(false)
-  const [success_dialog, setsuccess_dialog] = useState(false)
-  const [error_dialog, seterror_dialog] = useState(false)
-  const [loading_dialog, set_loading_dialog] = useState(false)
   const [selected_book_id, set_selected_book_id] = useState(null)
 
   const table_data = {
@@ -110,7 +110,7 @@ const GivePermission = props => {
 
   async function givePermissionToCustomer() {
     if (selected_book_id == null || props.selected_user_id == null) {
-      seterror_dialog(true)
+      set_state({error: true})
       return
     }
 
@@ -128,13 +128,13 @@ const GivePermission = props => {
       },
     })
       .then(res => {
-        set_loading_dialog(false)
+        set_state({loading: false})
+        set_state({success: true})
         set_paid_online_books([...paid_online_books, res.data])
-        setsuccess_dialog(true)
       })
       .catch(err => {
-        set_loading_dialog(false)
-        seterror_dialog(true)
+        set_state({loading: false})
+        set_state({error: true})
       })
   }
 
@@ -240,15 +240,7 @@ const GivePermission = props => {
           />
         </div>
       </Modal>
-      {loading_dialog ? (
-        <SweetAlert
-          title="Түр хүлээнэ үү"
-          info
-          showCloseButton={false}
-          showConfirm={false}
-          success
-        ></SweetAlert>
-      ) : null}
+      
       {confirm_allow ? (
         <SweetAlert
           title="Та хэрэглэгчид номын эрх нээх гэж байна. Итгэлтэй байна уу ?"
@@ -260,52 +252,13 @@ const GivePermission = props => {
           cancelBtnBsStyle="danger"
           onConfirm={() => {
             set_confirm_allow(false)
-            set_loading_dialog(true)
+            set_state({loading: true})
             givePermissionToCustomer()
           }}
           onCancel={() => {
             set_confirm_allow(false)
           }}
         ></SweetAlert>
-      ) : null}
-      {success_dialog ? (
-        <SweetAlert
-          title={"Амжилттай"}
-          timeout={2000}
-          style={{
-            position: "absolute",
-            top: "center",
-            right: "center",
-          }}
-          showCloseButton={false}
-          showConfirm={false}
-          success
-          onConfirm={() => {
-            setsuccess_dialog(false)
-          }}
-        >
-          {"Хэрэглэгчид эрх олгогдлоо"}
-        </SweetAlert>
-      ) : null}
-      {error_dialog ? (
-        <SweetAlert
-          title={"Амжилтгүй"}
-          timeout={2000}
-          style={{
-            position: "absolute",
-            top: "center",
-            right: "center",
-          }}
-          showCloseButton={false}
-          showConfirm={false}
-          error
-          onConfirm={() => {
-            // createPodcast()
-            seterror_dialog(false)
-          }}
-        >
-          {"Эрх олгох үйлдэл амжилтгүй боллоо"}
-        </SweetAlert>
       ) : null}
     </>
   )
