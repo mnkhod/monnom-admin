@@ -193,7 +193,7 @@ const AddBook = props => {
 
   async function getBookInfo() {
     await axios({
-      url: `${process.env.REACT_APP_EXPRESS_BASE_URL}/book-single-by-author/${admin_id}`,
+      url: `${process.env.REACT_APP_EXPRESS_BASE_URL}/book-add-informations`,
       method: "GET",
       headers: {
         Authorization: `Bearer ${
@@ -425,7 +425,11 @@ const AddBook = props => {
     set_author_of_book_message("")
   }
 
-  useEffect(() => getBookInfo(), [admin_id])
+  useEffect(() => {
+    console.log("eheh")
+    console.log(admin_id)
+    getBookInfo()
+  }, [admin_id])
 
   return (
     <React.Fragment>
@@ -440,7 +444,7 @@ const AddBook = props => {
         Ном нэмэх
       </Button>
       {/* {props.shiftBookform ? togglemodal() : null} */}
-      {netWork === false ? (
+      {netWork === false && admin_id != null ? (
         <Col xs={1} class="position-relative">
           <Card>
             <Modal

@@ -48,8 +48,6 @@ const ManageAdmins = () => {
   const [userType, setUserType] = useState(1)
   const [passwordAgain, setPasswordAgain] = useState("")
   const [add_admin_error_msg, set_add_admin_error_msg] = useState("")
-  const [success_dialog, setsuccess_dialog] = useState(false)
-  const [error_dialog, seterror_dialog] = useState(false)
 
   const initializeUsersList = data => {
     let usersTempList = data.map(user => {
