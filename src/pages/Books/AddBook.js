@@ -425,7 +425,7 @@ const AddBook = props => {
     set_author_of_book_message("")
   }
 
-  useEffect(() => getBookInfo(), [])
+  useEffect(() => getBookInfo(), [admin_id])
 
   return (
     <React.Fragment>
