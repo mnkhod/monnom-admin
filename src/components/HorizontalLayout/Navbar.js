@@ -13,6 +13,7 @@ const Navbar = props => {
   const [statistics, set_statistics] = useState(false)
   const [manage_admins, set_manage_admins] = useState(false)
   const [content, set_content] = useState(false)
+  const [news, set_news] = useState(false)
 
   useEffect(() => {
     var matchingMenuItem = null
@@ -69,6 +70,33 @@ const Navbar = props => {
               id="topnav-menu-content"
             >
               <ul className="navbar-nav">
+                {/* ------------------- STATISTICS START ------------------- */}
+                <li className="nav-item dropdown">
+                  <Link
+                    className="nav-link dropdown-toggle arrow-none"
+                    onClick={e => {
+                      e.preventDefault()
+                      set_news(!news)
+                    }}
+                    to="dashboard"
+                  >
+                    <i className="bx bx-home-circle mr"></i>
+                    {props.t("Мэдээ мэдээлэл")} {props.menuOpen}
+                    <div className="arrow-down"></div>
+                  </Link>
+                  <div
+                    className={classname("dropdown-menu", { show: statistics })}
+                  >
+                    <Link to="/blogs-list" className="dropdown-item">
+                      {props.t("Мэдээний жагсаалт")}
+                    </Link>
+                    {/* <Link to="/landing-admin" className="dropdown-item">
+                      {props.t("Веб админ")}
+                    </Link> */}
+                  </div>
+                </li>
+                {/* ------------------- STATISTICS END ------------------- */}
+
                 {/* ------------------- STATISTICS START ------------------- */}
                 <li className="nav-item dropdown">
                   <Link

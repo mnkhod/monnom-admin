@@ -179,6 +179,84 @@ const SidebarContent = props => {
               )}
             </>
           )}
+          <li className="menu-title">{props.t("Мэдээлэл")} </li>
+          <li>
+            <Link to="/blogs-list" className=" waves-effect">
+              <i className="bx bx-spreadsheet "></i>
+              <span>{props.t("Мэдээний жагсаалт")}</span>
+            </Link>
+          </li>
+          {/* <li>
+            <Link to="/landing-admin" className=" waves-effect">
+              <i className="bx bx-spreadsheet "></i>
+              <span>{props.t("Веб админ")}</span>
+            </Link>
+          </li> */}
+          <li className="menu-title">{props.t("Статистик")} </li>
+          <li>
+            <Link to="/dashboard" className=" waves-effect">
+              <i className="bx bxs-dashboard"></i>
+              <span>{props.t("Хянах самбар")}</span>
+            </Link>
+          </li>
+          <li>
+            <Link to="/sales" className=" waves-effect">
+              <i className="bx bx-package"></i>
+              <span>{props.t("Борлуулалт")}</span>
+            </Link>
+          </li>
+          <li className="menu-title">{props.t("Админы удирдлага")} </li>
+
+          <li>
+            <Link to="/manage-admins" className=" waves-effect">
+              <i className="dripicons-user-group"></i>
+              <span>{props.t("Ажилчид")}</span>
+            </Link>
+          </li>
+
+          <li>
+            <Link to="/app-users" className=" waves-effect">
+              <i className="dripicons-user"></i>
+              <span>{props.t("Хэрэглэгчид")}</span>
+            </Link>
+          </li>
+
+          <li>
+            <Link to="/delivery" className=" waves-effect">
+              <i className="bx bx-cart-alt"></i>
+              <span>{props.t("Хүргэлтийн мэдээлэл")}</span>
+            </Link>
+          </li>
+
+          <li>
+            <Link to="/settings" className=" waves-effect">
+              <i className="bx bx-wrench"></i>
+              <span>{props.t("Тохиргоо")}</span>
+            </Link>
+          </li>
+
+          <li className="menu-title">{props.t("Контент")}</li>
+
+          <li>
+            <Link to="/books-list" className=" waves-effect">
+              <i className="bx bx-book"></i>
+              <span>{props.t("Ном")}</span>
+            </Link>
+          </li>
+
+          <li>
+            <Link to="/podcastsList" className=" waves-effect">
+              <i className="bx bx-headphone"></i>
+              <span>{props.t("Подкаст")}</span>
+            </Link>
+          </li>
+
+          <li>
+            <Link to="/live-list" className=" waves-effect">
+              <i className="bx bx-radio"></i>
+              <span>{props.t("Радио")}</span>
+            </Link>
+          </li>
         </ul>
       </div>
     </React.Fragment>
