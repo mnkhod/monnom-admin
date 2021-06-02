@@ -14,8 +14,7 @@ ENV GENERATE_SOURCEMAP=false
 RUN npm run build
 
 # environment variables
-ENV REACT_APP_STRAPI_BASE_URL=https://strapi.monnom.mn
-ENV REACT_APP_EXPRESS_BASE_URL=https://express.monnom.mn
+COPY .env.prod .env
 
 # port
 EXPOSE 3000
