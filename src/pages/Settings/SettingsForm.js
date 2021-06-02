@@ -25,8 +25,8 @@ import draftToHtml from "draftjs-to-html"
 import { ResultPopUp } from "../../contexts/CheckActionsContext"
 
 const SettingsForm = () => {
-  const [state, set_state ] = useContext(ResultPopUp)
-  
+  const [state, set_state] = useContext(ResultPopUp)
+
   // Check network
   const [isNetworkingError, setIsNetworkingError] = useState(false)
   const [isNetworkLoading, setIsNetworkLoading] = useState(true)
@@ -60,26 +60,16 @@ const SettingsForm = () => {
   const [confirm_add_author, set_confirm_add_author] = useState(false)
   const [confirm_remove_author, set_confirm_remove_author] = useState(false)
   const [confirm_delete_channel, set_confirm_delete_channel] = useState(false)
-  const [confirm_add_book_category, set_confirm_add_book_category] = useState(
-    false
-  )
-  const [
-    confirm_remove_book_category,
-    set_confirm_remove_book_category,
-  ] = useState(false)
-  const [
-    confirm_add_podcast_category,
-    set_confirm_add_podcast_category,
-  ] = useState(false)
-  const [
-    confirm_remove_podcast_category,
-    set_confirm_remove_podcast_category,
-  ] = useState(false)
-  const [
-    confirm_add_podcast_channel,
-    set_confirm_add_podcast_channel,
-  ] = useState(false)
-
+  const [confirm_add_book_category, set_confirm_add_book_category] =
+    useState(false)
+  const [confirm_remove_book_category, set_confirm_remove_book_category] =
+    useState(false)
+  const [confirm_add_podcast_category, set_confirm_add_podcast_category] =
+    useState(false)
+  const [confirm_remove_podcast_category, set_confirm_remove_podcast_category] =
+    useState(false)
+  const [confirm_add_podcast_channel, set_confirm_add_podcast_channel] =
+    useState(false)
 
   const [wysiwyg_content, set_wysiwyg_content] = useState(
     EditorState.createEmpty()
@@ -107,15 +97,15 @@ const SettingsForm = () => {
         config
       )
       .then(res => {
-        set_state({loading: false})
-        set_state({success: true})
+        set_state({ loading: false })
+        set_state({ success: true })
         setTimeout(() => {
           window.location.reload()
         }, 2000)
       })
       .catch(err => {
-        set_state({loading: false})
-        set_state({error: true})
+        set_state({ loading: false })
+        set_state({ error: true })
       })
   }
 
@@ -137,15 +127,15 @@ const SettingsForm = () => {
         config
       )
       .then(res => {
-        set_state({loading: false})
-        set_state({success: true})                
+        set_state({ loading: false })
+        set_state({ success: true })
         setTimeout(() => {
           window.location.reload()
         }, 2000)
       })
       .catch(err => {
-        set_state({loading: false})
-        set_state({error: true})
+        set_state({ loading: false })
+        set_state({ error: true })
       })
   }
 
@@ -164,15 +154,15 @@ const SettingsForm = () => {
         config
       )
       .then(async res => {
-        set_state({loading: false})
-        set_state({success: true})
+        set_state({ loading: false })
+        set_state({ success: true })
         setTimeout(() => {
           window.location.reload()
         }, 2000)
       })
       .catch(res => {
-        set_state({loading: false})
-        set_state({error: true})
+        set_state({ loading: false })
+        set_state({ error: true })
       })
   }
 
@@ -190,15 +180,15 @@ const SettingsForm = () => {
         config
       )
       .then(async res => {
-        set_state({loading: false})
-        set_state({success: true})
+        set_state({ loading: false })
+        set_state({ success: true })
         setTimeout(() => {
           window.location.reload()
         }, 2000)
       })
       .catch(res => {
-        set_state({loading: false})
-        set_state({error: true})
+        set_state({ loading: false })
+        set_state({ error: true })
       })
   }
 
@@ -216,15 +206,15 @@ const SettingsForm = () => {
         config
       )
       .then(async res => {
-        set_state({loading: false})
-        set_state({success: true})
+        set_state({ loading: false })
+        set_state({ success: true })
         setTimeout(() => {
           window.location.reload()
         }, 2000)
       })
       .catch(res => {
-        set_state({loading: false})
-        set_state({error: true})
+        set_state({ loading: false })
+        set_state({ error: true })
       })
   }
 
@@ -245,21 +235,19 @@ const SettingsForm = () => {
         config
       )
       .then(res => {
-        set_state({loading: false})
-        set_state({success: true})
+        set_state({ loading: false })
+        set_state({ success: true })
         setTimeout(() => {
           window.location.reload()
         }, 2000)
       })
       .catch(err => {
-        set_state({loading: false})
-        set_state({error: true})
+        set_state({ loading: false })
+        set_state({ error: true })
       })
   }
 
   const saveBook = async () => {
-    setloading_dialog(true)
-
     const config = {
       headers: {
         Authorization: `Bearer ${
@@ -275,15 +263,15 @@ const SettingsForm = () => {
         config
       )
       .then(async => {
-        set_state({loading: false})
-        set_state({success: true})
+        set_state({ loading: false })
+        set_state({ success: true })
         setTimeout(() => {
           window.location.reload()
         }, 2000)
       })
       .catch(err => {
-        set_state({loading: false})
-        set_state({error: true})
+        set_state({ loading: false })
+        set_state({ error: true })
       })
   }
 
@@ -300,7 +288,11 @@ const SettingsForm = () => {
     }
 
     formData.append("data", JSON.stringify(data))
-    formData.append("files.cover_pic", channel_cover_pic, channel_cover_pic.name)
+    formData.append(
+      "files.cover_pic",
+      channel_cover_pic,
+      channel_cover_pic.name
+    )
 
     const config = {
       headers: {
@@ -318,15 +310,15 @@ const SettingsForm = () => {
         config
       )
       .then(async res => {
-        set_state({loading: false})
-        set_state({success: true})
+        set_state({ loading: false })
+        set_state({ success: true })
         setTimeout(() => {
           window.location.reload()
         }, 2000)
       })
       .catch(err => {
-        set_state({loading: false})
-        set_state({error: true})
+        set_state({ loading: false })
+        set_state({ error: true })
       })
   }
 
@@ -348,16 +340,16 @@ const SettingsForm = () => {
     axios
       .put(url, formData, config)
       .then(res => {
-        set_state({loading: false})
-        set_state({success: true})
+        set_state({ loading: false })
+        set_state({ success: true })
         set_wysiwyg_content(res.data.TermsAndConditions)
         setTimeout(() => {
           window.location.reload()
         }, 2000)
       })
       .catch(err => {
-        set_state({loading: false})
-        set_state({error: true})
+        set_state({ loading: false })
+        set_state({ error: true })
       })
   }
 
@@ -365,15 +357,15 @@ const SettingsForm = () => {
     await axios
       .delete(`${process.env.REACT_APP_STRAPI_BASE_URL}/podcast-channels/${id}`)
       .then(async res => {
-        set_state({loading: false})
-        set_state({success: true})
+        set_state({ loading: false })
+        set_state({ success: true })
         setTimeout(() => {
           window.location.reload()
         }, 2000)
       })
       .catch(res => {
-        set_state({loading: false})
-        set_state({error: true})
+        set_state({ loading: false })
+        set_state({ error: true })
       })
   }
 
@@ -556,7 +548,6 @@ const SettingsForm = () => {
                         toolbarClassName="toolbarClassName"
                         wrapperClassName="wrapperClassName"
                         editorClassName="editorClassName"
-                        
                       />
                     ) : null}
                   </CardBody>
@@ -1036,7 +1027,7 @@ const SettingsForm = () => {
             confirmBtnBsStyle="success"
             cancelBtnBsStyle="danger"
             onConfirm={() => {
-              set_state({loading: true})
+              set_state({ loading: true })
               updateTerms()
               set_confirm_terms(false)
             }}
@@ -1055,9 +1046,11 @@ const SettingsForm = () => {
             confirmBtnBsStyle="success"
             cancelBtnBsStyle="danger"
             onConfirm={() => {
-              set_state({loading: true})
-              set_confirm_add_author(false)
-              addBookAuthor()
+              if (new_author_category != "") {
+                set_state({ loading: true })
+                set_confirm_add_author(false)
+                addBookAuthor()
+              } else set_confirm_add_author(false)
             }}
             onCancel={() => {
               set_confirm_add_author(false)
@@ -1074,12 +1067,15 @@ const SettingsForm = () => {
             confirmBtnBsStyle="success"
             cancelBtnBsStyle="danger"
             onConfirm={() => {
-              set_state({loading: true})
               set_confirm_remove_author(false)
-              deleteBookAuthor(author_category_id)
+
+              if (author_category_id != null) {
+                set_state({ loading: true })
+                deleteBookAuthor(author_category_id)
+              }
             }}
             onCancel={() => {
-              set_confirm_terms(false)
+              set_confirm_remove_author(false)
             }}
           ></SweetAlert>
         ) : null}
@@ -1093,9 +1089,12 @@ const SettingsForm = () => {
             confirmBtnBsStyle="success"
             cancelBtnBsStyle="danger"
             onConfirm={() => {
-              set_state({loading: true})
               set_confirm_add_book_category(false)
-              addBookCategory()
+
+              if (new_book_category != "") {
+                set_state({ loading: true })
+                addBookCategory()
+              }
             }}
             onCancel={() => {
               set_confirm_add_book_category(false)
@@ -1112,9 +1111,12 @@ const SettingsForm = () => {
             confirmBtnBsStyle="success"
             cancelBtnBsStyle="danger"
             onConfirm={() => {
-              set_state({loading: true})
               set_confirm_remove_book_category(false)
-              deleteBookCategory(book_category_id)
+
+              if (book_category_id != null) {
+                set_state({ loading: true })
+                deleteBookCategory(book_category_id)
+              }
             }}
             onCancel={() => {
               set_confirm_remove_book_category(false)
@@ -1131,9 +1133,11 @@ const SettingsForm = () => {
             confirmBtnBsStyle="success"
             cancelBtnBsStyle="danger"
             onConfirm={() => {
-              set_state({loading: true})
               set_confirm_add_podcast_category(false)
-              addPodcastCategory()
+              if (new_podcast_category != "") {
+                set_state({ loading: true })
+                addPodcastCategory()
+              }
             }}
             onCancel={() => {
               set_confirm_add_podcast_category(false)
@@ -1150,9 +1154,12 @@ const SettingsForm = () => {
             confirmBtnBsStyle="success"
             cancelBtnBsStyle="danger"
             onConfirm={() => {
-              set_state({loading: true})
               set_confirm_remove_podcast_category(false)
-              deletePodcastCategory(podcast_category_id)
+
+              if (podcast_category_id != null) {
+                set_state({ loading: true })
+                deletePodcastCategory(podcast_category_id)
+              }
             }}
             onCancel={() => {
               set_confirm_remove_podcast_category(false)
@@ -1169,11 +1176,11 @@ const SettingsForm = () => {
             confirmBtnBsStyle="success"
             cancelBtnBsStyle="danger"
             onConfirm={() => {
-              set_state({loading: true})
-              set_confirm_add_podcast_channel(false)
               if (channel_cover_pic == null || admin_selected == null)
-                seterror_dialog(false)
+                set_confirm_add_podcast_channel(false)
               else {
+                set_confirm_add_podcast_channel(false)
+                set_state({ loading: true })
                 createPodcastChannel()
               }
             }}
@@ -1193,8 +1200,8 @@ const SettingsForm = () => {
             cancelBtnBsStyle="danger"
             onConfirm={() => {
               if (special_book_id != null) {
-                set_state({loading: true})
-                saveBook() 
+                set_state({ loading: true })
+                saveBook()
               }
               set_confirm_save_book(false)
             }}
@@ -1214,9 +1221,11 @@ const SettingsForm = () => {
             confirmBtnBsStyle="success"
             cancelBtnBsStyle="danger"
             onConfirm={() => {
-              set_state({loading: true})
               set_confirm_delete_channel(false)
-              deletePodcastChannel(insert_channels_id)
+              if (insert_channels_id != null) {
+                set_state({ loading: true })
+                deletePodcastChannel(insert_channels_id)
+              }
             }}
             onCancel={() => {
               set_confirm_delete_channel(false)

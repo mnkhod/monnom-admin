@@ -493,8 +493,6 @@ const ManageAdmins = () => {
                     </Col>
                     {map(usersList, (user, key) => (
                       <CardContact
-                        error={seterror_dialog}
-                        success={setsuccess_dialog}
                         user={user}
                         key={"_user_" + key}
                         initializeUsersList={initializeUsersList}

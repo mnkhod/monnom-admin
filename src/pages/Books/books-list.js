@@ -135,7 +135,7 @@ let BookCard = props => {
               />
               <i
                 style={{
-                  color: props.book.has_audio ? "#ffd722" : "#767676",
+                  color: props.book.has_mp3 ? "#ffd722" : "#767676",
                   fontSize: "28px",
                 }}
                 className="bx bxs-file-pdf"
@@ -173,7 +173,6 @@ const Books = () => {
   })
 
   async function featureBook() {
-    // setLoad(true)
     await axios({
       url: `${process.env.REACT_APP_STRAPI_BASE_URL}/books/${book_info_to_update.id}`,
       method: "PUT",
@@ -195,7 +194,6 @@ const Books = () => {
         set_state({ success: true })
       })
       .catch(err => {
-        set_confirm_allow(false)
         set_state({ loading: false })
         set_state({ error: true })
       })
@@ -223,15 +221,18 @@ const Books = () => {
           },
         })
           .then(admin => {
+            console.log("then")
             setIsNetworkingError(false)
             set_admins_info(admin.data)
           })
           .catch(err => {
+            console.log("catch")
             setIsNetworkingError(true)
             SetIsNetworkLoading(true)
           })
       })
       .catch(err => {
+        console.log("catch")
         setIsNetworkingError(true)
         SetIsNetworkLoading(true)
       })
@@ -388,6 +389,7 @@ const Books = () => {
             confirmBtnBsStyle="success"
             cancelBtnBsStyle="danger"
             onConfirm={() => {
+              set_confirm_allow(false)
               set_state({ loading: true })
               featureBook()
             }}
