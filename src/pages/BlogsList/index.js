@@ -1,8 +1,10 @@
 import React, { useEffect, useMemo, useState } from "react"
 import Breadcrumbs from "../../components/Common/Breadcrumb"
-import { Container, Col, Row, Card, CardImg, CardBody, CardTitle, CardText, Pagination, PaginationItem, PaginationLink, Button} from "reactstrap"
-import {Link} from 'react-router-dom';
+import { Container, Col, Row, Card, CardImg, CardBody, CardTitle, CardText, Pagination, PaginationItem, PaginationLink, Button } from "reactstrap"
+import { Link } from 'react-router-dom';
 import axios from 'axios';
+import "../../assets/scss/custom/components/_blog.scss";
+
 
 const PAGINATION = 8;
 
@@ -21,7 +23,7 @@ const BlogsList = props => {
     const countResponse = await axios.get(`${process.env.REACT_APP_STRAPI_BASE_URL}/blogs/count`);
     let paginationPages = [];
     const pageCount = Math.ceil(countResponse.data / PAGINATION);
-    for (let i=1; i<=pageCount; i++){
+    for (let i = 1; i <= pageCount; i++) {
       paginationPages.push(i);
     }
     setPaginationPages(paginationPages);
@@ -39,7 +41,7 @@ const BlogsList = props => {
 
   const handleSearch = async (search) => {
     setSearch(search);
-    if (!search || (search.length == 0)){
+    if (!search || (search.length == 0)) {
       return;
     }
     const response = await axios.get(`${process.env.REACT_APP_STRAPI_BASE_URL}/blogs?_where[title_contains]=${search}&_sort=id:DESC`);
@@ -63,7 +65,7 @@ const BlogsList = props => {
               /> */}
               <Link to="/blog">
                 <Button color="primary">
-                    Мэдээ нэмэх
+                  Мэдээ нэмэх
                 </Button>
               </Link>
             </Col>
@@ -114,8 +116,8 @@ const BlogsList = props => {
                     paginationPages[paginationPages.length - 1]
                   }
                   onClick={() => {
-                      paginate(Math.min(paginationCurrent + 1, paginationPages.length), PAGINATION);
-                    }
+                    paginate(Math.min(paginationCurrent + 1, paginationPages.length), PAGINATION);
+                  }
                   }
                 >
                   <PaginationLink
@@ -152,8 +154,8 @@ const BlogCard = props => {
           alt={props.blog.title}
         />
         <CardBody>
-          <CardTitle className="mt-0">
-            {props.blog.title.slice(0, 30)}
+          <CardTitle className="mt-0 blog-title">
+            {props.blog.title}
           </CardTitle>
           <CardText>
             <Row>
