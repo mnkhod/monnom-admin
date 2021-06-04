@@ -5,7 +5,15 @@ import { Switch, BrowserRouter as Router } from "react-router-dom"
 import { connect } from "react-redux"
 
 // Import Routes all
-import { userRoutes, authRoutes } from "./routes/allRoutes"
+import {
+  userRoutes,
+  authRoutes,
+  managerRoutes,
+  deliveryManRoutes,
+  podcastPublisherRoutes,
+  bookPulisherRoutes,
+  constRoutes,
+} from "./routes/allRoutes"
 
 // Import all middleware
 import Authmiddleware from "./routes/middleware/Authmiddleware"
@@ -15,32 +23,10 @@ import VerticalLayout from "./components/VerticalLayout/"
 import HorizontalLayout from "./components/HorizontalLayout/"
 import NonAuthLayout from "./components/NonAuthLayout"
 
-import {PopUp} from "./contexts/CheckActionsContext"
+import { PopUp } from "./contexts/CheckActionsContext"
 
 // Import scss
 import "./assets/scss/theme.scss"
-
-// Import Firebase Configuration file
-import { initFirebaseBackend } from "./helpers/firebase_helper"
-
-// import fakeBackend from "./helpers/AuthType/fakeBackend"
-
-// Activating fake backend
-// fakeBackend()
-
-// const firebaseConfig = {
-//   apiKey: process.env.REACT_APP_APIKEY,
-//   authDomain: process.env.REACT_APP_AUTHDOMAIN,
-//   databaseURL: process.env.REACT_APP_DATABASEURL,
-//   projectId: process.env.REACT_APP_PROJECTID,
-//   storageBucket: process.env.REACT_APP_STORAGEBUCKET,
-//   messagingSenderId: process.env.REACT_APP_MESSAGINGSENDERID,
-//   appId: process.env.REACT_APP_APPID,
-//   measurementId: process.env.REACT_APP_MEASUREMENTID,
-// }
-
-// init firebase backend
-// initFirebaseBackend(firebaseConfig)
 
 const App = props => {
   function getLayout() {
@@ -61,30 +47,115 @@ const App = props => {
   return (
     <React.Fragment>
       <PopUp>
-      <Router>
-        <Switch>
-          {authRoutes.map((route, idx) => (
-            <Authmiddleware
-              path={route.path}
-              layout={NonAuthLayout}
-              component={route.component}
-              key={idx}
-              isAuthProtected={false}
-            />
-          ))}
+        <Router>
+          <Switch>
+            {authRoutes.map((route, idx) => (
+              <Authmiddleware
+                path={route.path}
+                layout={NonAuthLayout}
+                component={route.component}
+                key={idx}
+                isAuthProtected={false}
+              />
+            ))}
 
-          {userRoutes.map((route, idx) => (
-            <Authmiddleware
-              path={route.path}
-              layout={Layout}
-              component={route.component}
-              key={idx}
-              isAuthProtected={true}
-              exact
-            />
-          ))}
-        </Switch>
-      </Router>
+            {userRoutes.map((route, idx) => (
+              <Authmiddleware
+                path={route.path}
+                layout={Layout}
+                component={route.component}
+                key={idx}
+                isAuthProtected={true}
+                isAdminProtected={true}
+                isManagerProtected={false}
+                isDeliveryProtected={false}
+                isBookProtected={false}
+                isPodcastProtected={false}
+                exact
+              />
+            ))}
+
+            {managerRoutes.map((route, idx) => (
+              <Authmiddleware
+                path={route.path}
+                layout={Layout}
+                component={route.component}
+                key={idx}
+                isAuthProtected={true}
+                isAdminProtected={false}
+                isManagerProtected={true}
+                isDeliveryProtected={false}
+                isBookProtected={false}
+                isPodcastProtected={false}
+                exact
+              />
+            ))}
+
+            {deliveryManRoutes.map((route, idx) => (
+              <Authmiddleware
+                path={route.path}
+                layout={Layout}
+                component={route.component}
+                key={idx}
+                isAuthProtected={false}
+                isAdminProtected={false}
+                isManagerProtected={false}
+                isDeliveryProtected={true}
+                isBookProtected={false}
+                isPodcastProtected={false}
+                exact
+              />
+            ))}
+
+            {podcastPublisherRoutes.map((route, idx) => (
+              <Authmiddleware
+                path={route.path}
+                layout={Layout}
+                component={route.component}
+                key={idx}
+                isAuthProtected={true}
+                isAdminProtected={false}
+                isManagerProtected={false}
+                isDeliveryProtected={false}
+                isBookProtected={false}
+                isPodcastProtected={true}
+                exact
+              />
+            ))}
+
+            {bookPulisherRoutes.map((route, idx) => (
+              <Authmiddleware
+                path={route.path}
+                layout={Layout}
+                component={route.component}
+                key={idx}
+                isAuthProtected={true}
+                isAdminProtected={false}
+                isManagerProtected={false}
+                isDeliveryProtected={false}
+                isBookProtected={true}
+                isPodcastProtected={false}
+                exact
+              />
+            ))}
+
+            {constRoutes.map((route, idx) => (
+              <Authmiddleware
+                path={route.path}
+                layout={Layout}
+                component={route.component}
+                key={idx}
+                isAuthProtected={true}
+                isAdminProtected={true}
+                isManagerProtected={true}
+                isDeliveryProtected={true}
+                isBookProtected={true}
+                isPodcastProtected={true}
+                exact
+              />
+            ))}
+          </Switch>
+        </Router>
       </PopUp>
     </React.Fragment>
   )
