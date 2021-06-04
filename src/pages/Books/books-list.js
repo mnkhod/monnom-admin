@@ -221,12 +221,10 @@ const Books = () => {
           },
         })
           .then(admin => {
-            console.log("then")
             setIsNetworkingError(false)
             set_admins_info(admin.data)
           })
           .catch(err => {
-            console.log("catch")
             setIsNetworkingError(true)
             SetIsNetworkLoading(true)
           })

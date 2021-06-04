@@ -442,6 +442,7 @@ export default function UpdateBook(props) {
     for (const [key, value] of Object.entries(check_update_field))
       if (value) flag = true
 
+    // Promise.all()
     if (!flag) {
       set_state({ loading: false })
     } else {
