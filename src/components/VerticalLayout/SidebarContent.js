@@ -117,7 +117,7 @@ const SidebarContent = props => {
                   <>
                      <li className="menu-title">{props.t("Админы удирдлага")} </li>
 
-                     {(userRole == 1 || userRole == 6) && (
+                     {userRole == 1 && (
                         <li>
                            <Link to="/manage-admins" className=" waves-effect">
                               <i className="dripicons-user-group"></i>
@@ -143,7 +143,7 @@ const SidebarContent = props => {
                         </li>
                      )}
 
-                     {(userRole == 1 || userRole == 6) && (
+                     {userRole == 1 && (
                         <li>
                            <Link to="/settings" className=" waves-effect">
                               <i className="bx bx-wrench"></i>

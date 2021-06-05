@@ -39,10 +39,13 @@ const BlogsList = props => {
 
    const handleSearch = async search => {
       setSearch(search)
+
       if (!search || search.length == 0) {
          return
       }
-      const response = await axios.get(`${process.env.REACT_APP_STRAPI_BASE_URL}/blogs?_where[title_contains]=${search}&_sort=id:DESC`)
+      const response = await axios.get(`${process.env.REACT_APP_STRAPI_BASE_URL}/blogs?_where[title_contains]=${search}&_sort=id:DESC`).catch(err => {
+         return
+      })
       const result = response.data
       setVisibleBlogs(result)
    }
