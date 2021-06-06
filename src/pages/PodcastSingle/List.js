@@ -273,6 +273,7 @@ const EditPodcast = ({ episode_id, setEditPodcastModal, editEpisodeModal }) => {
                   alt={edit_podcast_name}
                   width="150"
                   src={coverImage}
+                  style={{ height: "15vh" }}
                 />
               </Row>
               <input

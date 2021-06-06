@@ -1024,10 +1024,15 @@ const AddBook = props => {
                               (next_button_label == "Алгасах" ||
                                 next_button_label == "Дараах")
                             ) {
+                              if (book_files.length == 0 && ebook_price == 0) {
+                                toggleTab(activeTab + 1)
+                                set_files_checked("")
+                              } else {
+                                set_files_checked("Үнийн дүн оруулна уу ?")
+                              }
                               if (
-                                (book_files.length != 0 && ebook_price != 0) ||
-                                (audio_book_files.length != 0 &&
-                                  audio_book_price != 0)
+                                audio_book_files.length == 0 &&
+                                audio_book_price == 0
                               ) {
                                 toggleTab(activeTab + 1)
                                 set_files_checked("")

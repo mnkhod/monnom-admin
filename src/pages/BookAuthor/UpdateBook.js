@@ -23,6 +23,7 @@ import Dropzone from "react-dropzone"
 import classnames from "classnames"
 import Select from "react-select"
 import { ResultPopUp } from "../../contexts/CheckActionsContext"
+import { check } from "prettier"
 
 // file  generator
 const getItems = files => {
@@ -88,7 +89,7 @@ const config = {
 
 export default function UpdateBook(props) {
   const [state, set_state] = useContext(ResultPopUp)
-  const [checking_state, set_checking_state] = useState(false)
+  const [checking_state, set_checking_state] = useState("")
 
   const [activeTab, set_activeTab] = useState(1)
   const [confirm_edit, set_confirm_edit] = useState(false)
@@ -148,8 +149,6 @@ export default function UpdateBook(props) {
     []
   )
 
-  var CHECK = false
-
   const getAudioFileDuration = file =>
     new Promise((resolve, reject) => {
       let reader = new FileReader()
@@ -185,12 +184,12 @@ export default function UpdateBook(props) {
       },
     })
       .then(async res => {
-        CHECK = true
         set_checking_state(true)
+        console.log("then")
       })
       .catch(e => {
-        CHECK = false
         set_checking_state(false)
+        console.log("catch")
       })
   }
 
@@ -206,11 +205,9 @@ export default function UpdateBook(props) {
       data: coverPicture,
     })
       .then(res => {
-        CHECK = true
         set_checking_state(true)
       })
       .catch(e => {
-        CHECK = false
         set_checking_state(false)
       })
   }
@@ -256,7 +253,6 @@ export default function UpdateBook(props) {
           })
 
           .catch(err => {
-            CHECK = false
             set_checking_state(false)
           })
       )
@@ -346,11 +342,9 @@ export default function UpdateBook(props) {
       },
     })
       .then(res => {
-        CHECK = true
         set_checking_state(true)
       })
       .catch(err => {
-        CHECK = false
         set_checking_state(false)
       })
 
@@ -376,11 +370,9 @@ export default function UpdateBook(props) {
       data: bookComments,
     })
       .then(res => {
-        CHECK = true
         set_checking_state(true)
       })
       .catch(e => {
-        CHECK = false
         set_checking_state(false)
       })
   }
@@ -396,11 +388,9 @@ export default function UpdateBook(props) {
       data: {},
     })
       .then(res => {
-        CHECK = true
         set_checking_state(true)
       })
       .catch(err => {
-        CHECK = false
         set_checking_state(false)
       })
   }
@@ -426,16 +416,13 @@ export default function UpdateBook(props) {
           },
         })
           .then(res => {
-            CHECK = true
             set_checking_state(true)
           })
           .catch(err => {
-            CHECK = false
             set_checking_state(false)
           })
       })
       .catch(err => {
-        CHECK = false
         set_checking_state(false)
       })
 
@@ -443,8 +430,6 @@ export default function UpdateBook(props) {
   }
 
   const updateBook = async () => {
-    set_state({ loading: true })
-
     let categories = selectedMulti_category.map(category =>
       category.value.toString()
     )
@@ -470,52 +455,43 @@ export default function UpdateBook(props) {
         check_update_field.authors ||
         check_update_field.categories
       ) {
-        sendNotIncludedFilesUpdate(categories, authors)
+        await sendNotIncludedFilesUpdate(categories, authors)
       }
 
       if (check_update_field.picture) {
-        updateCoverPic(successAlert)
+        await updateCoverPic(successAlert)
       }
 
       if (check_update_field.audio_file) {
-        updateAudios(successAlert)
+        await updateAudios(successAlert)
       }
 
       if (check_update_field.remove_audio_file) {
-        deleteChapters(successAlert)
+        await deleteChapters(successAlert)
       }
 
       if (check_update_field.pdf_file) {
-        updatePDF(successAlert)
+        await updatePDF(successAlert)
       }
 
       if (check_update_field.remove_pdf_file) {
-        removePDF(successAlert)
+        await removePDF(successAlert)
       }
 
       if (check_update_field.reference) {
-        updatePictureComment(successAlert)
+        await updatePictureComment(successAlert)
       }
 
       if (check_update_field.remove_reference) {
-        removeReference(successAlert)
-      }
-
-      if (CHECK) {
-        set_state({ loading: false })
-        set_state({ success: true })
-        setTimeout(() => {
-          window.location.reload()
-        }, 1500)
-      } else {
-        set_state({ loading: false })
-        set_state({ error: true })
+        await removeReference(successAlert)
       }
 
       if (checking_state) {
+        console.log("if")
         set_state({ loading: false })
         set_state({ success: true })
       } else {
+        console.log("else")
         set_state({ loading: false })
         set_state({ error: true })
       }
@@ -533,6 +509,8 @@ export default function UpdateBook(props) {
       },
     })
       .then(res => {
+        console.log("res.data")
+        console.log(res.data)
         set_edit_book_name(res.data.name)
         {
           res.data.pdf_book_path != null
@@ -1024,14 +1002,14 @@ export default function UpdateBook(props) {
                                
                               <Input
                                 type="number"
-                                value={book_price}
+                                value={ebook_price}
                                 onChange={e => {
                                   if (!check_update_field.ebook_price)
                                     set_check_update_field({
                                       ...check_update_field,
                                       ebook_price: true,
                                     })
-                                  set_book_price(e.target.value)
+                                  set_ebook_price(e.target.value)
                                 }}
                               />
                             </FormGroup>
@@ -1385,7 +1363,7 @@ export default function UpdateBook(props) {
                           if (activeTab === 3) {
                             set_state({ loading: true })
                             updateBook()
-                            set_confirm_edit(true)
+                            // set_confirm_edit(true)
                             togglemodal()
                           }
                           if (
@@ -1412,7 +1390,7 @@ export default function UpdateBook(props) {
         </Card>
       ) : null}
 
-      {confirm_edit ? (
+      {/* {confirm_edit ? (
         <SweetAlert
           title="Та итгэлтэй байна уу ?"
           warning
@@ -1432,7 +1410,7 @@ export default function UpdateBook(props) {
             set_edit_user_step(true)
           }}
         ></SweetAlert>
-      ) : null}
+      ) : null} */}
     </>
   )
 }

@@ -2,81 +2,77 @@ import React from "react"
 import PropTypes from "prop-types"
 import { Route, Redirect } from "react-router-dom"
 
-const Authmiddleware = ({
-  component: Component,
-  layout: Layout,
-  isAuthProtected,
-  ...rest
-}) => (
-  <Route
-    {...rest}
-    render={props => {
-      if (
-        isAuthProtected &&
-        (!localStorage.getItem("isAuthenticated") ||
-          localStorage.getItem("user_information") == null)
-      ) {
-        // if ()
-        return (
-          <Redirect
-            to={{ pathname: "/login", state: { from: props.location } }}
-          />
-        )
-      }
-      // if (isAuthProtected) {
-      //   if (
-      //     JSON.parse(localStorage.getItem("user_information")).user.user_role ==
-      //     3
-      //   )
-      //     return (
-      //       <Redirect
-      //         to={{ pathname: "/delivery", state: { from: props.location } }}
-      //       />
-      //     )
-      //   if (
-      //     JSON.parse(localStorage.getItem("user_information")).user.user_role ==
-      //     4
-      //   )
-      //     return (
-      //       <Redirect
-      //         to={{
-      //           pathname: `/podcastSingle/${
-      //             JSON.parse(localStorage.getItem("user_information")).user.id
-      //           }`,
-      //           state: { from: props.location },
-      //         }}
-      //       />
-      //     )
-      //   if (
-      //     JSON.parse(localStorage.getItem("user_information")).user.user_role ==
-      //     3
-      //   )
-      //     return (
-      //       <Redirect
-      //         to={{
-      //           pathname: `/bookSingle/${
-      //             JSON.parse(localStorage.getItem("user_information")).user.id
-      //           }`,
-      //           state: { from: props.location },
-      //         }}
-      //       />
-      //     )
-      // }
+const Authmiddleware = ({ component: Component, layout: Layout, isAuthProtected, isAdminProtected, isManagerProtected, isDeliveryProtected, isBookProtected, isPodcastProtected, ...rest }) => (
+   <Route
+      {...rest}
+      render={props => {
+         //  console.log(Component)
+         if (isAuthProtected && (!localStorage.getItem("isAuthenticated") || localStorage.getItem("user_information") == null)) {
+            console.log("local storage is null")
+            return <Redirect to={{ pathname: "/login", state: { from: props.location } }} />
+         }
+         if (isAuthProtected) {
+            let userRole = JSON.parse(localStorage.getItem("user_information"))?.user?.user_role
+            console.log(userRole == 1)
+            // console.log(`user role ${userRole}`)
+            // console.log(isAdminProtected, isManagerProtected, isDeliveryProtected, isBookProtected, isPodcastProtected)
+            if (isAdminProtected && userRole == 1) {
+               console.log("admin")
+               return (
+                  <Layout>
+                     <Component {...props} />
+                  </Layout>
+               )
+            } else if (isManagerProtected && (userRole == 1 || userRole == 2)) {
+               console.log("manager")
+               return (
+                  <Layout>
+                     <Component {...props} />
+                  </Layout>
+               )
+            } else if (isBookProtected && (userRole == 5 || userRole == 1 || userRole == 2)) {
+               console.log("book")
+               return (
+                  <Layout>
+                     <Component {...props} />
+                  </Layout>
+               )
+            } else if (isPodcastProtected && (userRole == 4 || userRole == 1 || userRole == 2)) {
+               console.log("podcast")
+               return (
+                  <Layout>
+                     <Component {...props} />
+                  </Layout>
+               )
+            } else if (isDeliveryProtected && (userRole == 3 || userRole == 1 || userRole == 2)) {
+               console.log("delivery")
+               return (
+                  <Layout>
+                     <Component {...props} />
+                  </Layout>
+               )
+            } else {
+               console.log("fuck redirect to login")
+               return <Redirect to={{ pathname: "/login", state: { from: props.location } }} />
+            }
+         } else {
+            console.log("fuck")
 
-      return (
-        <Layout>
-          <Component {...props} />
-        </Layout>
-      )
-    }}
-  />
+            return (
+               <Layout>
+                  <Component {...props} />
+               </Layout>
+            )
+         }
+      }}
+   />
 )
 
 Authmiddleware.propTypes = {
-  isAuthProtected: PropTypes.bool,
-  component: PropTypes.any,
-  location: PropTypes.object,
-  layout: PropTypes.any,
+   isAuthProtected: PropTypes.bool,
+   component: PropTypes.any,
+   location: PropTypes.object,
+   layout: PropTypes.any,
 }
 
 export default Authmiddleware

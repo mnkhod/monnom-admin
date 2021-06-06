@@ -22,7 +22,7 @@ import { truncate } from "lodash"
 
 const PodcastDetail = props => {
   const [state, set_state] = useContext(ResultPopUp)
-  
+
   const [data, set_data] = useState(null)
 
   const [edit_detail, set_edit_detail] = useState(false)
@@ -50,31 +50,15 @@ const PodcastDetail = props => {
       },
     })
       .then(async res => {
-        set_state({loading: false})
-        set_state({success: true})
+        set_state({ loading: false })
+        set_state({ success: true })
         setTimeout(() => {
           window.location.reload()
         }, 2000)
       })
       .catch(err => {
-        set_state({loading: false})
-        set_state({error: true})
-      })
-  }
-
-  const deleteChannelComment = async () => {
-    await axios
-      .delete(`${process.env.REACT_APP_STRAPI_BASE_URL}/`)
-      .then(async res => {
-        set_state({loading: false})
-        set_state({success: true})
-        setTimeout(() => {
-          window.location.reload()
-        }, 2000)
-      })
-      .catch(res => {
-        set_state({loading: false})
-        set_state({error: true})
+        set_state({ loading: false })
+        set_state({ error: true })
       })
   }
 
@@ -145,24 +129,15 @@ const PodcastDetail = props => {
                 <CardBody>
                   <CardTitle className="d-flex justify-content-between">
                     <p>Сувгийн дэлгэрэнгүй</p>
-                    <div>
-                      <i
-                        className="bx bx-comment-dots font-size-20 text-warning"
-                        style={{ cursor: "pointer" }}
-                        onClick={() => {
-                          set_delete_confirm_comment(true)
-                        }}
-                      />
-                      <i
-                        className="bx bx-edit font-size-20 text-primary ml-2"
-                        style={{ cursor: "pointer" }}
-                        onClick={() => {
-                          set_edit_podcast_channel(data.channel_name)
-                          set_edit_podcast_desc(data.channel_description)
-                          set_edit_detail(true)
-                        }}
-                      />
-                    </div>
+                    <i
+                      className="bx bx-edit font-size-20 text-primary ml-2"
+                      style={{ cursor: "pointer" }}
+                      onClick={() => {
+                        set_edit_podcast_channel(data.channel_name)
+                        set_edit_podcast_desc(data.channel_description)
+                        set_edit_detail(true)
+                      }}
+                    />
                   </CardTitle>
                   <div className="table-responsive">
                     <Table className="table-nowrap mb-0">
@@ -283,36 +258,7 @@ const PodcastDetail = props => {
             </Row>
           </SweetAlert>
         ) : null}
-        {delete_confirm_comment ? (
-          <SweetAlert
-            showCancel
-            title="Сэтгэгдэл"
-            cancelBtnBsStyle="primary"
-            confirmBtnBsStyle="danger"
-            confirmBtnText="Устгах"
-            cancelBtnText="Буцах"
-            style={{
-              padding: "2em",
-              borderRadius: "20px",
-            }}
-            onConfirm={() => {
-              set_state({loading: true})
-              deleteChannelComment()
-              set_delete_confirm_comment(false)
-            }}
-            onCancel={() => {
-              set_delete_confirm_comment(false)
-            }}
-          >
-            <Row>
-              <Card>
-                <Col xl={12}>
-                  <Label>{delete_channel_comment}</Label>
-                </Col>
-              </Card>
-            </Row>
-          </SweetAlert>
-        ) : null}
+
         {confirm_edit ? (
           <SweetAlert
             title="Та итгэлтэй байна уу ?"
@@ -324,7 +270,7 @@ const PodcastDetail = props => {
             cancelBtnBsStyle="danger"
             onConfirm={() => {
               set_confirm_edit(false)
-              set_state({loading: true})
+              set_state({ loading: true })
               updatePodcastInfo()
             }}
             onCancel={() => {
