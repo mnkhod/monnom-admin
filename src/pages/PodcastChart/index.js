@@ -4,6 +4,7 @@ import { Link } from "react-router-dom"
 import ContactsGrid from "./PodcastLists"
 import { Container, Alert, Row, Col } from "reactstrap"
 import { useParams } from "react-router-dom"
+import MetaTags from "react-meta-tags"
 import Breadcrumbs from "../../components/Common/Breadcrumb"
 require("dotenv").config()
 
@@ -44,6 +45,9 @@ const PodcastList = () => {
   return (
     <React.Fragment>
       <div className="page-content">
+        <MetaTags>
+          <title>Подкастын сувгууд</title>
+        </MetaTags>
         <Breadcrumbs breadcrumbItem="Подкастын сувгууд" title="Подкаст" />
         {isNetworking ? (
           <Alert color="danger" role="alert">

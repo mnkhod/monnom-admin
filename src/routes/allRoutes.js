@@ -55,30 +55,23 @@ const constRoutes = [
       path: "/",
       exact: true,
       component: () => {
-         console.log(typeof JSON.parse(localStorage.getItem("user_information"))?.user?.user_role)
          switch (JSON.parse(localStorage.getItem("user_information"))?.user?.user_role) {
             case "1": {
-               console.log("switch 1")
                return <Redirect push to="/dashboard" />
             }
             case "2": {
-               console.log("switch 2")
                return <Redirect push to="/app-users" />
             }
             case "3": {
-               console.log("switch 3")
                return <Redirect push to="/delivery" />
             }
             case "4": {
-               console.log("switch 4")
                return <Redirect push to={`/podcastSingle/${JSON.parse(localStorage.getItem("user_information"))?.user?.id}`} />
             }
             case "5": {
-               console.log("switch 5")
                return <Redirect push to={`/bookSingle/${JSON.parse(localStorage.getItem("user_information"))?.user?.id}`} />
             }
             default: {
-               console.log("switch 6")
                return <Redirect push to="/login" />
             }
          }

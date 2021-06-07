@@ -29,7 +29,6 @@ export default function LandingAdmin({landingData}){
                                 handleSubmit,
                                 isSubmitting,
                             }) => {
-                                console.log(values);
                                 const homeImages = [values.HomeApp1, values.HomeApp2, values.HomeApp3];
                                 const section1 = [
                                     {

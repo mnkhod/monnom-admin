@@ -18,6 +18,7 @@ import {
 
 import AddBook from "./AddBook"
 import Breadcrumbs from "../../components/Common/Breadcrumb"
+import MetaTags from 'react-meta-tags';
 
 import axios from "axios"
 import { ResultPopUp } from "../../contexts/CheckActionsContext"
@@ -45,7 +46,7 @@ let BookCard = props => {
           </CardTitle>
           <CardText>
             <Row>
-              <Col xl={6} className="text-left">
+              <Col xl={6} className="text-left mb-2">
                 Нэмэгдсэн огноо:
               </Col>
               <Col xl={6} className="text-right mb-2">
@@ -75,7 +76,7 @@ let BookCard = props => {
               </Col>
             </Row>
             <Row>
-              <Col xl={12} className="text-right mt-2">
+              <Col xl={12} className="text-right">
                 <div class="custom-control custom-checkbox">
                   <input
                     type="checkbox"
@@ -230,7 +231,6 @@ const Books = () => {
           })
       })
       .catch(err => {
-        console.log("catch")
         setIsNetworkingError(true)
         SetIsNetworkLoading(true)
       })
@@ -252,6 +252,9 @@ const Books = () => {
   return (
     <React.Fragment>
       <div className="page-content">
+      <MetaTags>
+        <title>Номны жагсаалт</title>
+      </MetaTags>
         <Breadcrumbs title="Бүртгэлтэй ном" breadcrumbItem="Номны жагсаалт" />
         {isNetworkingError ? (
           <Alert color="danger" role="alert">
@@ -349,7 +352,7 @@ const Books = () => {
                           pagination_current * ITEMS_PER_PAGE &&
                         book.pagination_number >
                           pagination_current * ITEMS_PER_PAGE - ITEMS_PER_PAGE
-                      )
+                      ) {
                         return (
                           <BookCard
                             book={book}
@@ -359,6 +362,7 @@ const Books = () => {
                             set_confirm_allow={set_confirm_allow}
                           />
                         )
+                      }
                     })}
                 </Row>
               </Container>

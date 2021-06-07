@@ -3,6 +3,7 @@ import axios from "axios"
 import Breadcrumb from "../../components/Common/Breadcrumb"
 import { Alert, Row, Col } from "reactstrap"
 import { Link } from "react-router-dom"
+import MetaTags from "react-meta-tags"
 
 import SalesList from "./List"
 
@@ -77,6 +78,9 @@ const Sales = () => {
   return (
     <React.Fragment>
       <div className="page-content">
+      <MetaTags>
+        <title>Борлуулалт</title>
+      </MetaTags>
         <Breadcrumb breadcrumbItem="Борлуулатын мэдээлэл" title="Борлуулалт" />
         {isNetworkError ? (
           <Alert color="danger" role="alert">

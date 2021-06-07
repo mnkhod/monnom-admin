@@ -15,6 +15,7 @@ import {
 import { MDBDataTable } from "mdbreact"
 import Breadcrumbs from "../../components/Common/Breadcrumb"
 import SweetAlert from "react-bootstrap-sweetalert"
+import MetaTags from "react-meta-tags"
 import { Alert } from "reactstrap"
 import { ResultPopUp } from "../../contexts/CheckActionsContext"
 require("dotenv").config()
@@ -272,6 +273,9 @@ export default function Delivery() {
   return (
     <React.Fragment>
       <div className="page-content">
+        <MetaTags>
+          <title>Хүргэлт</title>
+        </MetaTags>
         <Container fluid>
           <Breadcrumbs title="Хүргэлт" breadcrumbItem="Хүргэлтийн мэдээлэл" />
           {isNetworkError ? (

@@ -185,11 +185,9 @@ export default function UpdateBook(props) {
     })
       .then(async res => {
         set_checking_state(true)
-        console.log("then")
       })
       .catch(e => {
         set_checking_state(false)
-        console.log("catch")
       })
   }
 
@@ -492,7 +490,6 @@ export default function UpdateBook(props) {
         set_state({ loading: false })
         set_state({ success: true })
       } else {
-        console.log("else")
         set_state({ loading: false })
         set_state({ error: true })
       }

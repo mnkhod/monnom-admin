@@ -1,32 +1,32 @@
 import React, { useEffect, useState } from "react"
 
-import { Row, Col, Container, Form, Label, Input, FormGroup } from "reactstrap"
+import { Row, Col, Container, Label } from "reactstrap"
+import { AvForm, AvInput, AvGroup, AvFeedback } from "availity-reactstrap-validation"
 
 import { withRouter, Link, useHistory } from "react-router-dom"
 
 import CarouselPage from "./CarouselPage"
 import axios from "axios"
 
-import SweetAlert from "react-bootstrap-sweetalert"
-
 import logo from "../../assets/images/logo.png"
+import { ResultPopUp } from "../../contexts/CheckActionsContext"
 require("dotenv").config()
 
 const Login = props => {
+   const [state, set_state] = useContext(ResultPopUp)
+
    const history = useHistory()
    const [errorMessage, setErrorMessage] = useState("")
    const [username, setUsername] = useState("")
    const [password, setPassword] = useState("")
-   const [rememberMe, setRememberMe] = useState(false)
-
-   const [loading_dialog, set_loading_dialog] = useState(false)
 
    const redirectTo = () => {
       history.push("/")
    }
 
-   const login = e => {
-      e.preventDefault()
+   const login = () => {
+      set_state({ loading: true })
+
       axios({
          headers: {
             "Content-Type": "application/json",
@@ -39,9 +39,9 @@ const Login = props => {
          },
       })
          .then(res => {
-            set_loading_dialog(false)
+            set_state({ loading: false })
             if (res.data.response == "error") {
-               throw new Error("fuck you")
+               throw new Error("")
             }
             setAuthenticated(res.data)
             redirectTo()
@@ -51,7 +51,7 @@ const Login = props => {
             // redirectTo(res.data.data.role);
          })
          .catch(error => {
-            set_loading_dialog(false)
+            set_state({ loading: false })
             setUsername("")
             setPassword("")
             setErrorMessage("Нэвтрэх нэр эсвэл нууц үг буруу")
@@ -70,6 +70,12 @@ const Login = props => {
       a.setDate(a.getDate() + 1)
 
       localStorage.setItem("deleteAt", a.toLocaleString("mn-MN", { timeZone: "Asia/Ulaanbaatar" }))
+   }
+
+   const handleSumbit = (event, errors, values) => {
+      if (errors.length == 0) {
+         login()
+      }
    }
 
    useEffect(() => {
@@ -118,24 +124,18 @@ const Login = props => {
                                  </div>
 
                                  <div className="mt-4">
-                                    <Form onSubmit={login}>
-                                       <FormGroup>
+                                    <AvForm onSubmit={(a, b, c) => handleSumbit(a, b, c)}>
+                                       <AvGroup>
                                           <Label for="username">Нэвтрэх нэр</Label>
-                                          <Input type="text" className="form-control" id="username" placeholder="Нэвтрэх нэр оруулах" onChange={e => setUsername(e.target.value)} required />
-                                       </FormGroup>
+                                          <AvInput placeholder="Нэвтрэх нэр оруулах" name="username" id="username" required onChange={e => setUsername(e.target.value)} />
+                                          <AvFeedback>Нэвтрэх нэр оруулна уу !</AvFeedback>
+                                       </AvGroup>
 
-                                       <FormGroup>
-                                          {/* <div className="float-right">
-															<Link
-																to="auth-recoverpw-2"
-																className="text-muted"
-															>
-																Forgot password?
-															</Link>
-														</div> */}
+                                       <AvGroup>
                                           <Label for="userpassword">Нууц үг</Label>
-                                          <Input type="password" className="form-control" id="userpassword" placeholder="Нууц үг оруулах" onChange={e => setPassword(e.target.value)} required />
-                                       </FormGroup>
+                                          <AvInput type="password" placeholder="Нууц үг оруулах" name="password" id="password" required onChange={e => setPassword(e.target.value)} />
+                                          <AvFeedback>Нууц үг оруулна уу !</AvFeedback>
+                                       </AvGroup>
 
                                        <div className="mt-3">{errorMessage != "" ? <p className="text-danger">{errorMessage}</p> : null}</div>
 
@@ -155,11 +155,11 @@ const Login = props => {
 													</div> */}
 
                                        <div className="mt-3">
-                                          <button className="btn btn-primary btn-block waves-effect waves-light" type="submit" onClick={() => set_loading_dialog(true)}>
+                                          <button className="btn btn-primary btn-block waves-effect waves-light" type="submit">
                                              Нэвтрэх
                                           </button>
                                        </div>
-                                    </Form>
+                                    </AvForm>
                                     {/* <div className="mt-5 text-center">
 													<p>
 														Don't have an account ?{" "}
@@ -186,7 +186,6 @@ const Login = props => {
                   </Col>
                </Row>
             </Container>
-            {loading_dialog ? <SweetAlert title="Түр хүлээнэ үү" info showCloseButton={false} showConfirm={false} success></SweetAlert> : null}
          </div>
       </React.Fragment>
    )

@@ -1,6 +1,7 @@
 import React from "react"
 import Breadcrumb from "../../components/Common/Breadcrumb"
 import { Row, Col, Card, CardBody } from "reactstrap"
+import MetaTags from "react-meta-tags"
 
 import { LiveChannelContextProvider } from "../../contexts/LiveChannelContext"
 
@@ -14,6 +15,9 @@ const LiveChannel = () => {
     <React.Fragment>
       <LiveChannelContextProvider>
           <div className="page-content">
+            <MetaTags>
+              <title>Радио</title>
+            </MetaTags>
             <Breadcrumb breadcrumbItem="Лайв суваг" title="Лайв" />
 
             <Row>

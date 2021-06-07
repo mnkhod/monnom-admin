@@ -10,6 +10,9 @@ import { withTranslation } from "react-i18next"
 import { connect } from "react-redux"
 
 const Navbar = props => {
+  let userRole = JSON.parse(localStorage.getItem("user_information"))?.user?.user_role
+  
+  
   const [statistics, set_statistics] = useState(false)
   const [manage_admins, set_manage_admins] = useState(false)
   const [content, set_content] = useState(false)
@@ -69,122 +72,151 @@ const Navbar = props => {
               className="navbar-collapse"
               id="topnav-menu-content"
             >
-              <ul className="navbar-nav">
+              <ul className="navbar-nav">                
                 {/* ------------------- STATISTICS START ------------------- */}
-                <li className="nav-item dropdown">
-                  <Link
-                    className="nav-link dropdown-toggle arrow-none"
-                    onClick={e => {
-                      e.preventDefault()
-                      set_news(!news)
-                    }}
-                    to="dashboard"
-                  >
-                    <i className="bx bx-home-circle mr"></i>
-                    {props.t("Мэдээ мэдээлэл")} {props.menuOpen}
-                    <div className="arrow-down"></div>
-                  </Link>
-                  <div
-                    className={classname("dropdown-menu", { show: statistics })}
-                  >
-                    <Link to="/blogs-list" className="dropdown-item">
-                      {props.t("Мэдээний жагсаалт")}
+                  {(userRole == 1 || userRole == 2) && (
+                    <li className="nav-item dropdown">
+                    <Link
+                      className="nav-link dropdown-toggle arrow-none"
+                      onClick={e => {
+                        e.preventDefault()
+                        set_statistics(!statistics)
+                      }}
+                      to="dashboard"
+                    >
+                      <i className="bx bx-home-circle mr"></i>
+                      {props.t("Статистик")} {props.menuOpen}
+                      <div className="arrow-down"></div>
                     </Link>
-                    {/* <Link to="/landing-admin" className="dropdown-item">
-                      {props.t("Веб админ")}
-                    </Link> */}
-                  </div>
-                </li>
+                    <div
+                      className={classname("dropdown-menu", { show: statistics })}
+                    >
+                      {userRole == 1 && (
+                        <Link to="/dashboard" className="dropdown-item">
+                          {props.t("Хянах самбар")}
+                        </Link>
+                      )}                      
+                      <Link to="/sales" className="dropdown-item">
+                        {props.t("Борлуулалт")}
+                      </Link>
+                    </div>
+                  </li>
+                  )} 
                 {/* ------------------- STATISTICS END ------------------- */}
-
-                {/* ------------------- STATISTICS START ------------------- */}
-                <li className="nav-item dropdown">
-                  <Link
-                    className="nav-link dropdown-toggle arrow-none"
-                    onClick={e => {
-                      e.preventDefault()
-                      set_statistics(!statistics)
-                    }}
-                    to="dashboard"
-                  >
-                    <i className="bx bx-home-circle mr"></i>
-                    {props.t("Статистик")} {props.menuOpen}
-                    <div className="arrow-down"></div>
-                  </Link>
-                  <div
-                    className={classname("dropdown-menu", { show: statistics })}
-                  >
-                    <Link to="/dashboard" className="dropdown-item">
-                      {props.t("Хянах самбар")}
+                {/* ------------------- BLOG PAGE START ------------------- */}
+                {(userRole == 1 || userRole == 2) && (
+                  <li className="nav-item dropdown">
+                    <Link
+                      className="nav-link dropdown-toggle arrow-none"
+                      onClick={e => {
+                        e.preventDefault()
+                        set_news(!news)
+                      }}
+                      to="dashboard"
+                    >
+                      <i className="bx bx-home-circle mr"></i>
+                      {props.t("Мэдээ мэдээлэл")} {props.menuOpen}
+                      <div className="arrow-down"></div>
                     </Link>
-                    <Link to="/sales" className="dropdown-item">
-                      {props.t("Борлуулалт")}
-                    </Link>
-                  </div>
-                </li>
-                {/* ------------------- STATISTICS END ------------------- */}
+                    <div
+                      className={classname("dropdown-menu", { show: statistics })}
+                    >
+                      <Link to="/blogs-list" className="dropdown-item">
+                        {props.t("Мэдээний жагсаалт")}
+                      </Link>
+                      {/* <Link to="/landing-admin" className="dropdown-item">
+                        {props.t("Веб админ")}
+                      </Link> */}
+                    </div>
+                  </li>
+                )}
+                {/* ------------------- BLOG PAGE END ------------------- */}
                 {/* ------------------- ADMIN CONTROL START ------------------- */}
-                <li className="nav-item dropdown">
-                  <Link
-                    className="nav-link dropdown-toggle arrow-none"
-                    onClick={e => {
-                      e.preventDefault()
-                      set_manage_admins(!manage_admins)
-                    }}
-                    to="dashboard"
-                  >
-                    <i className="bx bx-home-circle mr"></i>
-                    {props.t("Админы удирдлага")} {props.menuOpen}
-                    <div className="arrow-down"></div>
-                  </Link>
-                  <div
-                    className={classname("dropdown-menu", {
-                      show: manage_admins,
-                    })}
-                  >
-                    <Link to="/manage-admins" className="dropdown-item">
-                      {props.t("Ажилчид")}
+                {(userRole == 1 || userRole == 2 || userRole == 3) && (
+                  <li className="nav-item dropdown">
+                    <Link
+                      className="nav-link dropdown-toggle arrow-none"
+                      onClick={e => {
+                        e.preventDefault()
+                        set_manage_admins(!manage_admins)
+                      }}
+                      to="dashboard"
+                    >
+                      <i className="bx bx-home-circle mr"></i>
+                      {props.t("Админы удирдлага")} {props.menuOpen}
+                      <div className="arrow-down"></div>
                     </Link>
-                    <Link to="/app-users" className="dropdown-item">
-                      {props.t("Хэрэглэгчид")}
-                    </Link>
-                    <Link to="/delivery" className="dropdown-item">
-                      {props.t("Хүргэлтийн мэдээлэл")}
-                    </Link>
-                    <Link to="/settings" className="dropdown-item">
-                      {props.t("Тохиргоо")}
-                    </Link>
-                  </div>
-                </li>
+                    <div
+                      className={classname("dropdown-menu", {
+                        show: manage_admins,
+                      })}
+                    >
+                      {(userRole == 1 || userRole == 6) && (
+                        <Link to="/manage-admins" className="dropdown-item">
+                          {props.t("Ажилчид")}
+                        </Link>  
+                      )}
+                      {(userRole == 1 || userRole == 2) && (
+                        <Link to="/app-users" className="dropdown-item">
+                          {props.t("Хэрэглэгчид")}
+                        </Link>  
+                      )}       
+                      {(userRole == 1 || userRole == 3) && (
+                        <Link to="/delivery" className="dropdown-item">
+                          {props.t("Хүргэлтийн мэдээлэл")}
+                        </Link>  
+                      )}                                     
+                      {(userRole == 1 || userRole == 6) && (
+                        <Link to="/settings" className="dropdown-item">
+                          {props.t("Тохиргоо")}
+                        </Link>
+                      )}                                            
+                    </div>
+                  </li>
+                )}
                 {/* ------------------- ADMIN CONTROL END ------------------- */}
                 {/* ------------------- CONTENT START ------------------- */}
-                <li className="nav-item dropdown">
-                  <Link
-                    className="nav-link dropdown-toggle arrow-none"
-                    onClick={e => {
-                      e.preventDefault()
-                      set_content(!content)
-                    }}
-                    to="dashboard"
-                  >
-                    <i className="bx bx-home-circle mr"></i>
-                    {props.t("Контент")} {props.menuOpen}
-                    <div className="arrow-down"></div>
-                  </Link>
-                  <div
-                    className={classname("dropdown-menu", { show: content })}
-                  >
-                    <Link to="books-list" className="dropdown-item">
-                      {props.t("Ном")}
-                    </Link>
-                    <Link to="podcastsList" className="dropdown-item">
-                      {props.t("Подкаст")}
-                    </Link>
-                    <Link to="/live-list" className="dropdown-item">
-                      {props.t("Радио")}
-                    </Link>
-                  </div>
-                </li>
+                  {(userRole == 1 || userRole == 2 || userRole == 4 || userRole == 5) && (
+                    <li className="nav-item dropdown">
+                      <Link
+                        className="nav-link dropdown-toggle arrow-none"
+                        onClick={e => {
+                          e.preventDefault()
+                          set_content(!content)
+                        }}
+                        to="dashboard"
+                      >
+                        <i className="bx bx-home-circle mr"></i>
+                        {props.t("Контент")} {props.menuOpen}
+                        <div className="arrow-down"></div>
+                      </Link>
+                      <div
+                        className={classname("dropdown-menu", { show: content })}
+                      >
+                        {(userRole == 1 || userRole == 2 || userRole == 5) && (
+                          userRole == 5 ? 
+                          <Link to="#" className="dropdown-item">
+                            {props.t("Ном")}
+                          </Link> : <Link to="books-list" className="dropdown-item">
+                          {props.t("Ном")}
+                        </Link>  
+                        )} 
+                        {(userRole == 1 || userRole == 2 || userRole == 4) && (
+                          userRole == 4 ? 
+                          <Link to="#" className="dropdown-item">
+                            {props.t("Подкаст")}
+                          </Link> : <Link to="podcastsList" className="dropdown-item">
+                          {props.t("Подкаст")}
+                        </Link>
+                        )}                        
+                        {userRole == 1 || userRole == 2 && (
+                          <Link to="/live-list" className="dropdown-item">
+                            {props.t("Радио")}
+                          </Link>
+                        )}                          
+                      </div>
+                    </li>
+                  )}                
                 {/* ------------------- CONTENT END ------------------- */}
               </ul>
             </Collapse>

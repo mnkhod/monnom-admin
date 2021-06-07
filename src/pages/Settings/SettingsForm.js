@@ -612,7 +612,9 @@ const SettingsForm = () => {
                               color="light"
                               className="mt-1 py-2 px-3 border border-light"
                               onClick={() => {
-                                set_confirm_add_author(true)
+                                if (new_author_category != "" || new_author_category != " ") {
+                                  set_confirm_add_author(true)
+                                }                                
                               }}
                             >
                               Нэмэх
@@ -638,7 +640,9 @@ const SettingsForm = () => {
                               color="light"
                               className="mt-1 py-2 px-3 border border-light"
                               onClick={() => {
-                                set_confirm_remove_author(true)
+                                if (author_category_id != null) {
+                                  set_confirm_remove_author(true)
+                                }                                
                               }}
                             >
                               Хасах
@@ -697,7 +701,9 @@ const SettingsForm = () => {
                               color="light"
                               className="mt-1 py-2 px-3 border border-light"
                               onClick={() => {
-                                set_confirm_add_book_category(true)
+                                if (new_book_category != "") {
+                                  set_confirm_add_book_category(true)  
+                                }                                
                               }}
                             >
                               Нэмэх
@@ -724,7 +730,9 @@ const SettingsForm = () => {
                               color="light"
                               className="mt-1 py-2 px-3 border border-light"
                               onClick={() => {
-                                set_confirm_remove_book_category(true)
+                                if (book_category_id != null) {
+                                  set_confirm_remove_book_category(true)
+                                }                                
                               }}
                             >
                               Хасах
@@ -784,7 +792,9 @@ const SettingsForm = () => {
                               color="light"
                               className="mt-1 py-2 px-3 border border-light"
                               onClick={() => {
-                                set_confirm_add_podcast_category(true)
+                                if (new_podcast_category != "") {
+                                  set_confirm_add_podcast_category(true)
+                                }                                
                               }}
                             >
                               Нэмэх
@@ -811,7 +821,9 @@ const SettingsForm = () => {
                               color="light"
                               className="mt-1 py-2 px-3 border border-light"
                               onClick={() => {
-                                set_confirm_remove_podcast_category(true)
+                                if (podcast_category_id != null) {
+                                  set_confirm_remove_podcast_category(true)
+                                }                                
                               }}
                             >
                               Хасах
@@ -957,7 +969,8 @@ const SettingsForm = () => {
                       <Col lg={2}>
                         <Button
                           onClick={() => {
-                            set_confirm_add_podcast_channel(true)
+                            if (channel_cover_pic != null && admin_selected != null)
+                              set_confirm_add_podcast_channel(true)                                                        
                           }}
                           className="btn btn-success text-dark"
                         >
@@ -1046,11 +1059,9 @@ const SettingsForm = () => {
             confirmBtnBsStyle="success"
             cancelBtnBsStyle="danger"
             onConfirm={() => {
-              if (new_author_category != "") {
-                set_state({ loading: true })
-                set_confirm_add_author(false)
-                addBookAuthor()
-              } else set_confirm_add_author(false)
+              set_state({ loading: true })
+              addBookAuthor()
+              set_confirm_add_author(false)
             }}
             onCancel={() => {
               set_confirm_add_author(false)
@@ -1068,11 +1079,8 @@ const SettingsForm = () => {
             cancelBtnBsStyle="danger"
             onConfirm={() => {
               set_confirm_remove_author(false)
-
-              if (author_category_id != null) {
-                set_state({ loading: true })
-                deleteBookAuthor(author_category_id)
-              }
+              set_state({ loading: true })
+              deleteBookAuthor(author_category_id)
             }}
             onCancel={() => {
               set_confirm_remove_author(false)
@@ -1090,11 +1098,8 @@ const SettingsForm = () => {
             cancelBtnBsStyle="danger"
             onConfirm={() => {
               set_confirm_add_book_category(false)
-
-              if (new_book_category != "") {
-                set_state({ loading: true })
-                addBookCategory()
-              }
+              set_state({ loading: true })
+              addBookCategory()
             }}
             onCancel={() => {
               set_confirm_add_book_category(false)
@@ -1112,11 +1117,8 @@ const SettingsForm = () => {
             cancelBtnBsStyle="danger"
             onConfirm={() => {
               set_confirm_remove_book_category(false)
-
-              if (book_category_id != null) {
-                set_state({ loading: true })
-                deleteBookCategory(book_category_id)
-              }
+              set_state({ loading: true })
+              deleteBookCategory(book_category_id)
             }}
             onCancel={() => {
               set_confirm_remove_book_category(false)
@@ -1134,10 +1136,8 @@ const SettingsForm = () => {
             cancelBtnBsStyle="danger"
             onConfirm={() => {
               set_confirm_add_podcast_category(false)
-              if (new_podcast_category != "") {
-                set_state({ loading: true })
-                addPodcastCategory()
-              }
+              set_state({ loading: true })
+              addPodcastCategory()
             }}
             onCancel={() => {
               set_confirm_add_podcast_category(false)
@@ -1155,11 +1155,8 @@ const SettingsForm = () => {
             cancelBtnBsStyle="danger"
             onConfirm={() => {
               set_confirm_remove_podcast_category(false)
-
-              if (podcast_category_id != null) {
-                set_state({ loading: true })
-                deletePodcastCategory(podcast_category_id)
-              }
+              set_state({ loading: true })
+              deletePodcastCategory(podcast_category_id)
             }}
             onCancel={() => {
               set_confirm_remove_podcast_category(false)
@@ -1176,13 +1173,9 @@ const SettingsForm = () => {
             confirmBtnBsStyle="success"
             cancelBtnBsStyle="danger"
             onConfirm={() => {
-              if (channel_cover_pic == null || admin_selected == null)
-                set_confirm_add_podcast_channel(false)
-              else {
-                set_confirm_add_podcast_channel(false)
-                set_state({ loading: true })
-                createPodcastChannel()
-              }
+              set_confirm_add_podcast_channel(false)
+              set_state({ loading: true })
+              createPodcastChannel()
             }}
             onCancel={() => {
               set_confirm_add_podcast_channel(false)

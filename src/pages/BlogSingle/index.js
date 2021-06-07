@@ -3,6 +3,7 @@ import {Container, Row, Col, Button, Form, FormGroup, Label, Input, Alert, } fro
 import {CKEditor} from '@ckeditor/ckeditor5-react';
 import {useLocation, useHistory} from 'react-router-dom';
 import SweetAlert from "react-bootstrap-sweetalert"
+import MetaTags from "react-meta-tags"
 
 // import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 import ClassicEditor from 'ckeditor5-custom-build/build/ckeditor';
@@ -65,8 +66,6 @@ export default function BlogSingle(props){
         };
         try{
             const response = await axios.get(`${process.env.REACT_APP_STRAPI_BASE_URL}/blog-categories`);
-            console.log('categories');
-            console.log(response.data);
             setCategories(response.data);
         }catch(e){
 
@@ -119,12 +118,9 @@ export default function BlogSingle(props){
                 response = await axios.post(`${process.env.REACT_APP_STRAPI_BASE_URL}/blogs`, formData, config);
                 setSuccessMsg('Амжилттай хадгаллаа');
             }
-            console.log('response data');
-            console.log(response.data);
             setBlog(response.data);
         }catch(e){
             setErrorMsg('Алдаа гарлаа');
-            console.log(e);
         }
     }
 
@@ -198,6 +194,9 @@ export default function BlogSingle(props){
                 setSuccessMsg('');
               }} />):(<></>)}
             <div className="page-content">
+                <MetaTags>
+                    <title>Мэдээ</title>
+                </MetaTags>
                 <Container fluid>
                     <Row>
                         <Col>

@@ -17,47 +17,39 @@ const Authmiddleware = ({ component: Component, layout: Layout, isAuthProtected,
             // console.log(`user role ${userRole}`)
             // console.log(isAdminProtected, isManagerProtected, isDeliveryProtected, isBookProtected, isPodcastProtected)
             if (isAdminProtected && userRole == 1) {
-               console.log("admin")
                return (
                   <Layout>
                      <Component {...props} />
                   </Layout>
                )
             } else if (isManagerProtected && (userRole == 1 || userRole == 2)) {
-               console.log("manager")
                return (
                   <Layout>
                      <Component {...props} />
                   </Layout>
                )
             } else if (isBookProtected && (userRole == 5 || userRole == 1 || userRole == 2)) {
-               console.log("book")
                return (
                   <Layout>
                      <Component {...props} />
                   </Layout>
                )
             } else if (isPodcastProtected && (userRole == 4 || userRole == 1 || userRole == 2)) {
-               console.log("podcast")
                return (
                   <Layout>
                      <Component {...props} />
                   </Layout>
                )
             } else if (isDeliveryProtected && (userRole == 3 || userRole == 1 || userRole == 2)) {
-               console.log("delivery")
                return (
                   <Layout>
                      <Component {...props} />
                   </Layout>
                )
             } else {
-               console.log("fuck redirect to login")
                return <Redirect to={{ pathname: "/login", state: { from: props.location } }} />
             }
          } else {
-            console.log("fuck")
-
             return (
                <Layout>
                   <Component {...props} />

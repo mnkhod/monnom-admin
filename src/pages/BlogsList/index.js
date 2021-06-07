@@ -3,8 +3,9 @@ import Breadcrumbs from "../../components/Common/Breadcrumb"
 import { Container, Col, Row, Card, CardImg, CardBody, CardTitle, CardText, Pagination, PaginationItem, PaginationLink, Button } from "reactstrap"
 import { Link } from "react-router-dom"
 import axios from "axios"
+import MetaTags from "react-meta-tags"
 
-const PAGINATION = 8
+const PAGINATION = 12
 
 const BlogsList = props => {
    const [blogs, setBlogs] = useState([])
@@ -50,6 +51,9 @@ const BlogsList = props => {
    return (
       <React.Fragment>
          <div className="page-content">
+            <MetaTags>
+              <title>Мэдээ мэдээлэл</title>
+            </MetaTags>
             <Container fluid>
                <Breadcrumbs title="Мэдээ мэдээлэл" breadcrumbItem="Мэдээ мэдээллийн жагсаалт" />
                <Row>
@@ -59,19 +63,6 @@ const BlogsList = props => {
                      </Link>
                   </Col>
                   <Col xl={4} lg={4} md={6} xs={6} sm={6}>
-                     <form className="app-search d-none d-lg-block">
-                        <div className="position-relative">
-                           <input
-                              type="text"
-                              className="form-control"
-                              placeholder="Search..."
-                              onChange={event => {
-                                 handleSearch(event.target.value)
-                              }}
-                           />
-                           <span className="bx bx-search-alt" />
-                        </div>
-                     </form>
                   </Col>
                   <Col lg={3}>
                      <Pagination style={{ backgroundColor: "red" }} aria-label="Page navigation example" className="d-flex justify-content-end mt-3">
@@ -136,20 +127,20 @@ const BlogCard = props => {
                alt={props.blog.title}
             />
             <CardBody>
-               <CardTitle className="mt-0">{props.blog.title.slice(0, 30)}</CardTitle>
+               <CardTitle className="mt-0">{props.blog.title.length > 30 ? props.blog.title.slice(0,30) + " ..." : props.blog.title}</CardTitle>
                <CardText>
                   <Row>
                      <Col xl={6} className="text-left">
-                        Нэмэгдсэн огноо:
+                        Шинэчлэгдсэн огноо:
                      </Col>
                      <Col xl={6} className="text-right mb-2">
-                        <strong className="d-block">{new Date(props.blog.created_at).toLocaleDateString()}</strong>
+                        <strong className="d-block">{new Date(props.blog.updated_at).toLocaleDateString()}</strong>
                      </Col>
                   </Row>
                </CardText>
                <Row>
                   <Col xl={6} className="text-left">
-                     <Link to={{ pathname: "/blog/" + props.blog.id, query: { blog: props.blog } }} className="btn btn-primary waves-effect waves-light">
+                     <Link to={{ pathname: "/blog/" + props.blog.id, query: { blog: props.blog } }} className="btn btn-info waves-effect waves-light">
                         Дэлгэрэнгүй
                      </Link>
                   </Col>

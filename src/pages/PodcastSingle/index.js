@@ -4,6 +4,7 @@ import axios from "axios"
 import PodcastDetail from "./PodcastDetail"
 import { Alert, Row, Col } from "reactstrap"
 import { Link } from "react-router-dom"
+import MetaTags from "react-meta-tags"
 import Breadcrumb from "../../components/Common/Breadcrumb"
 
 require("dotenv").config()
@@ -44,6 +45,9 @@ const PodcastSinglePage = () => {
   return (
     <React.Fragment>
       <div className="page-content">
+        <MetaTags>
+          <title>Подкаст суваг</title>
+        </MetaTags>
         <Breadcrumb breadcrumbItem="Подкаст дэлгэрэнгүй" title="Подкаст" />
         {isNetworkingError ? (
           <Alert color="danger" role="alert">

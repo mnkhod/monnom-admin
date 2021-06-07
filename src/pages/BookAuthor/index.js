@@ -4,6 +4,7 @@ import axios from "axios"
 import Breadcrumb from "../../components/Common/Breadcrumb"
 import { Link } from "react-router-dom"
 import { Alert, Row, Col } from "reactstrap"
+import MetaTags from "react-meta-tags"
 
 import BookDetail from "./BookDetail"
 
@@ -16,6 +17,11 @@ const BookAuthor = () => {
   // Check network
   const [isNetworkError, setIsNetworkError] = useState(false)
   const [isNetworkLoading, SetIsNetworkLoading] = useState(false)
+  
+  console.log("id")
+  console.log(`Bearer ${
+    JSON.parse(localStorage.getItem("user_information")).jwt
+  }`)
 
   async function fetchData() {
     await axios({
@@ -35,6 +41,7 @@ const BookAuthor = () => {
         setIsNetworkError(false)
       })
       .catch(err => {
+        console.log("err")
         setIsNetworkError(true)
         SetIsNetworkLoading(true)
       })
@@ -47,6 +54,9 @@ const BookAuthor = () => {
   return (
     <React.Fragment>
       <div className="page-content">
+        <MetaTags>
+          <title>Ном</title>
+        </MetaTags>
         {isNetworkError ? (
           <Alert color="danger" role="alert">
             Сүлжээ уналаа ! Дахин ачааллна уу ?

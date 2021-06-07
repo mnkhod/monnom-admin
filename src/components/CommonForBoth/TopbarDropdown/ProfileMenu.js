@@ -20,7 +20,8 @@ const ProfileMenu = props => {
   // Declare a new state variable, which we'll call "menu"
   const [menu, setMenu] = useState(false)
 
-  const [username, setusername] = useState("Admin")
+  const [username, setusername] = useState("")
+  const [userPic, setUserPic] = useState(null)
 
   useEffect(() => {
     if (localStorage.getItem("authUser")) {
@@ -36,6 +37,11 @@ const ProfileMenu = props => {
       }
     }
   }, [props.success])
+  
+  useEffect(() => {
+    setusername(JSON.parse(localStorage.getItem("user_information")).user.username)
+    setUserPic(JSON.parse(localStorage.getItem("user_information")).user.profile_picture.url)
+  }, [])
 
   return (
     <React.Fragment>
@@ -51,8 +57,8 @@ const ProfileMenu = props => {
         >
           <img
             className="rounded-circle header-profile-user"
-            src={user1}
-            alt="Header Avatar"
+            src={process.env.REACT_APP_STRAPI_BASE_URL + userPic}
+            alt="pro"
           />
           <span className="d-none d-xl-inline-block ml-2 mr-1">{username}</span>
           <i className="mdi mdi-chevron-down d-none d-xl-inline-block" />

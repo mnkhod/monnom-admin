@@ -9,6 +9,7 @@ import {
   Alert,
 } from "reactstrap"
 import { Link } from "react-router-dom"
+import MetaTags from "react-meta-tags"
 
 import Breadcrumbs from "../../components/Common/Breadcrumb"
 import GivePermission from "./givePermission"
@@ -117,6 +118,9 @@ const Customers = () => {
   return (
     <React.Fragment>
       <div className="page-content">
+        <MetaTags>
+          <title>Хэрэглэгчид</title>
+        </MetaTags>
         <Container fluid>
           <Breadcrumbs
             title="Хэрэглэгчид"

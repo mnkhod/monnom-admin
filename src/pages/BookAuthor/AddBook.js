@@ -342,10 +342,6 @@ const AddBook = props => {
         file => file.name != f.content
       )
     )
-    console.log("audio_book_files.length")
-    console.log(audio_book_files.length)
-    console.log("book_files.length")
-    console.log(book_files.length)
     if (audio_book_files.length == 1 && book_files.length == 0) {
       set_next_button_label("Алгасах")
     } else {
@@ -684,108 +680,7 @@ const AddBook = props => {
                           </Row>
                         </Form>
                       </TabPane>
-                      <TabPane tabId={3} id="comments">
-                        <Form>
-                          <Row>
-                            <Col lg={6}>
-                              <FormGroup>
-                                <Label for="kycfirstname-input">
-                                  Юү түүб хаяг
-                                </Label>
-                                <Input
-                                  type="text"
-                                  required
-                                  value={youtube_url_value}
-                                  onChange={e => {
-                                    set_youtube_url_value(e.target.value)
-                                  }}
-                                />
-                                <p class="text-danger">{youtube_url_name}</p>
-                              </FormGroup>
-                              <Row></Row>
-                            </Col>
-                            <Col lg={6}>
-                              <FormGroup>
-                                <Label htmlFor="productdesc">Танилцуулга</Label>
-                                <textarea
-                                  className="form-control"
-                                  id="productdesc"
-                                  rows="5"
-                                  value={book_introduction_value}
-                                  onChange={e => {
-                                    set_book_introduction_value(e.target.value)
-                                  }}
-                                />
-                                <p class="text-danger">
-                                  {book_introduction_message}
-                                </p>
-                              </FormGroup>
-                            </Col>
-                          </Row>
-                          <Row>
-                            <Col lg={12}>
-                              <h5 className="font-size-14 mb-3">Ишлэл</h5>
-                              <div className="kyc-doc-verification mb-3">
-                                <Dropzone
-                                  onDrop={acceptedFiles => {
-                                    handleAcceptedFiles(acceptedFiles)
-                                  }}
-                                  accept="image/*"
-                                >
-                                  {({ getRootProps, getInputProps }) => (
-                                    <div className="dropzone">
-                                      <div
-                                        className="dz-message needsclick"
-                                        {...getRootProps()}
-                                      >
-                                        <input {...getInputProps()} />
-                                        <div className="mb-3">
-                                          <i className="display-4 text-muted bx bxs-cloud-upload"></i>
-                                        </div>
-                                        <h3>Зурагаа энд байршуулна уу ?</h3>
-                                      </div>
-                                    </div>
-                                  )}
-                                </Dropzone>
-                                <p className="text-danger">
-                                  {file_upload_name_message}
-                                </p>
-                                <div
-                                  className="dropzone-previews mt-3"
-                                  id="file-previews"
-                                >
-                                  {selectedFiles.map((f, i) => {
-                                    return (
-                                      <Card
-                                        className="mt-1 mb-0 shadow-none border dz-processing dz-image-preview dz-success dz-complete "
-                                        key={i + "-file"}
-                                      >
-                                        <div className="p-2">
-                                          <Row className="align-items-center">
-                                            <Col>
-                                              <Link
-                                                to="#"
-                                                className="text-muted font-weight-bold"
-                                              >
-                                                {f.name}
-                                              </Link>
-                                              <p className="mb-0">
-                                                <strong>
-                                                  {f.formattedSize}
-                                                </strong>
-                                              </p>
-                                            </Col>
-                                          </Row>
-                                        </div>
-                                      </Card>
-                                    )
-                                  })}
-                                </div>
-                              </div>
-                            </Col>
-                          </Row>
-                        </Form>
-                      </TabPane>
+                      
                       <TabPane tabId={2} id="doc-verification">
                         <h5 className="font-size-14 mb-3">
                           Баталгаажуулахын тулд файлаа оруулна уу ?
@@ -988,6 +883,110 @@ const AddBook = props => {
                           {files_checked}
                         </Col>
                       </TabPane>
+                      
+                      <TabPane tabId={3} id="comments">
+                      <Form>
+                        <Row>
+                          <Col lg={6}>
+                            <FormGroup>
+                              <Label for="kycfirstname-input">
+                                Юү түүб хаяг
+                              </Label>
+                              <Input
+                                type="text"
+                                required
+                                value={youtube_url_value}
+                                onChange={e => {
+                                  set_youtube_url_value(e.target.value)
+                                }}
+                              />
+                              <p class="text-danger">{youtube_url_name}</p>
+                            </FormGroup>
+                            <Row></Row>
+                          </Col>
+                          <Col lg={6}>
+                            <FormGroup>
+                              <Label htmlFor="productdesc">Танилцуулга</Label>
+                              <textarea
+                                className="form-control"
+                                id="productdesc"
+                                rows="5"
+                                value={book_introduction_value}
+                                onChange={e => {
+                                  set_book_introduction_value(e.target.value)
+                                }}
+                              />
+                              <p class="text-danger">
+                                {book_introduction_message}
+                              </p>
+                            </FormGroup>
+                          </Col>
+                        </Row>
+                        <Row>
+                          <Col lg={12}>
+                            <h5 className="font-size-14 mb-3">Ишлэл</h5>
+                            <div className="kyc-doc-verification mb-3">
+                              <Dropzone
+                                onDrop={acceptedFiles => {
+                                  handleAcceptedFiles(acceptedFiles)
+                                }}
+                                accept="image/*"
+                              >
+                                {({ getRootProps, getInputProps }) => (
+                                  <div className="dropzone">
+                                    <div
+                                      className="dz-message needsclick"
+                                      {...getRootProps()}
+                                    >
+                                      <input {...getInputProps()} />
+                                      <div className="mb-3">
+                                        <i className="display-4 text-muted bx bxs-cloud-upload"></i>
+                                      </div>
+                                      <h3>Зурагаа энд байршуулна уу ?</h3>
+                                    </div>
+                                  </div>
+                                )}
+                              </Dropzone>
+                              <p className="text-danger">
+                                {file_upload_name_message}
+                              </p>
+                              <div
+                                className="dropzone-previews mt-3"
+                                id="file-previews"
+                              >
+                                {selectedFiles.map((f, i) => {
+                                  return (
+                                    <Card
+                                      className="mt-1 mb-0 shadow-none border dz-processing dz-image-preview dz-success dz-complete "
+                                      key={i + "-file"}
+                                    >
+                                      <div className="p-2">
+                                        <Row className="align-items-center">
+                                          <Col>
+                                            <Link
+                                              to="#"
+                                              className="text-muted font-weight-bold"
+                                            >
+                                              {f.name}
+                                            </Link>
+                                            <p className="mb-0">
+                                              <strong>
+                                                {f.formattedSize}
+                                              </strong>
+                                            </p>
+                                          </Col>
+                                        </Row>
+                                      </div>
+                                    </Card>
+                                  )
+                                })}
+                              </div>
+                            </div>
+                          </Col>
+                        </Row>
+                      </Form>
+                    </TabPane>
+                    
                     </TabContent>
                     <ul className="pager wizard twitter-bs-wizard-pager-link">
                       <li

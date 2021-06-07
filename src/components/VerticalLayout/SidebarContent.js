@@ -12,9 +12,6 @@ import { withTranslation } from "react-i18next"
 const SidebarContent = props => {
    let userRole = JSON.parse(localStorage.getItem("user_information"))?.user?.user_role
 
-   // console.log("userRole")
-   // console.log(userRole)
-
    // Use ComponentDidMount and ComponentDidUpdate method symultaniously
    useEffect(() => {
       const pathName = props.location.pathname
@@ -80,7 +77,6 @@ const SidebarContent = props => {
             <ul className="metismenu list-unstyled" id="side-menu">
                {(userRole == 1 || userRole == 2) && (
                   <>
-                     {/* {console.log("100")} */}
                      <li className="menu-title">{props.t("Статистик")} </li>
                      {userRole == 1 && (
                         <li>
@@ -102,7 +98,6 @@ const SidebarContent = props => {
 
                {(userRole == 1 || userRole == 2) && (
                   <>
-                     {/* {console.log("user")} */}
                      <li className="menu-title">{props.t("Мэдээлэл")} </li>
                      <li>
                         <Link to="/blogs-list" className=" waves-effect">
@@ -159,21 +154,33 @@ const SidebarContent = props => {
                      <li className="menu-title">{props.t("Контент")}</li>
 
                      {(userRole == 1 || userRole == 2 || userRole == 5) && (
+                        userRole == 5 ? 
                         <li>
-                           <Link to="/books-list" className=" waves-effect">
+                           <Link to="#" className=" waves-effect">
                               <i className="bx bx-book"></i>
                               <span>{props.t("Ном")}</span>
                            </Link>
-                        </li>
+                        </li> : <li>
+                        <Link to="/books-list" className=" waves-effect">
+                           <i className="bx bx-book"></i>
+                           <span>{props.t("Ном")}</span>
+                        </Link>
+                     </li> 
                      )}
 
                      {(userRole == 1 || userRole == 2 || userRole == 4) && (
+                        userRole == 4 ? 
                         <li>
-                           <Link to="/podcastsList" className=" waves-effect">
+                           <Link to="#" className=" waves-effect">
                               <i className="bx bx-headphone"></i>
                               <span>{props.t("Подкаст")}</span>
                            </Link>
-                        </li>
+                        </li> : <li>
+                        <Link to="/podcastsList" className=" waves-effect">
+                           <i className="bx bx-headphone"></i>
+                           <span>{props.t("Подкаст")}</span>
+                        </Link>
+                     </li> 
                      )}
 
                      {(userRole == 1 || userRole == 2) && (

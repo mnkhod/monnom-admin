@@ -23,8 +23,6 @@ class MyUploadAdapter {
                 const formData = new FormData();
                 formData.append("files", file, file.name);
                 const imgResponse = await axios.post(`${process.env.REACT_APP_STRAPI_BASE_URL}/upload`, formData, config);
-                console.log('upload response data');
-                console.log(imgResponse.data);
                 const imgData = imgResponse.data[0];
                 resolve({
                     default: `${process.env.REACT_APP_STRAPI_BASE_URL}${imgData.url}`
