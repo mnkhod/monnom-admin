@@ -10,7 +10,7 @@ import { EditorState, convertToRaw, convertFromHTML, ContentState } from "draft-
 import draftToHtml from "draftjs-to-html"
 import { ResultPopUp } from "../../contexts/CheckActionsContext"
 
-const SettingsForm = () => {
+const SettingsForm = props => {
    const [state, set_state] = useContext(ResultPopUp)
 
    // Check network
@@ -333,11 +333,14 @@ const SettingsForm = () => {
          },
       })
          .then(res => {
+            console.log("res.data 1")
+            console.log(res.data)
             setIsNetworkLoading(false)
             setIsNetworkingError(false)
             getAllDatas(res.data)
          })
          .catch(err => {
+            console.log("err 1")
             setIsNetworkLoading(false)
             setIsNetworkingError(true)
          })
@@ -352,11 +355,14 @@ const SettingsForm = () => {
          },
       })
          .then(res => {
+            console.log("res.data2")
+            console.log(res.data)
             set_all_admins(res.data)
             setIsNetworkLoading(false)
             setIsNetworkingError(false)
          })
          .catch(err => {
+            console.log("err2")
             setIsNetworkLoading(false)
             setIsNetworkingError(true)
          })
@@ -371,11 +377,14 @@ const SettingsForm = () => {
          },
       })
          .then(res => {
+            console.log("res.data3")
+            console.log(res.data)
             set_all_books(res.data)
             setIsNetworkLoading(false)
             setIsNetworkingError(false)
          })
          .catch(err => {
+            console.log("err3")
             setIsNetworkLoading(false)
             setIsNetworkingError(true)
          })
@@ -390,11 +399,14 @@ const SettingsForm = () => {
          },
       })
          .then(res => {
+            console.log("res.data4")
+            console.log(res.data)
             setIsNetworkLoading(false)
             setIsNetworkingError(false)
             set_all_channels(res.data)
          })
          .catch(err => {
+            console.log("err4")
             setIsNetworkLoading(false)
             setIsNetworkingError(true)
          })
@@ -415,6 +427,7 @@ const SettingsForm = () => {
    }
 
    useEffect(() => {
+      console.log("effect")
       fetchData()
       fetchAdmins()
       fetchAllBooks()
@@ -441,7 +454,7 @@ const SettingsForm = () => {
             </Alert>
          ) : (
             <>
-               {isNetworkLoading ? (
+               {(isNetworkLoading && all_admins.length == 0) || all_books.length == 0 || all_channels.length == 0 || old_author_category.length == 0 || old_book_category.length == 0 || old_podcast_category.length == 0 ? (
                   <Row>
                      <Col xs="12">
                         <div className="text-center my-3">
