@@ -15,7 +15,6 @@ const AddBook = props => {
 
    const [admin_id, set_admin_id] = useState(null)
 
-   const [netWork, set_netWork] = useState(false)
    const [modal, setModal] = useState(false)
    const [activeTab, set_activeTab] = useState(1)
    const [progressValue, setprogressValue] = useState(33)
@@ -24,7 +23,6 @@ const AddBook = props => {
    const [progress_mp3, set_progress_mp3] = useState(0)
    const [next_button_label, set_next_button_label] = useState("Дараах")
    const [profileImage, set_profileImage] = useState("")
-   const [success_dlg, setsuccess_dlg] = useState(false)
    const [confirm_edit, set_confirm_edit] = useState(false)
    const [youtube_url_name, set_youtube_url_name] = useState("")
    const [category_of_book_message, set_category_of_book_message] = useState("")
@@ -34,6 +32,7 @@ const AddBook = props => {
    const [optionGroup_categories, set_optionGroup_categories] = useState([])
    const [is_pdf_price, set_is_pdf_price] = useState(false)
    const [book_introduction_message, set_book_introduction_message] = useState("")
+   const [files_checked, set_files_checked] = useState("")
 
    // axios -oor damjuulah state set
    const [pdf_price, set_pdf_price] = useState(0)
@@ -180,7 +179,6 @@ const AddBook = props => {
       set_optionGroup_authors(a)
 
       const c = categories.map(category => {
-         console.log(category)
          return {
             label: category.name,
             value: category.id,
@@ -220,7 +218,6 @@ const AddBook = props => {
    // popup garch ireh, arilgahad tuslah
    const togglemodal = () => {
       setModal(!modal)
-      console.log("fujc")
    }
 
    // popup iin huudas ru usreh
@@ -263,7 +260,7 @@ const AddBook = props => {
       if (admin_id == null) {
          set_is_selected_admin("Админ сонгоно уу !")
       } else set_is_selected_admin("")
-      
+
       if (book_name_value == "") {
          set_book_name_message("Хоосон утгатай байна !")
       } else {
@@ -275,7 +272,7 @@ const AddBook = props => {
       } else set_category_of_book_message("")
 
       if (selectedMulti_author == null) {
-         set_author_of_book_message("Хоосон утгатай байна !")
+         ;-set_author_of_book_message("Хоосон утгатай байна !")
       } else set_author_of_book_message("")
    }
 
@@ -295,28 +292,24 @@ const AddBook = props => {
    // mp3 file upload hiih, nemeh
    const uploadAudioBook = e => {
       let files = e.target.files
-       let tempfiles = []
-       for (let i = 0; i < files.length; i++) {
+      let tempfiles = []
+      for (let i = 0; i < files.length; i++) {
          tempfiles.push(files[i])
-       }
-       set_audio_book_files_for_save(tempfiles)
-       set_audio_book_files(getItems(files))
-       set_next_button_label("Дараах")
+      }
+      set_audio_book_files_for_save(tempfiles)
+      set_audio_book_files(getItems(files))
+      set_next_button_label("Дараах")
    }
 
    // upload hiij bga mp3 file aa ustgah
    const removeAudioBookFiles = f => {
       set_audio_book_files(audio_book_files.filter(x => x !== f))
-       set_audio_book_files_for_save(
-         Array.from(audio_book_files_for_save).filter(
-           file => file.name != f.content
-         )
-       )
-       if (audio_book_files.length == 1 && book_files.length == 0) {
+      set_audio_book_files_for_save(Array.from(audio_book_files_for_save).filter(file => file.name != f.content))
+      if (audio_book_files.length == 1 && book_files.length == 0) {
          set_next_button_label("Алгасах")
-       } else {
+      } else {
          set_next_button_label("Дараах")
-       }
+      }
    }
 
    // pdf file upload hiih
@@ -565,39 +558,29 @@ const AddBook = props => {
                                     </Row>
                                  </Form>
                               </TabPane>
-                              
+
                               <TabPane tabId={2} id="doc-verification">
                                  <h5 className="font-size-14 mb-3">Баталгаажуулахын тулд файлаа оруулна уу ?</h5>
-                                 
+
                                  <Row>
-                                   <Col lg={6}>
-                                     {book_files.length != 0 ? (
-                                       <FormGroup>
-                                         <Label>Эй бүүк үнэ</Label>
-                                         <Input
-                                           type="number"
-                                           value={pdf_price}
-                                           onChange={e => set_pdf_price(e.target.value)}
-                                         ></Input>
-                                       </FormGroup>
-                                     ) : null}
-                                   </Col>
-                                   <Col lg={6}>
-                                     {audio_book_files.length != 0 ? (
-                                       <FormGroup>
-                                         <Label>Аудио бүүк үнэ</Label>
-                                         <Input
-                                           type="number"
-                                           value={audio_book_price}
-                                           onChange={e =>
-                                             set_audio_book_price(e.target.value)
-                                           }
-                                         ></Input>
-                                       </FormGroup>
-                                     ) : (
-                                       []
-                                     )}
-                                   </Col>
+                                    <Col lg={6}>
+                                       {book_files.length != 0 ? (
+                                          <FormGroup>
+                                             <Label>Эй бүүк үнэ</Label>
+                                             <Input type="number" value={pdf_price} onChange={e => set_pdf_price(e.target.value)}></Input>
+                                          </FormGroup>
+                                       ) : null}
+                                    </Col>
+                                    <Col lg={6}>
+                                       {audio_book_files.length != 0 ? (
+                                          <FormGroup>
+                                             <Label>Аудио бүүк үнэ</Label>
+                                             <Input type="number" value={audio_book_price} onChange={e => set_audio_book_price(e.target.value)}></Input>
+                                          </FormGroup>
+                                       ) : (
+                                          []
+                                       )}
+                                    </Col>
                                  </Row>
 
                                  <Row style={{ borderBottom: "1px solid #1f3bcc" }}>
@@ -717,89 +700,91 @@ const AddBook = props => {
                                        </label>
                                     </Col>
                                  </Row>
+                                 <Col lg={12} className="text-danger">
+                                    {files_checked}
+                                 </Col>
                               </TabPane>
-                              
+
                               <TabPane tabId={3} id="comments">
-                              <Form>
-                                 <Row>
-                                    <Col lg={6}>
-                                       <FormGroup>
-                                          <Label for="kycfirstname-input">Юү түүб хаяг</Label>
-                                          <Input
-                                             type="textarea"
-                                             required
-                                             value={youtube_url_value}
-                                             onChange={e => {
-                                                set_youtube_url_value(e.target.value)
-                                             }}
-                                          />
-                                          <p class="text-danger">{youtube_url_name}</p>
-                                       </FormGroup>                                      
-                                    </Col>
-                                    <Col lg={6}>
-                                       <FormGroup>
-                                          <Label htmlFor="productdesc">Танилцуулга</Label>
-                                          <textarea
-                                             className="form-control"
-                                             id="productdesc"
-                                             rows="5"
-                                             value={book_introduction_value}
-                                             onChange={e => {
-                                                set_book_introduction_value(e.target.value)
-                                             }}
-                                          />
-                                          <p class="text-danger">{book_introduction_message}</p>
-                                       </FormGroup>
-                                    </Col>
-                                 </Row>
-                                 <Row>
-                                    <Col lg={12}>
-                                       <h5 className="font-size-14 mb-3">Ишлэл</h5>
-                                       <div className="kyc-doc-verification mb-3">
-                                          <Dropzone
-                                             onDrop={acceptedFiles => {
-                                                handleAcceptedFiles(acceptedFiles)
-                                             }}
-                                             accept="image/*"
-                                          >
-                                             {({ getRootProps, getInputProps }) => (
-                                                <div className="dropzone">
-                                                   <div className="dz-message needsclick" {...getRootProps()}>
-                                                      <input {...getInputProps()} />
-                                                      <div className="mb-3">
-                                                         <i className="display-4 text-muted bx bxs-cloud-upload"></i>
+                                 <Form>
+                                    <Row>
+                                       <Col lg={6}>
+                                          <FormGroup>
+                                             <Label for="kycfirstname-input">Юү түүб хаяг</Label>
+                                             <Input
+                                                type="textarea"
+                                                required
+                                                value={youtube_url_value}
+                                                onChange={e => {
+                                                   set_youtube_url_value(e.target.value)
+                                                }}
+                                             />
+                                             <p class="text-danger">{youtube_url_name}</p>
+                                          </FormGroup>
+                                       </Col>
+                                       <Col lg={6}>
+                                          <FormGroup>
+                                             <Label htmlFor="productdesc">Танилцуулга</Label>
+                                             <textarea
+                                                className="form-control"
+                                                id="productdesc"
+                                                rows="5"
+                                                value={book_introduction_value}
+                                                onChange={e => {
+                                                   set_book_introduction_value(e.target.value)
+                                                }}
+                                             />
+                                             <p class="text-danger">{book_introduction_message}</p>
+                                          </FormGroup>
+                                       </Col>
+                                    </Row>
+                                    <Row>
+                                       <Col lg={12}>
+                                          <h5 className="font-size-14 mb-3">Ишлэл</h5>
+                                          <div className="kyc-doc-verification mb-3">
+                                             <Dropzone
+                                                onDrop={acceptedFiles => {
+                                                   handleAcceptedFiles(acceptedFiles)
+                                                }}
+                                                accept="image/*"
+                                             >
+                                                {({ getRootProps, getInputProps }) => (
+                                                   <div className="dropzone">
+                                                      <div className="dz-message needsclick" {...getRootProps()}>
+                                                         <input {...getInputProps()} />
+                                                         <div className="mb-3">
+                                                            <i className="display-4 text-muted bx bxs-cloud-upload"></i>
+                                                         </div>
+                                                         <h3>Зурагаа энд байршуулна уу ?</h3>
                                                       </div>
-                                                      <h3>Зурагаа энд байршуулна уу ?</h3>
                                                    </div>
-                                                </div>
-                                             )}
-                                          </Dropzone>
-                                          <div className="dropzone-previews mt-3" id="file-previews">
-                                             {selectedFiles.map((f, i) => {
-                                                return (
-                                                   <Card className="mt-1 mb-0 shadow-none border dz-processing dz-image-preview dz-success dz-complete " key={i + "-file"}>
-                                                      <div className="p-2">
-                                                         <Row className="align-items-center">
-                                                            <Col>
-                                                               <Link to="#" className="text-muted font-weight-bold">
-                                                                  {f.name}
-                                                               </Link>
-                                                               <p className="mb-0">
-                                                                  <strong>{f.formattedSize}</strong>
-                                                               </p>
-                                                            </Col>
-                                                         </Row>
-                                                      </div>
-                                                   </Card>
-                                                )
-                                             })}
+                                                )}
+                                             </Dropzone>
+                                             <div className="dropzone-previews mt-3" id="file-previews">
+                                                {selectedFiles.map((f, i) => {
+                                                   return (
+                                                      <Card className="mt-1 mb-0 shadow-none border dz-processing dz-image-preview dz-success dz-complete " key={i + "-file"}>
+                                                         <div className="p-2">
+                                                            <Row className="align-items-center">
+                                                               <Col>
+                                                                  <Link to="#" className="text-muted font-weight-bold">
+                                                                     {f.name}
+                                                                  </Link>
+                                                                  <p className="mb-0">
+                                                                     <strong>{f.formattedSize}</strong>
+                                                                  </p>
+                                                               </Col>
+                                                            </Row>
+                                                         </div>
+                                                      </Card>
+                                                   )
+                                                })}
+                                             </div>
                                           </div>
-                                       </div>
-                                    </Col>
-                                 </Row>
-                              </Form>
-                           </TabPane>
-                           
+                                       </Col>
+                                    </Row>
+                                 </Form>
+                              </TabPane>
                            </TabContent>
                            <ul className="pager wizard twitter-bs-wizard-pager-link">
                               <li className={activeTab === 1 ? "previous disabled" : "previous"}>
@@ -821,14 +806,25 @@ const AddBook = props => {
                                           toggleTab(activeTab + 1)
                                        }
                                        if (activeTab == 2 && (next_button_label == "Алгасах" || next_button_label == "Дараах")) {
-                                          toggleTab(activeTab + 1)
+                                          if (book_files.length != 0 && pdf_price <= 0) {
+                                             set_files_checked("Үнийн дүн оруулна уу ?")
+                                          } else {
+                                             toggleTab(activeTab + 1)
+                                             set_files_checked("")
+                                          }
+
+                                          if (audio_book_files.length != 0 && audio_book_price <= 0) {
+                                             set_files_checked("Үнийн дүн оруулна уу ?")
+                                          } else {
+                                             toggleTab(activeTab + 1)
+                                             set_files_checked("")
+                                          }
                                        }
                                        if (activeTab === 3) {
                                           handle2(e)
                                        }
                                        if (next_button_label == "Дуусгах" && youtube_url_value !== "" && book_introduction_value !== "") {
                                           togglemodal()
-
                                           set_confirm_edit(true)
                                        }
                                     }}

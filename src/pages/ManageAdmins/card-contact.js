@@ -5,8 +5,6 @@ import { Link } from "react-router-dom"
 import { Card, CardBody, CardFooter, Col, UncontrolledTooltip, Modal, Spinner, Row } from "reactstrap"
 
 const CardContact = props => {
-   console.log(props)
-   console.log("props")
    const [state, set_state] = useContext(ResultPopUp)
 
    const [user, set_user] = useState(props.user)
@@ -18,6 +16,9 @@ const CardContact = props => {
    const [edit_phone, set_edit_phone] = useState("")
    const [edit_email, set_edit_email] = useState("")
    const [edit_form_loading, set_edit_form_loading] = useState(false)
+
+   const [is_blocked, set_is_blocked] = useState(null)
+   const [block_label, set_block_label] = useState("Блоклох")
 
    const edit_form_elements = [
       {
@@ -75,13 +76,13 @@ const CardContact = props => {
          })
    }
 
-   const sendDeleteUserRequest = async user_id => {
-      props.setloading_dialog(true)
+   const sendBlockUserRequest = async user_id => {
+      set_state({ loading: true })
       await axios({
          method: "PUT",
          url: `${process.env.REACT_APP_STRAPI_BASE_URL}/users/${user.id}`,
          data: {
-            blocked: true,
+            blocked: is_blocked ? false : true,
          },
          headers: {
             Authorization: `Bearer ${JSON.parse(localStorage.getItem("user_information")).jwt}`,
@@ -123,6 +124,7 @@ const CardContact = props => {
    }
 
    function toggle_user_update_modal() {
+      set_is_blocked(user.is_blocked)
       set_user_update_modal_center(!user_update_modal_center)
       removeBodyCss()
    }
@@ -164,15 +166,21 @@ const CardContact = props => {
                            {skill.name}
                         </Link>
                      ))}
-                     <Link to="#" className="badge badge-primary font-size-11 m-1">
-                        block
+                     {/* {user.is_blocked && <Link to="#" className="badge badge-primary font-size-11 m-1"></Link>} */}
+                     <Link to="#" className="badge badge-secondary font-size-11 m-1">
+                        {user.roles[1].is_blocked}
                      </Link>
                   </div>
                </CardBody>
                <CardFooter className="bg-transparent border-top">
                   <div className="contact-links d-flex font-size-20">
                      <div className="flex-fill">
-                        <Link onClick={() => toggle_user_update_modal()} id={"message" + user.id}>
+                        <Link
+                           onClick={() => {
+                              toggle_user_update_modal()
+                           }}
+                           id={"message" + user.id}
+                        >
                            <i className="bx bx-edit" />
                            <UncontrolledTooltip placement="top" target={"message" + user.id}>
                               Засварлах
@@ -317,12 +325,12 @@ const CardContact = props => {
                                  onClick={e => {
                                     e.preventDefault()
                                     set_state({ loading: true })
-                                    sendDeleteUserRequest(user.id)
+                                    sendBlockUserRequest(user.id)
                                  }}
                                  style={{ marginLeft: "5px" }}
                                  className="btn btn-danger waves-effect btn-label waves-light"
                               >
-                                 <i className="bx bx-trash-alt label-icon"></i> Блоклох
+                                 <i className="bx bx-block label-icon"></i> {is_blocked ? "Блок гаргах" : "Блоклох"}
                               </button>
                            </Col>
                         </Row>

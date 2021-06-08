@@ -40,7 +40,7 @@ const managerRoutes = [
    { verbose: "Ном", path: "/books-list", component: Books },
    { verbose: "Радио", path: "/live-list", component: LiveChannel },
    { path: "/blogs-list", component: BlogsList },
-   { path: "/blog/:id", component: BlogSingle },
+   { path: "/blog/:id?", component: BlogSingle },
 ]
 
 const userRoutes = [

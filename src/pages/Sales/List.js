@@ -103,12 +103,12 @@ const SalesList = props => {
          if (tempBook != undefined && tempInitialBookData.length != 0) tempBook.ebook_buy_count += 1
          else
             tempInitialBookData.push({
-               book_id: d.book.id,
+               book_id: d.id,
                user_name: d.users_permissions_user.username,
                book_name: d.book.name,
                book_buy_count: 1,
                book_buy_price: d.book.online_book_price,
-               book_date: new Date(d.updated_at).toLocaleString("mn-MN", {
+               book_date: new Date(d.updated_at).toLocaleDateString("mn-MN", {
                   timeZone: "Asia/Ulaanbaatar",
                }),
             })
@@ -134,7 +134,7 @@ const SalesList = props => {
                   ebook_name: d.book?.name,
                   ebook_buy_count: 1,
                   ebook_buy_price: d.book?.online_book_price,
-                  ebook_date: new Date(d.updated_at).toLocaleString("mn-MN", {
+                  ebook_date: new Date(d.updated_at).toLocaleDateString("mn-MN", {
                      timeZone: "Asia/Ulaanbaatar",
                   }),
                })

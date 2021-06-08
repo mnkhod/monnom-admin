@@ -6,16 +6,11 @@ const Authmiddleware = ({ component: Component, layout: Layout, isAuthProtected,
    <Route
       {...rest}
       render={props => {
-         //  console.log(Component)
          if (isAuthProtected && (!localStorage.getItem("isAuthenticated") || localStorage.getItem("user_information") == null)) {
-            console.log("local storage is null")
             return <Redirect to={{ pathname: "/login", state: { from: props.location } }} />
          }
          if (isAuthProtected) {
             let userRole = JSON.parse(localStorage.getItem("user_information"))?.user?.user_role
-            console.log(userRole == 1)
-            // console.log(`user role ${userRole}`)
-            // console.log(isAdminProtected, isManagerProtected, isDeliveryProtected, isBookProtected, isPodcastProtected)
             if (isAdminProtected && userRole == 1) {
                return (
                   <Layout>

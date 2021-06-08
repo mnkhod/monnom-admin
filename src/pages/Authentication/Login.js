@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react"
+import React, { useEffect, useState, useContext } from "react"
 
 import { Row, Col, Container, Label } from "reactstrap"
 import { AvForm, AvInput, AvGroup, AvFeedback } from "availity-reactstrap-validation"
@@ -28,9 +28,6 @@ const Login = props => {
       set_state({ loading: true })
 
       axios({
-         headers: {
-            "Content-Type": "application/json",
-         },
          method: "post",
          url: `${process.env.REACT_APP_EXPRESS_BASE_URL}/admin-login`,
          data: {
@@ -96,31 +93,13 @@ const Login = props => {
                            <div className="d-flex flex-column h-100">
                               <div className="mb-4 mb-md-5">
                                  <Link to="dashboard" className="d-block-logo">
-                                    <img
-                                       src={logo}
-                                       alt=""
-                                       height="200"
-                                       className="auth-logo-dark"
-                                       // style={{ color: "#000" }}
-                                    />
-                                    {/* <img
-													src={logo}
-													alt=""
-													height="100"
-													className="auth-logo-light"
-												/> */}
+                                    <img src={logo} alt="" height="200" className="auth-logo-dark" />
                                  </Link>
                               </div>
                               <div className="my-auto">
                                  <div>
                                     <h5 className="text-primary">Тавтай морил !</h5>
-                                    <p className="text-muted">
-                                       Админы удирдлагын вэб нэвтрэх
-                                       {/* <br />
-                          {username}
-                          <br />
-                          {password} */}
-                                    </p>
+                                    <p className="text-muted">Админы удирдлагын вэб нэвтрэх</p>
                                  </div>
 
                                  <div className="mt-4">

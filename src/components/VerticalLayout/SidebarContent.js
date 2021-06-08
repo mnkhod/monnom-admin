@@ -153,35 +153,39 @@ const SidebarContent = props => {
                   <>
                      <li className="menu-title">{props.t("Контент")}</li>
 
-                     {(userRole == 1 || userRole == 2 || userRole == 5) && (
-                        userRole == 5 ? 
-                        <li>
-                           <Link to="#" className=" waves-effect">
-                              <i className="bx bx-book"></i>
-                              <span>{props.t("Ном")}</span>
-                           </Link>
-                        </li> : <li>
-                        <Link to="/books-list" className=" waves-effect">
-                           <i className="bx bx-book"></i>
-                           <span>{props.t("Ном")}</span>
-                        </Link>
-                     </li> 
-                     )}
+                     {(userRole == 1 || userRole == 2 || userRole == 5) &&
+                        (userRole == 5 ? (
+                           <li>
+                              <Link to="#" className=" waves-effect">
+                                 <i className="bx bx-book"></i>
+                                 <span>{props.t("Ном")}</span>
+                              </Link>
+                           </li>
+                        ) : (
+                           <li>
+                              <Link to="/books-list" className=" waves-effect">
+                                 <i className="bx bx-book"></i>
+                                 <span>{props.t("Ном")}</span>
+                              </Link>
+                           </li>
+                        ))}
 
-                     {(userRole == 1 || userRole == 2 || userRole == 4) && (
-                        userRole == 4 ? 
-                        <li>
-                           <Link to="#" className=" waves-effect">
-                              <i className="bx bx-headphone"></i>
-                              <span>{props.t("Подкаст")}</span>
-                           </Link>
-                        </li> : <li>
-                        <Link to="/podcastsList" className=" waves-effect">
-                           <i className="bx bx-headphone"></i>
-                           <span>{props.t("Подкаст")}</span>
-                        </Link>
-                     </li> 
-                     )}
+                     {(userRole == 1 || userRole == 2 || userRole == 4) &&
+                        (userRole == 4 ? (
+                           <li>
+                              <Link to="#" className=" waves-effect">
+                                 <i className="bx bx-headphone"></i>
+                                 <span>{props.t("Подкаст")}</span>
+                              </Link>
+                           </li>
+                        ) : (
+                           <li>
+                              <Link to="/podcastsList" className=" waves-effect">
+                                 <i className="bx bx-headphone"></i>
+                                 <span>{props.t("Подкаст")}</span>
+                              </Link>
+                           </li>
+                        ))}
 
                      {(userRole == 1 || userRole == 2) && (
                         <li>

@@ -1,27 +1,23 @@
-import React, {useState, useEffect} from 'react';
+import React, { useState, useEffect } from "react"
+import { Spinner } from "reactstrap"
+import LandingAdminForm from "./LandingAdminForm"
+import axios from "axios"
 
-import {Container, Row, Col, Form, FormGroup, Button, Input, Label, Spinner} from 'reactstrap';
-import {Formik} from 'formik';
-import ImagePicker from '../../components/Common/ImagePicker';
+export default function LandingAdmin(props) {
+   const [landingData, setLandingData] = useState(null)
 
-import LandingAdminForm from './LandingAdminForm';
-import Comments from './comments';
-import axios from 'axios';
+   const fetchLandingData = async () => {
+      const config = {
+         headers: {
+            Authorization: `Bearer ${JSON.parse(localStorage.getItem("user_information")).jwt}`,
+         },
+      }
 
-export default function LandingAdmin(props){
-
-    const [landingData, setLandingData] = useState(null);
-
-    const fetchLandingData = async () => {
-        const response = await axios.get(`${process.env.REACT_APP_STRAPI_BASE_URL}/landing-page`);
-        setLandingData(response.data);
-    }
-    useEffect(() => {
-        fetchLandingData();
-    }, []);
-    return (
-        <div className="page-content">
-            {landingData? (<LandingAdminForm landingData={landingData} />):(<Spinner />)}
-        </div>
-    )
+      const response = await axios.get(`${process.env.REACT_APP_STRAPI_BASE_URL}/landing-page`, config)
+      setLandingData(response.data)
+   }
+   useEffect(() => {
+      fetchLandingData()
+   }, [])
+   return <div className="page-content">{landingData ? <LandingAdminForm landingData={landingData} /> : <Spinner />}</div>
 }

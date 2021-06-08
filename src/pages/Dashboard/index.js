@@ -3,10 +3,8 @@ import { Container, Alert } from "reactstrap"
 import { Link } from "react-router-dom"
 import MetaTags from "react-meta-tags"
 
-import IncomeInformation from "./IncomeInformation"
 import Accessions from "./Accessions"
 import AccessByGender from "./AccesByGender"
-import AccessPeriod from "./AccessPeriod"
 
 import MostPopularPodcast from "./MostPopularPodcast"
 import MostPopularBook from "./MostPopularBook"
@@ -109,36 +107,13 @@ const Dashboard = () => {
       fetchData()
    }, [])
 
-   const testQPayAuthorization = () => {
-      axios
-         .post(
-            "https://merchant-sandbox.qpay.mn/v2/auth/token",
-            {},
-            {
-               auth: {
-                  username: "TEST_MERCHANT",
-                  password: "123456",
-               },
-            }
-         )
-         .then(res => {})
-         .catch(err => {})
-   }
-
    return (
       <React.Fragment>
          <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/react-datepicker/2.14.1/react-datepicker.min.css" />
          <div className="page-content">
-         <MetaTags>
-           <title>Хянах самбар</title>
-         </MetaTags>
-            <button
-               onClick={() => {
-                  testQPayAuthorization()
-               }}
-            >
-               test qpay authorization
-            </button>
+            <MetaTags>
+               <title>Хянах самбар</title>
+            </MetaTags>
             {isNetworkingError ? (
                <Alert color="danger" role="alert">
                   Сүлжээ уналаа ! Дахин ачааллна уу ?

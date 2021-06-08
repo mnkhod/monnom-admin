@@ -26,6 +26,7 @@ const ManageAdmins = () => {
    const [usersList, setUsersList] = useState([])
    const [addAdminStep1, setAddAdminStep1] = useState(false)
    const [profile_picture_create, set_profile_picture_create] = useState(null)
+   const [is_blocked, set_is_blocked] = useState(null)
 
    const [username, setUsername] = useState("")
    const [email, setEmail] = useState("")
@@ -48,9 +49,13 @@ const ManageAdmins = () => {
                {
                   name: user.user_role == 1 ? "Админ" : user.user_role == 2 ? "Менежер" : user.user_role == 3 ? "Хүргэгч" : user.user_role == 4 ? "Подкаст нийлүүлэгч" : user.user_role == 5 ? "Ном нийлүүлэгч" : "Бусад",
                },
+               {
+                  is_blocked: user.blocked ? "Блоклогдсон" : "",
+               },
             ],
             img: user.profile_picture ? `${process.env.REACT_APP_STRAPI_BASE_URL}${user.profile_picture.url}` : null,
             allData: user,
+            is_blocked: user.blocked,
          }
       })
 
@@ -64,6 +69,8 @@ const ManageAdmins = () => {
    }
 
    const createUser = async () => {
+      set_state({ loading: false })
+
       const formData = new FormData()
 
       // Validate empty fields
@@ -129,7 +136,6 @@ const ManageAdmins = () => {
                .post(`${process.env.REACT_APP_STRAPI_BASE_URL}/upload`, imageData, config)
                .then(res => {
                   tempResponse.profile_picture = res.data[0]
-                  set_state({ loading: false })
                   set_state({ success: true })
                   SetIsNetworkLoading(false)
                   setTimeout(() => {
@@ -137,7 +143,6 @@ const ManageAdmins = () => {
                   }, 2000)
                })
                .catch(err => {
-                  set_state({ loading: false })
                   set_state({ error: true })
                   setAddAdminStep1(false)
                   // SetIsNetworkError(true)
@@ -145,7 +150,6 @@ const ManageAdmins = () => {
             initializeUsersList([tempResponse])
          })
          .catch(err => {
-            set_state({ loading: false })
             set_state({ error: true })
             setAddAdminStep1(false)
             SetIsNetworkLoading(false)
@@ -161,6 +165,7 @@ const ManageAdmins = () => {
          url: `${process.env.REACT_APP_EXPRESS_BASE_URL}/all-admins-list`,
       })
          .then(res => {
+            set_is_blocked(res.data.blocked)
             SetIsNetworkLoading(false)
             initializeUsersList(res.data)
          })
@@ -278,13 +283,24 @@ const ManageAdmins = () => {
                               <Col md="6">
                                  <FormGroup className="select2-container">
                                     <Label htmlFor="validationCustom01">Нууц үг</Label>
-                                    <AvField name="password" placeholder="Нууц үг" type="text" errorMessage="Нууц үг оруул" className="form-control" validate={{ required: { value: true } }} id="validationCustom01" onChange={e => handleStepChange(e)} value={password} />
+                                    <AvField type="password" name="password" placeholder="Нууц үг" type="text" errorMessage="Нууц үг оруул" className="form-control" validate={{ required: { value: true } }} id="validationCustom01" onChange={e => handleStepChange(e)} value={password} />
                                  </FormGroup>
                               </Col>
                               <Col md="6">
                                  <FormGroup>
                                     <Label htmlFor="validationCustom01">Нууц үг давтах</Label>
-                                    <AvField name="password again" placeholder="Нууц үг давтах" type="text" errorMessage="Давтах нууц үг оруул" className="form-control" validate={{ required: { value: true } }} id="validationCustom01" onChange={e => handleStepChange(e)} value={passwordAgain} />
+                                    <AvField
+                                       type="password"
+                                       name="password again"
+                                       placeholder="Нууц үг давтах"
+                                       type="text"
+                                       errorMessage="Давтах нууц үг оруул"
+                                       className="form-control"
+                                       validate={{ required: { value: true } }}
+                                       id="validationCustom01"
+                                       onChange={e => handleStepChange(e)}
+                                       value={passwordAgain}
+                                    />
                                  </FormGroup>
                               </Col>
                            </Row>
