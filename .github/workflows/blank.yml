@@ -33,7 +33,7 @@ jobs:
         node-version: ${{ matrix.node-version }}
     - run: npm i --legacy-peer-deps
     - run: npm run build
-    - run: pm2 delete monnom-admin --silent
+    - run: pm2 delete static-page-server-3000 --silent
       continue-on-error: true
     - run: pm2 serve build 3000 --spa
 
