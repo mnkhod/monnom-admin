@@ -19,21 +19,6 @@ jobs:
    build:
       runs-on: self-hosted
 
-<<<<<<< HEAD
-      strategy:
-         matrix:
-            node-version: [15.x]
-            # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
-
-      steps:
-         - uses: actions/checkout@v2
-         - name: Use Node.js ${{ matrix.node-version }}
-           uses: actions/setup-node@v2
-           with:
-              node-version: ${{ matrix.node-version }}
-         - run: npm i --legacy-peer-deps
-         - run: npm build
-=======
     strategy:
       matrix:
         node-version: ['12.22.1']
@@ -51,4 +36,3 @@ jobs:
       continue-on-error: true
     - run: pm2 serve build 3000 --spa
 
->>>>>>> c96933a11452d5fa8e051c80cdb57f687078574c
