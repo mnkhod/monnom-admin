@@ -13,6 +13,11 @@ COPY . .
 ENV GENERATE_SOURCEMAP=false
 RUN npm run build
 
+# environment variables
+COPY .env.prod .env
+
+# port
 EXPOSE 3000
 
+# start
 CMD ["serve", "-s", "build", "-p", "3000"]
