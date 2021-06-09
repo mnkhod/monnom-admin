@@ -172,14 +172,14 @@ const List = props => {
             ),
             book_edit: (
                <Link to="#" className="d-flex justify-content-around">
-                  <i
+                  {/* <i
                      onClick={() => {
                         togglemodal()
                         set_edit_book_id(d.id)
                      }}
                      className="bx bxs-edit text-primary font-size-20"
                      id="edittooltip"
-                  />
+                  /> */}
                   <i
                      onClick={() => {
                         set_delete_book_id(d.id)

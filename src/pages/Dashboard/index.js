@@ -18,75 +18,31 @@ const Dashboard = () => {
    const [isNetworkingError, setIsNetworkingError] = useState(false)
    const [isNetworkLoading, SetIsNetworkLoading] = useState(true)
 
-   const [totalPodcastChannels, set_totalPodcastChannels] = useState({
-      title: "Нийт Подкастын сувгууд",
-      iconClass: "bx bx-play-circle",
-      description: 0,
-   })
+   const [totalPodcastChannels, set_totalPodcastChannels] = useState({ title: "Нийт Подкастын сувгууд", iconClass: "bx bx-play-circle", description: 0 })
 
-   const [totalPodcastFollows, set_totalPodcastFollows] = useState({
-      title: "Нийт Подкастын дагагчид",
-      iconClass: "bx bx-user",
-      description: 0,
-   })
+   const [totalPodcastFollows, set_totalPodcastFollows] = useState({ title: "Нийт Подкастын дагагчид", iconClass: "bx bx-user", description: 0 })
 
-   const [totalRadioChannels, set_totalRadioChannels] = useState({
-      title: "Нийт Радио сувгууд",
-      iconClass: "bx bx-bullseye",
-      description: 0,
-   })
+   const [totalRadioChannels, set_totalRadioChannels] = useState({ title: "Нийт Радио сувгууд", iconClass: "bx bx-bullseye", description: 0 })
 
-   const [totalAudioBooks, set_totalAudioBooks] = useState({
-      title: "Нийт Аудио Ном",
-      iconClass: "bx bx-headphone",
-      description: 0,
-   })
+   const [totalAudioBooks, set_totalAudioBooks] = useState({ title: "Нийт Аудио Ном", iconClass: "bx bx-headphone", description: 0 })
 
-   const [totalEBooks, set_totalEBooks] = useState({
-      title: "Нийт Ай Бүүк",
-      iconClass: "bx bxs-file-blank",
-      description: 0,
-   })
+   const [totalEBooks, set_totalEBooks] = useState({ title: "Нийт Ай Бүүк", iconClass: "bx bxs-file-blank", description: 0 })
 
-   const [totalBooks, set_totalBooks] = useState({
-      title: "Нийт Ном",
-      iconClass: "bx bx-wifi-0",
-      description: 0,
-   })
+   const [totalBooks, set_totalBooks] = useState({ title: "Нийт Ном", iconClass: "bx bx-wifi-0", description: 0 })
 
    const initializeData = data => {
-      set_totalPodcastChannels(prevState => ({
-         ...prevState,
-         description: data.totalPodcastChannels,
-      }))
-      set_totalPodcastFollows(prevState => ({
-         ...prevState,
-         description: data.totalPodcastFollows,
-      }))
-      set_totalRadioChannels(prevState => ({
-         ...prevState,
-         description: data.totalRadioChannels,
-      }))
-      set_totalAudioBooks(prevState => ({
-         ...prevState,
-         description: data.totalAudioBooks,
-      }))
-      set_totalEBooks(prevState => ({
-         ...prevState,
-         description: data.totalEBooks,
-      }))
-      set_totalBooks(prevState => ({
-         ...prevState,
-         description: data.totalBooks,
-      }))
+      set_totalPodcastChannels(prevState => ({ ...prevState, description: data.totalPodcastChannels }))
+      set_totalPodcastFollows(prevState => ({ ...prevState, description: data.totalPodcastFollows }))
+      set_totalRadioChannels(prevState => ({ ...prevState, description: data.totalRadioChannels }))
+      set_totalAudioBooks(prevState => ({ ...prevState, description: data.totalAudioBooks }))
+      set_totalEBooks(prevState => ({ ...prevState, description: data.totalEBooks }))
+      set_totalBooks(prevState => ({ ...prevState, description: data.totalBooks }))
    }
 
    const fetchData = async () => {
       await axios({
          method: "GET",
-         headers: {
-            Authorization: `Bearer ${JSON.parse(localStorage.getItem("user_information")).jwt}`,
-         },
+         headers: { Authorization: `Bearer ${JSON.parse(localStorage.getItem("user_information")).jwt}` },
          url: `${process.env.REACT_APP_EXPRESS_BASE_URL}/dashboard`,
       })
          .then(res => {
@@ -251,16 +207,6 @@ const Dashboard = () => {
                                  </CardBody>
                               </Card>
                            </Col>
-                           {/* <Col lg={6}>
-                    <Card>
-                      <CardBody>
-                        <CardTitle className="mb-4">
-                          Цахим номын борлуулалт
-                        </CardTitle>
-                        <AccessPeriod />
-                      </CardBody>
-                    </Card>
-                  </Col> */}
                            <Col lg={6}>
                               <Card>
                                  <CardBody>
@@ -269,16 +215,6 @@ const Dashboard = () => {
                                  </CardBody>
                               </Card>
                            </Col>
-                           {/* <Col lg={6}>
-                    <Card>
-                      <CardBody>
-                        <CardTitle className="mb-4">
-                          Хэвлэмэл номын борлуулалт
-                        </CardTitle>
-                        <IncomeInformation />
-                      </CardBody>
-                    </Card>
-                  </Col> */}
                            <Col lg={5} md={12}>
                               {data != null ? <MostPopularPodcast mostFollowedPodcastChannels={data.mostFollowedPodcastChannels} /> : null}
                            </Col>

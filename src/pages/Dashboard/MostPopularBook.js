@@ -19,9 +19,7 @@ const MostPopularBook = props => {
    }, [props])
 
    function toggle(tab) {
-      if (activeTab !== tab) {
-         setactiveTab(tab)
-      }
+      if (activeTab !== tab) setactiveTab(tab)
    }
 
    return (
@@ -36,9 +34,7 @@ const MostPopularBook = props => {
                      <NavItem>
                         <NavLink
                            style={{ cursor: "pointer" }}
-                           className={classnames({
-                              active: activeTab === "1",
-                           })}
+                           className={classnames({ active: activeTab === "1" })}
                            onClick={() => {
                               toggle("1")
                            }}
@@ -49,9 +45,7 @@ const MostPopularBook = props => {
                      <NavItem>
                         <NavLink
                            style={{ cursor: "pointer" }}
-                           className={classnames({
-                              active: activeTab === "2",
-                           })}
+                           className={classnames({ active: activeTab === "2" })}
                            onClick={() => {
                               toggle("2")
                            }}
@@ -62,9 +56,7 @@ const MostPopularBook = props => {
                      <NavItem>
                         <NavLink
                            style={{ cursor: "pointer" }}
-                           className={classnames({
-                              active: activeTab === "3",
-                           })}
+                           className={classnames({ active: activeTab === "3" })}
                            onClick={() => {
                               toggle("3")
                            }}
