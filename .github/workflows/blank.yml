@@ -39,6 +39,7 @@ jobs:
         continue-on-error: true
       - run: echo "REACT_APP_STRAPI_BASE_URL=https://strapi.monnom.mn" >> .env
       - run: echo "REACT_APP_EXPRESS_BASE_URL=https://express.monnom.mn" >> .env
+      - run: echo "GENERATE_SOURCEMAP=false" >> .env
       - run: npm i --legacy-peer-deps
       - run: npm run build
       - run: pm2 delete static-page-server-3000 --silent
