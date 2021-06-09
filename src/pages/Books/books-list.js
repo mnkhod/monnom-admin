@@ -15,18 +15,7 @@ let BookCard = props => {
    return (
       <Col xl={3} lg={4} md={4} sm={6}>
          <Card>
-            <CardImg
-               top
-               className="img-fluid mx-auto"
-               src={process.env.REACT_APP_STRAPI_BASE_URL + props.book.book_pic_url}
-               style={{
-                  height: "30vh",
-                  resize: "both",
-                  overflow: "visible",
-                  width: "98%",
-               }}
-               alt={props.book.book_name}
-            />
+            <CardImg top className="img-fluid mx-auto" src={props.book.book_pic_url} style={{ height: "30vh", resize: "both", overflow: "visible", width: "98%" }} alt={props.book.book_name} />
             <CardBody>
                <CardTitle className="mt-0">{props.book.book_name.slice(0, 30)}</CardTitle>
                <CardText>
@@ -169,6 +158,7 @@ const Books = () => {
          url: `${process.env.REACT_APP_EXPRESS_BASE_URL}/all-books-list`,
       })
          .then(res => {
+            console.log(res.data)
             setBooksList(res.data)
             axios({
                url: `${process.env.REACT_APP_EXPRESS_BASE_URL}/all-admins-list`,
@@ -183,12 +173,12 @@ const Books = () => {
                })
                .catch(err => {
                   setIsNetworkingError(true)
-                  SetIsNetworkLoading(true)
+                  // SetIsNetworkLoading(true)
                })
          })
          .catch(err => {
             setIsNetworkingError(true)
-            SetIsNetworkLoading(true)
+            // SetIsNetworkLoading(true)
          })
    }
 
@@ -273,14 +263,16 @@ const Books = () => {
                         </Row>
                         <Row>
                            {booksList
-                              .filter(val => {
+                              .filter(book => {
                                  if (searchItms === "") {
-                                    return val
-                                 } else if (val.book_name.toLocaleLowerCase().includes(searchItms.toLocaleLowerCase())) {
-                                    return val
+                                    return book
+                                 } else if (book.book_name.toLocaleLowerCase().includes(searchItms.toLocaleLowerCase())) {
+                                    return book
                                  }
                               })
                               .map(book => {
+                                 console.log(book)
+                                 console.log("book")
                                  if (book.pagination_number <= pagination_current * ITEMS_PER_PAGE && book.pagination_number > pagination_current * ITEMS_PER_PAGE - ITEMS_PER_PAGE) {
                                     return <BookCard book={book} key={book.id} set_are_you_sure_title={set_are_you_sure_title} set_book_info_to_update={set_book_info_to_update} set_confirm_allow={set_confirm_allow} />
                                  }

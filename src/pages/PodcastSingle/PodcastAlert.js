@@ -166,7 +166,7 @@ const PodcastAlert = props => {
             </div>
             <div className="modal-body">
                <Col xs={12}>
-                  <img alt={user.name + " name"} src={process.env.REACT_APP_STRAPI_BASE_URL + user.allData.profile_picture.formats.thumbnail.url}></img>
+                  <img alt={user.name + " name"} src={user.allData.profile_picture?.url}></img>
                </Col>
             </div>
          </Modal>

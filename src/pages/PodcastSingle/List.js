@@ -131,8 +131,8 @@ const EditPodcast = ({ episode_id, setEditPodcastModal, editEpisodeModal }) => {
             set_edit_podcast_name(res.data.episode_name)
             set_edit_podcast_desc(res.data.episode_description)
             set_edit_podcast_file(res.data.audio_file_path.name)
-            setCoverImage(`${process.env.REACT_APP_STRAPI_BASE_URL}${res.data.picture.url}`)
-            podcast_pic(`${process.env.REACT_APP_STRAPI_BASE_URL}${res.data.picture.url}`)
+            setCoverImage(`${res.data.picture.url}`)
+            podcast_pic(`${res.data.picture.url}`)
          })
          .catch(err => {})
    }

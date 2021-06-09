@@ -146,9 +146,7 @@ const AddBook = props => {
          reader.onload = function (event) {
             let audioContext = new (window.AudioContext || window.webkitAudioContext)()
             audioContext.decodeAudioData(event.target.result).then(buffer => {
-               let duration = buffer.duration
-
-               resolve(duration)
+               resolve(buffer.duration)
             })
          }
          reader.readAsArrayBuffer(file)
@@ -806,19 +804,19 @@ const AddBook = props => {
                                           toggleTab(activeTab + 1)
                                        }
                                        if (activeTab == 2 && (next_button_label == "Алгасах" || next_button_label == "Дараах")) {
-                                          if (book_files.length != 0 && pdf_price <= 0) {
-                                             set_files_checked("Үнийн дүн оруулна уу ?")
-                                          } else {
-                                             toggleTab(activeTab + 1)
-                                             set_files_checked("")
-                                          }
+                                          // if (book_files.length != 0 && pdf_price <= 0) {
+                                          //    set_files_checked("Үнийн дүн оруулна уу ?")
+                                          // } else {
+                                          toggleTab(activeTab + 1)
+                                          set_files_checked("")
+                                          // }
 
-                                          if (audio_book_files.length != 0 && audio_book_price <= 0) {
-                                             set_files_checked("Үнийн дүн оруулна уу ?")
-                                          } else {
-                                             toggleTab(activeTab + 1)
-                                             set_files_checked("")
-                                          }
+                                          // if (audio_book_files.length != 0 && audio_book_price <= 0) {
+                                          // set_files_checked("Үнийн дүн оруулна уу ?")
+                                          // } else {
+                                          toggleTab(activeTab + 1)
+                                          set_files_checked("")
+                                          // }
                                        }
                                        if (activeTab === 3) {
                                           handle2(e)

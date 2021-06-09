@@ -80,7 +80,7 @@ const SalesList = props => {
                   e_user_name: d.users_permissions_user?.username,
                   ebook_name: d.book?.name,
                   ebook_buy_price: d.book?.online_book_price,
-                  ebook_date: new Date(d.updated_at).toLocaleDateString("mn-MN", {
+                  ebook_date: new Date(d.updated_at).toLocaleString("mn-MN", {
                      timeZone: "Asia/Ulaanbaatar",
                   }),
                }

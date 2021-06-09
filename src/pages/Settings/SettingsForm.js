@@ -66,13 +66,7 @@ const SettingsForm = props => {
          },
       }
       await axios
-         .post(
-            `${process.env.REACT_APP_STRAPI_BASE_URL}/book-categories`,
-            {
-               name: new_book_category,
-            },
-            config
-         )
+         .post(`${process.env.REACT_APP_STRAPI_BASE_URL}/book-categories`, { name: new_book_category }, config)
          .then(res => {
             set_state({ loading: false })
             set_state({ success: true })
@@ -207,9 +201,7 @@ const SettingsForm = props => {
 
    const saveBook = async () => {
       const config = {
-         headers: {
-            Authorization: `Bearer ${JSON.parse(localStorage.getItem("user_information")).jwt}`,
-         },
+         headers: { Authorization: `Bearer ${JSON.parse(localStorage.getItem("user_information")).jwt}` },
       }
 
       await axios
@@ -230,12 +222,7 @@ const SettingsForm = props => {
    const createPodcastChannel = async () => {
       const formData = new FormData()
 
-      let data = {
-         name: channel_name,
-         users_permissions_user: admin_selected,
-         description: channel_desc,
-         podcast_categories: selectedMulti_category.map(cat => cat.value.toString()),
-      }
+      let data = { name: channel_name, users_permissions_user: admin_selected, description: channel_desc, podcast_categories: selectedMulti_category.map(cat => cat.value.toString()) }
 
       formData.append("data", JSON.stringify(data))
       formData.append("files.cover_pic", channel_cover_pic, channel_cover_pic.name)
@@ -267,10 +254,7 @@ const SettingsForm = props => {
       const formData = new FormData()
       formData.append("terms", draftToHtml(convertToRaw(wysiwyg_content.getCurrentContent())))
       const config = {
-         headers: {
-            "Content-Type": "multipart/form-data",
-            Authorization: `Bearer ${JSON.parse(localStorage.getItem("user_information")).jwt}`,
-         },
+         headers: { "Content-Type": "multipart/form-data", Authorization: `Bearer ${JSON.parse(localStorage.getItem("user_information")).jwt}` },
       }
       axios
          .put(url, formData, config)
@@ -290,10 +274,7 @@ const SettingsForm = props => {
 
    const deletePodcastChannel = async id => {
       const config = {
-         headers: {
-            "Content-Type": "multipart/form-data",
-            Authorization: `Bearer ${JSON.parse(localStorage.getItem("user_information")).jwt}`,
-         },
+         headers: { "Content-Type": "multipart/form-data", Authorization: `Bearer ${JSON.parse(localStorage.getItem("user_information")).jwt}` },
       }
 
       await axios
@@ -328,18 +309,17 @@ const SettingsForm = props => {
       await axios({
          url: `${process.env.REACT_APP_EXPRESS_BASE_URL}/settings-page`,
          method: "GET",
-         headers: {
-            Authorization: `Bearer ${JSON.parse(localStorage.getItem("user_information")).jwt}`,
-         },
+         headers: { Authorization: `Bearer ${JSON.parse(localStorage.getItem("user_information")).jwt}` },
       })
          .then(res => {
             console.log("res.data 1")
             console.log(res.data)
-            setIsNetworkLoading(false)
-            setIsNetworkingError(false)
+            // setIsNetworkLoading(false)
+            // setIsNetworkingError(false)
             getAllDatas(res.data)
          })
          .catch(err => {
+            console.log(err)
             console.log("err 1")
             setIsNetworkLoading(false)
             setIsNetworkingError(true)
@@ -358,8 +338,8 @@ const SettingsForm = props => {
             console.log("res.data2")
             console.log(res.data)
             set_all_admins(res.data)
-            setIsNetworkLoading(false)
-            setIsNetworkingError(false)
+            // setIsNetworkLoading(false)
+            // setIsNetworkingError(false)
          })
          .catch(err => {
             console.log("err2")
@@ -380,8 +360,8 @@ const SettingsForm = props => {
             console.log("res.data3")
             console.log(res.data)
             set_all_books(res.data)
-            setIsNetworkLoading(false)
-            setIsNetworkingError(false)
+            // setIsNetworkLoading(false)
+            // setIsNetworkingError(false)
          })
          .catch(err => {
             console.log("err3")
@@ -401,8 +381,8 @@ const SettingsForm = props => {
          .then(res => {
             console.log("res.data4")
             console.log(res.data)
-            setIsNetworkLoading(false)
-            setIsNetworkingError(false)
+            // setIsNetworkLoading(false)
+            // setIsNetworkingError(false)
             set_all_channels(res.data)
          })
          .catch(err => {
@@ -432,6 +412,7 @@ const SettingsForm = props => {
       fetchAdmins()
       fetchAllBooks()
       fetchAllChannels()
+      setIsNetworkLoading(false)
    }, [])
 
    // zurag solih
@@ -453,8 +434,8 @@ const SettingsForm = props => {
                Сүлжээ уналаа ! Дахин ачааллна уу ?
             </Alert>
          ) : (
-            <>
-               {(isNetworkLoading && all_admins.length == 0) || all_books.length == 0 || all_channels.length == 0 || old_author_category.length == 0 || old_book_category.length == 0 || old_podcast_category.length == 0 ? (
+            <React.Fragment>
+               {isNetworkLoading ? (
                   <Row>
                      <Col xs="12">
                         <div className="text-center my-3">
@@ -854,7 +835,7 @@ const SettingsForm = props => {
                      </Col>
                   </Row>
                )}
-            </>
+            </React.Fragment>
          )}
 
          <Row>

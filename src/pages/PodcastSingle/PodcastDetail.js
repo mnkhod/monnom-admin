@@ -16,12 +16,10 @@ const PodcastDetail = props => {
 
    const [edit_detail, set_edit_detail] = useState(false)
    const [confirm_edit, set_confirm_edit] = useState(false)
-   const [delete_confirm_comment, set_delete_confirm_comment] = useState(false)
 
    // update hiih state
    const [edit_podcast_channel, set_edit_podcast_channel] = useState("")
    const [edit_podcast_desc, set_edit_podcast_desc] = useState("")
-   const [delete_channel_comment, set_delete_channel_comment] = useState(null)
 
    // update using formdata
    const updatePodcastInfo = async () => {
@@ -77,7 +75,7 @@ const PodcastDetail = props => {
                            <Row>
                               <Col sm="4">
                                  <div className="avatar-md profile-user-wid mb-4">
-                                    <img style={{ width: "100%", height: "100%" }} src={process.env.REACT_APP_STRAPI_BASE_URL + data.channel_cover_pic} alt="" className="img-thumbnail rounded-circle" />
+                                    <img style={{ width: "100%", height: "100%" }} src={data.channel_cover_pic} alt="" className="img-thumbnail rounded-circle" />
                                  </div>
                                  <p>
                                     <strong>{data.channel_name}</strong>
