@@ -9,6 +9,7 @@ import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css"
 import { EditorState, convertToRaw, convertFromHTML, ContentState } from "draft-js"
 import draftToHtml from "draftjs-to-html"
 import { ResultPopUp } from "../../contexts/CheckActionsContext"
+import BlogCategoryCrud from "./BookCategoryCrud"
 
 const SettingsForm = props => {
    const [state, set_state] = useContext(ResultPopUp)
@@ -833,6 +834,7 @@ const SettingsForm = props => {
                            </Col>
                         </Row>
                      </Col>
+                     <BlogCategoryCrud />
                   </Row>
                )}
             </React.Fragment>
