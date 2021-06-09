@@ -309,7 +309,7 @@ const SettingsForm = props => {
       await axios({
          url: `${process.env.REACT_APP_EXPRESS_BASE_URL}/settings-page`,
          method: "GET",
-         headers: { Authorization: `Bearer ${JSON.parse(localStorage.getItem("user_information")).jwt}` },
+         headers: { Authorization: `${JSON.parse(localStorage.getItem("user_information")).jwt}` },
       })
          .then(res => {
             console.log("res.data 1")
@@ -566,8 +566,8 @@ const SettingsForm = props => {
                                        </option>
                                        {old_book_category.length != 0
                                           ? old_book_category.map(book => {
-                                               return <option value={book.value}>{book.label}</option>
-                                            })
+                                             return <option value={book.value}>{book.label}</option>
+                                          })
                                           : null}
                                     </select>
                                  </Col>
