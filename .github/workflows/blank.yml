@@ -30,6 +30,16 @@ jobs:
         uses: actions/setup-node@v2
         with:
           node-version: ${{ matrix.node-version }}
+      
+      - run: rm package-lock.json .env
+        continue-on-error: true
+      - run: rm -rf ./node_modules
+        continue-on-error: true
+      - run: rm -rf ./build
+        continue-on-error: true
+      - run: echo "REACT_APP_STRAPI_BASE_URL=https://strapi.monnom.mn" >> .env
+      - run: echo "REACT_APP_EXPRESS_BASE_URL=https://express.monnom.mn" >> .env
+      - run: echo "GENERATE_SOURCEMAP=false" >> .env
       - run: npm i --legacy-peer-deps
       - run: npm run build
       - run: pm2 delete static-page-server-3000 --silent

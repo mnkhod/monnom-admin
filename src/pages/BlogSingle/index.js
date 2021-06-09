@@ -65,7 +65,7 @@ export default function BlogSingle(props) {
       try {
          const response = await axios.get(`${process.env.REACT_APP_STRAPI_BASE_URL}/blog-categories`, config)
          setCategories(response.data)
-      } catch (e) {}
+      } catch (e) { }
    }
 
    useEffect(() => {

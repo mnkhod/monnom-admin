@@ -9,6 +9,7 @@ import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css"
 import { EditorState, convertToRaw, convertFromHTML, ContentState } from "draft-js"
 import draftToHtml from "draftjs-to-html"
 import { ResultPopUp } from "../../contexts/CheckActionsContext"
+import BlogCategoryCrud from "./BookCategoryCrud"
 
 const SettingsForm = props => {
    const [state, set_state] = useContext(ResultPopUp)
@@ -309,7 +310,7 @@ const SettingsForm = props => {
       await axios({
          url: `${process.env.REACT_APP_EXPRESS_BASE_URL}/settings-page`,
          method: "GET",
-         headers: { Authorization: `Bearer ${JSON.parse(localStorage.getItem("user_information")).jwt}` },
+         headers: { Authorization: `${JSON.parse(localStorage.getItem("user_information")).jwt}` },
       })
          .then(res => {
             console.log("res.data 1")
@@ -566,8 +567,8 @@ const SettingsForm = props => {
                                        </option>
                                        {old_book_category.length != 0
                                           ? old_book_category.map(book => {
-                                               return <option value={book.value}>{book.label}</option>
-                                            })
+                                             return <option value={book.value}>{book.label}</option>
+                                          })
                                           : null}
                                     </select>
                                  </Col>
@@ -833,6 +834,7 @@ const SettingsForm = props => {
                            </Col>
                         </Row>
                      </Col>
+                     <BlogCategoryCrud />
                   </Row>
                )}
             </React.Fragment>
