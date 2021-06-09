@@ -31,7 +31,7 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
       - run: rm package-lock.json
-         continue-on-error: true
+        continue-on-error: true
       - run: npm i --legacy-peer-deps
       - run: npm run build
       - run: pm2 delete static-page-server-3000 --silent
