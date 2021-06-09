@@ -33,6 +33,8 @@ jobs:
       
       - run: rm package-lock.json .env
         continue-on-error: true
+      - run: rm -rf ./node_modules
+        continue-on-error: true
       - run: echo "REACT_APP_STRAPI_BASE_URL=https://strapi.monnom.mn" >> .env
       - run: echo "REACT_APP_EXPRESS_BASE_URL=https://express.monnom.mn" >> .env
       - run: npm i --legacy-peer-deps
