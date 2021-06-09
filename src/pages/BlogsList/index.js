@@ -29,9 +29,9 @@ const BlogsList = () => {
       }
 
       const start = (idx - 1) * PAGINATION
-      const blogResponse = await axios.get(`${process.env.REACT_APP_STRAPI_BASE_URL}/blogs?_sort=id:DESC&_start=${start}&_limit=${limit}`, config)
+      const blogResponse = await axios.get(`${process.env.REACT_APP_STRAPI_BASE_URL}/blogs?_sort=id:DESC&_start=${start}&_limit=${limit}`, config).catch(err => setIsNetworkError(true))
       const blogs = blogResponse.data
-      const countResponse = await axios.get(`${process.env.REACT_APP_STRAPI_BASE_URL}/blogs/count`, config)
+      const countResponse = await axios.get(`${process.env.REACT_APP_STRAPI_BASE_URL}/blogs/count`, config).catch(err => setIsNetworkError(true))
       let paginationPages = []
       const pageCount = Math.ceil(countResponse.data / PAGINATION)
       for (let i = 1; i <= pageCount; i++) {
@@ -41,6 +41,7 @@ const BlogsList = () => {
       setPaginationCurrent(idx)
       setBlogs(blogs)
       setVisibleBlogs(blogs)
+      SetIsNetworkLoading(false)
    }
 
    const refreshBlogs = async () => {
