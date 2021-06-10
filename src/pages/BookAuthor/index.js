@@ -32,6 +32,7 @@ const BookAuthor = () => {
             setIsNetworkError(false)
          })
          .catch(err => {
+            console.log(err)
             setIsNetworkError(true)
             SetIsNetworkLoading(true)
          })

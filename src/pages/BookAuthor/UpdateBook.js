@@ -71,7 +71,7 @@ const getListStyle = isDraggingOver => ({
 
 const config = {
    "content-type": "multipart/form-data",
-   Authorization: `Bearer ${JSON.parse(localStorage.getItem("user_information")).jwt}`,
+   // Authorization: `Bearer ${JSON.parse(localStorage.getItem("user_information")).jwt}`,
 }
 
 export default function UpdateBook(props) {
@@ -151,9 +151,7 @@ export default function UpdateBook(props) {
       await axios({
          url: `${process.env.REACT_APP_STRAPI_BASE_URL}/books/${props.book_id}`,
          method: "PUT",
-         headers: {
-            Authorization: `Bearer ${JSON.parse(localStorage.getItem("user_information")).jwt}`,
-         },
+         headers: { Authorization: `Bearer ${JSON.parse(localStorage.getItem("user_information")).jwt}` },
          data: {
             name: edit_book_name,
             introduction: book_introduction,
@@ -168,11 +166,9 @@ export default function UpdateBook(props) {
          },
       })
          .then(async res => {
-            console.log("pisda")
             set_checking_state(true)
          })
          .catch(e => {
-            console.log("pisda 1")
             set_checking_state(false)
          })
    }

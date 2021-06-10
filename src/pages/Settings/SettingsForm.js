@@ -567,8 +567,8 @@ const SettingsForm = props => {
                                        </option>
                                        {old_book_category.length != 0
                                           ? old_book_category.map(book => {
-                                             return <option value={book.value}>{book.label}</option>
-                                          })
+                                               return <option value={book.value}>{book.label}</option>
+                                            })
                                           : null}
                                     </select>
                                  </Col>
@@ -721,6 +721,7 @@ const SettingsForm = props => {
                                  </CardBody>
                               </Card>
                            </Col>
+                           <BlogCategoryCrud />
                         </Row>
                      </Col>
 
@@ -834,7 +835,6 @@ const SettingsForm = props => {
                            </Col>
                         </Row>
                      </Col>
-                     <BlogCategoryCrud />
                   </Row>
                )}
             </React.Fragment>

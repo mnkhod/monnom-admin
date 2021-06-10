@@ -12,79 +12,19 @@ import { ResultPopUp } from "../../contexts/CheckActionsContext"
 require("dotenv").config()
 
 const not_delivered_columns = [
-   {
-      label: "Номын нэр",
-      field: "book_name",
-      sort: "asc",
-   },
-   {
-      label: "Хэрэглэгчийн утас",
-      field: "customer_phone",
-      sort: "disabled",
-      width: "100",
-   },
-   {
-      label: "Хэрэглэгчийн нэр",
-      field: "customer_name",
-      sort: "disabled",
-   },
-   {
-      label: "Хүргэгчийн нэр",
-      field: "supplier_name",
-      sort: "asc",
-   },
-   {
-      label: "Хүргэгчийн утас",
-      field: "supplier_phone",
-      sort: "disabled",
-   },
-   {
-      label: "Хүргэх хаяг",
-      field: "destination",
-      sort: "asc",
-   },
-   {
-      label: "Огноо",
-      field: "created_at",
-      sort: "disabled",
-   },
-   {
-      label: "Хүргэлт",
-      field: "has_deliver",
-      sort: "disabled",
-   },
+   { label: "Номын нэр", field: "book_name", sort: "asc" },
+   { label: "Хэрэглэгчийн утас", field: "customer_phone", sort: "disabled", width: "100" },
+   { label: "Хэрэглэгчийн нэр", field: "customer_name", sort: "disabled" },
+   { label: "Хүргэх хаяг", field: "destination", sort: "asc" },
+   { label: "Огноо", field: "created_at", sort: "disabled" },
+   { label: "Хүргэлт", field: "finish_order", sort: "disabled" },
 ]
 
 const delivered_columns = [
-   {
-      label: "Номын нэр",
-      field: "book_name",
-      sort: "asc",
-   },
-   {
-      label: "Хэрэглэгчийн утас",
-      field: "customer_phone",
-      sort: "disabled",
-   },
-   {
-      label: "Хэрэглэгчийн нэр",
-      field: "customer_name",
-      sort: "disabled",
-   },
-   {
-      label: "Хүргэгчийн нэр",
-      field: "supplier_name",
-      sort: "asc",
-   },
-   {
-      label: "Хүргэсэн хаяг",
-      field: "destination",
-      sort: "asc",
-   },
-   {
-      label: "Огноо",
-      field: "updated_at",
-   },
+   { label: "Номын нэр", field: "book_name", sort: "asc" },
+   { label: "Хэрэглэгчийн утас", field: "customer_phone", sort: "disabled" },
+   { label: "Хэрэглэгчийн нэр", field: "customer_name", sort: "disabled" },
+   { label: "Огноо", field: "updated_at" },
 ]
 
 export default function Delivery() {
@@ -103,22 +43,10 @@ export default function Delivery() {
    const [book_for_description, set_book_for_description] = useState({})
 
    const removeFromNotDelivered = async id => {
-      const config = {
-         headers: {
-            Authorization: `Bearer ${JSON.parse(localStorage.getItem("user_information")).jwt}`,
-         },
-      }
-
       const url = `${process.env.REACT_APP_STRAPI_BASE_URL}/delivery-registrations/${id}`
 
       await axios
-         .put(
-            url,
-            {
-               is_delivered: true,
-            },
-            config
-         )
+         .put(url, { is_delivered: true }, { headers: { Authorization: `Bearer ${JSON.parse(localStorage.getItem("user_information")).jwt}` } })
          .then(async res => {
             set_state({ loading: false })
             set_state({ success: true })
@@ -132,107 +60,63 @@ export default function Delivery() {
          })
    }
 
-   async function fetchData() {
-      try {
-         let delivery = await axios({
-            url: `${process.env.REACT_APP_STRAPI_BASE_URL}/delivery-registrations`,
-            method: "GET",
-            headers: {
-               Authorization: `Bearer ${JSON.parse(localStorage.getItem("user_information")).jwt}`,
-            },
-         }).catch(err => {
-            throw "error"
-         })
-
-         let books = await axios({
-            url: `${process.env.REACT_APP_STRAPI_BASE_URL}/books`,
-            method: "GET",
-            headers: {
-               Authorization: `Bearer ${JSON.parse(localStorage.getItem("user_information")).jwt}`,
-            },
-         }).catch(err => {
-            throw "error"
-         })
-
-         delivery = delivery.data
-         books = books.data
-
-         initializeData(delivery, books)
-         SetIsNetworkLoading(false)
-      } catch (err) {
-         SetIsNetworkLoading(false)
-      }
-   }
-
-   useEffect(() => {
-      fetchData()
-   }, [])
-
-   const initializeData = (deliver, books) => {
-      let set_delivered_data_temp = []
-      let set_not_delivered_data_temp = []
-      deliver.forEach(data => {
-         if (data.is_delivered)
-            set_delivered_data_temp.push({
+   const initializeData = (deliveries, books) => {
+      let delivered_data_temp = []
+      let not_delivered_data_temp = []
+      deliveries.forEach(delivery => {
+         if (delivery.is_delivered) {
+            delivered_data_temp.push({
                book_name: (
                   <a
-                     href="#"
                      onClick={() => {
-                        set_book_for_description(books.find(book => book.id == data.customer_paid_book.book))
+                        set_book_for_description(books.find(book => book.id == delivery.customer_paid_book?.book))
                         set_book_desc_modal_center(true)
                      }}
                   >
-                     {books.find(book => book.id == data.customer_paid_book.book)?.name}
+                     {books.find(book => book.id == delivery.customer_paid_book?.book)?.name}
                   </a>
                ),
-               destination: data.order_destination,
-               customer_phone: data.customer?.phone,
-               customer_name: data.customer?.username,
-               supplier_phone: data.employee?.phone,
-               supplier_name: data.employee?.fullname,
-               updated_at: new Date(data.updated_at).toLocaleDateString("mn-MN", {
-                  timeZone: "Asia/Ulaanbaatar",
-               }),
+               destination: delivery.order_destination,
+               customer_phone: delivery.customer?.phone,
+               customer_name: delivery.customer?.username,
+               updated_at: new Date(delivery.updated_at).toLocaleString("mn-MN", { timeZone: "Asia/Ulaanbaatar" }),
             })
-         else
-            set_not_delivered_data_temp.push({
+         } else {
+            not_delivered_data_temp.push({
                book_name: (
                   <a
-                     href="#"
                      onClick={() => {
-                        set_book_for_description(books.find(book => book.id == data.customer_paid_book.book))
+                        set_book_for_description(books.find(book => book.id == delivery.customer_paid_book?.book))
                         set_book_desc_modal_center(true)
                      }}
                   >
-                     {books.find(book => book.id == data.customer_paid_book.book)?.name}
+                     {books.find(book => book.id == delivery.customer_paid_book?.book)?.name}
                   </a>
                ),
-               destination: data.order_destination,
-               customer_phone: data.customer.phone,
-               customer_name: data.customer.fullname,
-               supplier_phone: data.employee.phone,
-               supplier_name: data.employee.fullname,
-               created_at: new Date(data.updated_at).toLocaleDateString("mn-MN", {
-                  timeZone: "Asia/Ulaanbaatar",
-               }),
-               has_deliver: (
+               destination: delivery.order_destination,
+               customer_phone: delivery.customer.phone,
+               customer_name: delivery.customer.fullname,
+               created_at: new Date(delivery.updated_at).toLocaleString("mn-MN", { timeZone: "Asia/Ulaanbaatar" }),
+               finish_order: (
                   <Button
                      type="submit"
                      className="btn btn-info mx-auto d-block"
                      onClick={() => {
-                        set_id(data.id)
+                        set_id(delivery.id)
                         set_confirm_order(true)
-                        set_order_id(data.id)
+                        set_order_id(delivery.id)
                      }}
                   >
                      Дуусгах
                   </Button>
                ),
             })
+         }
       })
-      set_update_data(set_not_delivered_data_temp[id])
-      set_delivered_data(set_delivered_data_temp)
-      set_not_delivered_data(set_not_delivered_data_temp)
+      // console.log(not_delivered_data_temp)
+      set_update_data(not_delivered_data_temp[id])
+      set_delivered_data(delivered_data_temp)
+      set_not_delivered_data(not_delivered_data_temp)
    }
 
    const delivered_datatable = {
@@ -244,6 +128,30 @@ export default function Delivery() {
       columns: not_delivered_columns,
       rows: not_delivered_data,
    }
+
+   async function fetchData() {
+      // try {
+      let delivery = await axios({ url: `${process.env.REACT_APP_STRAPI_BASE_URL}/delivery-registrations`, method: "GET", headers: { Authorization: `Bearer ${JSON.parse(localStorage.getItem("user_information")).jwt}` } }).catch(err => {
+         throw "error"
+      })
+
+      let books = await axios({ url: `${process.env.REACT_APP_STRAPI_BASE_URL}/books`, method: "GET", headers: { Authorization: `Bearer ${JSON.parse(localStorage.getItem("user_information")).jwt}` } }).catch(err => {
+         throw "error"
+      })
+
+      console.log("delivery.data")
+      console.log(delivery.data)
+
+      initializeData(delivery.data, books.data)
+      SetIsNetworkLoading(false)
+      // } catch (err) {
+      //    SetIsNetworkLoading(false)
+      // }
+   }
+
+   useEffect(() => {
+      fetchData()
+   }, [])
 
    return (
       <React.Fragment>
