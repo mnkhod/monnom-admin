@@ -33,6 +33,11 @@ export default function BlogSingle(props) {
       return errorMsg && errorMsg.length > 0
    }, [errorMsg])
 
+   const [warningMessage, setWarningMessage] = useState("")
+   const isWarning = useMemo(() => {
+      return warningMessage && warningMessage.length > 0
+   }, [warningMessage])
+
    const [successMsg, setSuccessMsg] = useState("")
    const isSuccess = useMemo(() => {
       return successMsg && successMsg.length > 0
@@ -44,7 +49,8 @@ export default function BlogSingle(props) {
 
    const imageUrl = useMemo(() => {
       if (blog) {
-         return `${process.env.REACT_APP_STRAPI_BASE_URL}${blog.picture?.url}`
+         const url = blog.picture?.url || '';
+         return url.startsWith('/') ? `${process.env.REACT_APP_STRAPI_BASE_URL}${blog.picture?.url}` : url;
       }
       if (imageFile) {
          return URL.createObjectURL(imageFile)
@@ -84,6 +90,14 @@ export default function BlogSingle(props) {
 
    // create/update
    const handleSubmit = async e => {
+      if (!(title || '').length) {
+         setWarningMessage('Мэдээний гарчиг оруулна уу')
+         return;
+      }
+      if (!(imageUrl || '').length) {
+         setWarningMessage('Мэдээний зураг оруулна уу')
+         return;
+      }
       set_state({ loading: true })
       e.preventDefault()
       const config = {
@@ -197,6 +211,21 @@ export default function BlogSingle(props) {
          ) : (
             <></>
          )}
+         {isWarning ? (
+            <SweetAlert
+               title={warningMessage}
+               warning
+               showCloseButton={false}
+               onConfirm={() => {
+                  setWarningMessage("")
+               }}
+               onCancel={() => {
+                  setWarningMessage("")
+               }}
+            />
+         ) : (
+            <></>
+         )}
          {isSuccess ? (
             <SweetAlert
                title={successMsg}
@@ -224,7 +253,7 @@ export default function BlogSingle(props) {
                   <Col>
                      <FormGroup>
                         <Label>Мэдээний гарчиг</Label>
-                        <Input value={title} onChange={e => setTitle(e.target.value)} />
+                        <Input required value={title} onChange={e => setTitle(e.target.value)} />
                      </FormGroup>
                   </Col>
                </Row>
@@ -244,7 +273,7 @@ export default function BlogSingle(props) {
                   <Col>
                      <FormGroup>
                         <Label>Мэдээний зураг</Label>
-                        <Input type="file" onChange={imageHandler} />
+                        <Input type="file" onChange={imageHandler} accept={'image/png, image/gif, image/jpeg'} />
                      </FormGroup>
                   </Col>
                </Row>
@@ -320,7 +349,6 @@ export default function BlogSingle(props) {
                                     "intentBlock",
                                     "italic",
                                     "linkImage",
-                                    "mediaEmbed",
                                     "pageBreak",
                                     "sideImage",
                                  ],

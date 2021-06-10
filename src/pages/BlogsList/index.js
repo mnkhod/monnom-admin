@@ -149,13 +149,16 @@ const BlogsList = () => {
 }
 
 const BlogCard = props => {
+   const imageUrl = useMemo(() => {
+      return (props.blog.picture?.url || '').startsWith('/') ? process.env.REACT_APP_STRAPI_BASE_URL + props.blog.picture?.url : props.blog.picture?.url;
+   }, [props.blog.picture?.url])
    return (
       <Col xl={3} lg={4} md={4} sm={4}>
          <Card>
             <CardImg
                top
                className="img-fluid mx-auto"
-               src={process.env.REACT_APP_STRAPI_BASE_URL + props.blog.picture?.url}
+               src={imageUrl}
                style={{
                   height: "30vh",
                   resize: "both",
@@ -165,7 +168,7 @@ const BlogCard = props => {
                alt={props.blog.title}
             />
             <CardBody>
-               <CardTitle className="mt-0">{props.blog.title.length > 25 ? props.blog.title.slice(0, 25) + " ..." : props.blog.title}</CardTitle>
+               <CardTitle className="mt-0 blog-title">{props.blog.title}</CardTitle>
                <CardText>
                   <Row>
                      <Col xl={6} className="text-left">
