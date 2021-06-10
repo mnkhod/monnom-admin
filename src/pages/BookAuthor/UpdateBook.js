@@ -70,15 +70,13 @@ const getListStyle = isDraggingOver => ({
 })
 
 const config = {
-   headers: {
-      "content-type": "multipart/form-data",
-      // Authorization: `Bearer ${JSON.parse(localStorage.getItem("user_information")).jwt}`,
-   },
+   "content-type": "multipart/form-data",
+   Authorization: `Bearer ${JSON.parse(localStorage.getItem("user_information")).jwt}`,
 }
 
 export default function UpdateBook(props) {
    const [state, set_state] = useContext(ResultPopUp)
-   const [checking_state, set_checking_state] = useState("")
+   const [checking_state, set_checking_state] = useState(null)
 
    const [activeTab, set_activeTab] = useState(1)
    const [progressValue, setprogressValue] = useState(33)
@@ -153,7 +151,9 @@ export default function UpdateBook(props) {
       await axios({
          url: `${process.env.REACT_APP_STRAPI_BASE_URL}/books/${props.book_id}`,
          method: "PUT",
-         config,
+         headers: {
+            Authorization: `Bearer ${JSON.parse(localStorage.getItem("user_information")).jwt}`,
+         },
          data: {
             name: edit_book_name,
             introduction: book_introduction,
@@ -168,9 +168,11 @@ export default function UpdateBook(props) {
          },
       })
          .then(async res => {
+            console.log("pisda")
             set_checking_state(true)
          })
          .catch(e => {
+            console.log("pisda 1")
             set_checking_state(false)
          })
    }
@@ -183,7 +185,7 @@ export default function UpdateBook(props) {
       await axios({
          url: `${process.env.REACT_APP_STRAPI_BASE_URL}/books/${props.book_id}`,
          method: "PUT",
-         config,
+         headers: config,
          data: coverPicture,
       })
          .then(res => {
@@ -239,7 +241,7 @@ export default function UpdateBook(props) {
                   axios({
                      url: `${process.env.REACT_APP_STRAPI_BASE_URL}/books/${props.book_id}`,
                      method: "PUT",
-                     config,
+                     headers: config,
                      data: {
                         has_audio: audio_book_files.length != 0 ? true : false,
                         has_pdf: book_files.length != 0 ? true : false,
@@ -262,7 +264,7 @@ export default function UpdateBook(props) {
          })
    }
 
-   const updateFiles = async () => {
+   const updateAudioFilesStackNumber = async () => {
       const config = {
          headers: {
             Authorization: `Bearer ${JSON.parse(localStorage.getItem("user_information")).jwt}`,
@@ -276,8 +278,10 @@ export default function UpdateBook(props) {
          }
       })
 
-      axios
-         .all(tempStackSequence.map(stack => axios.put(`${process.env.REACT_APP_STRAPI_BASE_URL}/book-audios`, { stack_number: stack.index }, config)))
+      console.log
+
+      await axios
+         .all(tempStackSequence.map(stack => axios.put(`${process.env.REACT_APP_STRAPI_BASE_URL}/book-audios/${stack.id}`, { stack_number: stack.index }, config)))
          .then(() => {
             set_checking_state(true)
          })
@@ -363,31 +367,23 @@ export default function UpdateBook(props) {
 
    const updatePDF = async () => {
       let ebookFile = new FormData()
-      ebookFile.append("data", JSON.stringify({}))
+      ebookFile.append(
+         "data",
+         JSON.stringify({
+            has_audio: audio_book_files.length != 0 ? true : false,
+            has_pdf: book_files.length != 0 ? true : false,
+         })
+      )
       ebookFile.append("files.pdf_book_path", book_files[0], book_files[0].name)
 
       await axios({
          url: `${process.env.REACT_APP_STRAPI_BASE_URL}/books/${props.book_id}`,
          method: "PUT",
-         config,
+         headers: config,
          data: ebookFile,
       })
          .then(res => {
-            axios({
-               url: `${process.env.REACT_APP_STRAPI_BASE_URL}/books/${props.book_id}`,
-               method: "PUT",
-               config,
-               data: {
-                  has_audio: audio_book_files.length != 0 ? true : false,
-                  has_pdf: book_files.length != 0 ? true : false,
-               },
-            })
-               .then(res => {
-                  set_checking_state(true)
-               })
-               .catch(err => {
-                  set_checking_state(false)
-               })
+            set_checking_state(true)
          })
          .catch(e => {
             set_checking_state(false)
@@ -395,24 +391,25 @@ export default function UpdateBook(props) {
    }
 
    const removePDF = async () => {
+      console.log("removePDF")
       await axios({
          url: `${process.env.REACT_APP_STRAPI_BASE_URL}/books/${props.book_id}`,
          method: "PUT",
-         config,
+         headers: {
+            Authorization: `Bearer ${JSON.parse(localStorage.getItem("user_information")).jwt}`,
+         },
          data: {
-            pdf_book_path: [],
-            has_audio: audio_book_files.length != 0 ? true : false,
-            has_pdf: book_files.length != 0 ? true : false,
+            pdf_book_path: null,
+            has_pdf: false,
          },
       })
          .then(res => {
             set_checking_state(true)
          })
          .catch(err => {
+            console.log(err)
             set_checking_state(false)
          })
-
-      return successAlert
    }
 
    const updatePictureComment = async () => {
@@ -481,8 +478,6 @@ export default function UpdateBook(props) {
          .catch(err => {
             set_checking_state(false)
          })
-
-      return successAlert
    }
 
    const updateBook = async () => {
@@ -493,56 +488,62 @@ export default function UpdateBook(props) {
       let flag = false
       for (const [key, value] of Object.entries(check_update_field)) if (value) flag = true
 
-      // Promise.all()
       if (!flag) {
          set_state({ loading: false })
       } else {
          if (check_update_field.name || check_update_field.intro || check_update_field.youtube_url || check_update_field.book_price || check_update_field.ebook_price || check_update_field.audio_price || check_update_field.authors || check_update_field.categories) {
-            await sendNotIncludedFilesUpdate(categories, authors)
+            sendNotIncludedFilesUpdate(categories, authors)
          }
 
          if (check_update_field.picture) {
-            await updateCoverPic()
+            updateCoverPic()
          }
 
          if (check_update_field.audio_file) {
-            await updateAudios()
+            updateAudios()
          }
 
          if (check_update_field.remove_audio_file) {
-            await deleteChapters()
+            deleteChapters()
          }
 
          if (check_update_field.pdf_file) {
-            await updatePDF()
+            updatePDF()
          }
 
          if (check_update_field.remove_pdf_file) {
-            await removePDF()
+            removePDF()
          }
 
          if (check_update_field.reference) {
-            await updatePictureComment()
+            updatePictureComment()
          }
 
          if (check_update_field.remove_reference) {
-            await removeReference()
+            removeReference()
          }
 
          if (check_update_field.change_position) {
-            await updateFiles()
+            updateAudioFilesStackNumber()
             // await changePosition()
          }
 
-         if (checking_state) {
-            await set_state({ loading: false })
-            await set_state({ success: true })
-         } else {
-            await set_state({ loading: false })
-            await set_state({ error: true })
-         }
+         // console.log("checking_state")
+         // console.log(checking_state)
       }
    }
+
+   useEffect(() => {
+      console.log(checking_state)
+      if (checking_state != null)
+         if (checking_state) {
+            set_state({ loading: false })
+            set_state({ success: true })
+         } else {
+            set_state({ loading: false })
+            set_state({ error: true })
+         }
+   }, [checking_state])
 
    const fetchBookData = () => {
       axios({
@@ -563,8 +564,8 @@ export default function UpdateBook(props) {
             set_edit_has_pdf(res.data.has_pdf)
             set_edit_has_mp3(res.data.has_audio)
             set_edit_has_sale(res.data.has_sale)
-            setCoverImage(`${process.env.REACT_APP_STRAPI_BASE_URL}${res.data.picture.url}`)
-            set_send_cover_pic(`${process.env.REACT_APP_STRAPI_BASE_URL}${res.data.picture.url}`)
+            setCoverImage(`${res.data.picture.url}`)
+            set_send_cover_pic(`${res.data.picture.url}`)
             getAuthorsInfo(res.data.book_authors)
             getCategoryInfo(res.data.book_categories)
             set_sale_book_price(res.data.book_price)
