@@ -580,7 +580,7 @@ export default function UpdateBook(props) {
             console.log("sort")
             console.log(res.data.book_audios.sort((a, b) => a.number - b.number))
          })
-         .catch(err => {})
+         .catch(err => { })
    }
 
    useEffect(() => {
@@ -976,7 +976,7 @@ export default function UpdateBook(props) {
                                        {book_files.length != 0 ? (
                                           <FormGroup>
                                              <Label>Цахим номын үнэ</Label>
-                                              
+
                                              <Input
                                                 type="number"
                                                 value={ebook_price}
@@ -999,7 +999,7 @@ export default function UpdateBook(props) {
                                        {audio_book_files.length != 0 ? (
                                           <FormGroup>
                                              <Label>Аудио номын үнэ</Label>
-                                              
+
                                              <Input
                                                 type="number"
                                                 value={audio_book_price}
@@ -1063,7 +1063,7 @@ export default function UpdateBook(props) {
                                           <label className="custom-file-upload d-flex">
                                              <input
                                                 type="file"
-                                                accept=".pdf,.epub"
+                                                accept=".pdf"
                                                 style={{
                                                    display: "none",
                                                 }}

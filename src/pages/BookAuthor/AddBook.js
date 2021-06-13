@@ -111,7 +111,7 @@ const AddBook = props => {
                         formdata: tempFormData,
                      })
                   })
-                  .catch(err => {})
+                  .catch(err => { })
             )
          })
 
@@ -627,7 +627,7 @@ const AddBook = props => {
                                           <label className="custom-file-upload d-flex">
                                              <input
                                                 type="file"
-                                                accept=".pdf,.epub"
+                                                accept=".pdf"
                                                 style={{
                                                    display: "none",
                                                 }}
