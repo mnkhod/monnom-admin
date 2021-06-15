@@ -10,78 +10,18 @@ import UpdateBook from "pages/BookAuthor/UpdateBook"
 
 // book section
 const columns = [
-   {
-      label: "ID",
-      field: "book_id",
-      // sort: "asc",
-      width: 150,
-   },
-   {
-      label: "Нэр",
-      field: "book_name",
-      // sort: "asc",
-      width: 150,
-   },
-   {
-      label: "Зохиолч",
-      field: "book_author",
-      // sort: "asc",
-      width: 100,
-   },
-   {
-      label: "Категори",
-      field: "book_category",
-      // sort: "asc",
-      width: 100,
-   },
-   {
-      label: "Сэтгэгдэлүүд",
-      field: "book_comments",
-      sort: "disabled",
-      width: "100",
-   },
-   {
-      label: "Нийтлэгдсэн огноо",
-      field: "book_date",
-      sort: "desc",
-      width: 70,
-   },
-   {
-      label: "Төрөл",
-      field: "type",
-      // sort: "asc",
-      width: 100,
-   },
-   {
-      label: "Аудио номын үнэ",
-      field: "audio_book_price",
-      // sort: "asc",
-      width: 50,
-   },
-   {
-      label: "Онлайн номын үнэ",
-      field: "online_book_price",
-      // sort: "asc",
-      width: 50,
-   },
-   {
-      label: "Хэвлэмэл номын үнэ",
-      field: "book_price",
-      // sort: "asc",
-      width: 50,
-   },
-   {
-      label: "Хэвлэмэл тоо",
-      field: "sale_quantity",
-      // sort: "asc",
-      width: 50,
-   },
-   {
-      label: "Үйлдэл",
-      field: "book_edit",
-      sort: "disabled",
-      width: 20,
-   },
+   { label: "ID", field: "book_id", width: 150 },
+   { label: "Нэр", field: "book_name", width: 150 },
+   { label: "Зохиолч", field: "book_author", width: 100 },
+   { label: "Категори", field: "book_category", width: 100 },
+   { label: "Сэтгэгдэлүүд", field: "book_comments", sort: "disabled", width: "100" },
+   { label: "Нийтлэгдсэн огноо", field: "book_date", sort: "desc", width: 70 },
+   { label: "Төрөл", field: "type", width: 100 },
+   { label: "Аудио номын үнэ", field: "audio_book_price", width: 50 },
+   { label: "Онлайн номын үнэ", field: "online_book_price", width: 50 },
+   { label: "Хэвлэмэл номын үнэ", field: "book_price", width: 50 },
+   { label: "Хэвлэмэл тоо", field: "sale_quantity", width: 50 },
+   { label: "Үйлдэл", field: "book_edit", sort: "disabled", width: 20 },
 ]
 
 const List = props => {
@@ -125,9 +65,7 @@ const List = props => {
          return {
             book_id: d.id,
             book_name: d.book_name,
-            book_date: new Date(d.book_added_date).toLocaleString("mn-MN", {
-               timeZone: "Asia/Hovd",
-            }),
+            book_date: new Date(d.book_added_date).toLocaleString("mn-MN", { timeZone: "Asia/Hovd" }),
             book_state: d.book_state,
             type: d.type,
             audio_book_price: (d.audio_book_price != null) != 0 ? d.audio_book_price : `Үнэгүй`,
@@ -172,14 +110,14 @@ const List = props => {
             ),
             book_edit: (
                <Link to="#" className="d-flex justify-content-around">
-                  {/* <i
+                  <i
                      onClick={() => {
                         togglemodal()
                         set_edit_book_id(d.id)
                      }}
                      className="bx bxs-edit text-primary font-size-20"
                      id="edittooltip"
-                  /> */}
+                  />
                   <i
                      onClick={() => {
                         set_delete_book_id(d.id)

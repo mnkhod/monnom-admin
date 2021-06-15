@@ -131,6 +131,7 @@ export default function UpdateBook(props) {
    const [book_files, set_book_files] = useState([])
    const [audio_book_files_for_delete, set_audio_book_files_for_delete] = useState([])
    const [audio_book_files_for_save, set_audio_book_files_for_save] = useState([])
+   const [edit_step_2_identifier, set_edit_step_2_identifier] = useState(null)
 
    const getAudioFileDuration = file =>
       new Promise((resolve, reject) => {
@@ -155,7 +156,7 @@ export default function UpdateBook(props) {
          data: {
             name: edit_book_name,
             introduction: book_introduction,
-            youtube_url: youtube_url,
+            youtube_intro: youtube_url,
             book_price: book_price,
             online_book_price: ebook_price,
             audio_book_price: audio_book_price,
@@ -261,25 +262,16 @@ export default function UpdateBook(props) {
    }
 
    const updateAudioFilesStackNumber = async () => {
-      const config = {
-         headers: {
-            Authorization: `Bearer ${JSON.parse(localStorage.getItem("user_information")).jwt}`,
-         },
-      }
+      const config = { headers: { Authorization: `Bearer ${JSON.parse(localStorage.getItem("user_information")).jwt}` } }
 
       let tempStackSequence = audio_book_files_for_save.map((file, index) => {
-         return {
-            id: file.id,
-            index,
-         }
+         return { id: file.id, index }
       })
 
-      console.log
-
       await axios
-         .all(tempStackSequence.map(stack => axios.put(`${process.env.REACT_APP_STRAPI_BASE_URL}/book-audios/${stack.id}`, { stack_number: stack.index }, config)))
+         .all(tempStackSequence.map(stack => axios.put(`${process.env.REACT_APP_STRAPI_BASE_URL}/book-audios/${stack.id}`, { number: stack.index }, config)))
          .then(() => {
-            set_checking_state(true)
+            window.location.reload()
          })
          .catch(err => {
             set_checking_state(false)
@@ -388,17 +380,7 @@ export default function UpdateBook(props) {
 
    const removePDF = async () => {
       console.log("removePDF")
-      await axios({
-         url: `${process.env.REACT_APP_STRAPI_BASE_URL}/books/${props.book_id}`,
-         method: "PUT",
-         headers: {
-            Authorization: `Bearer ${JSON.parse(localStorage.getItem("user_information")).jwt}`,
-         },
-         data: {
-            pdf_book_path: null,
-            has_pdf: false,
-         },
-      })
+      await axios({ url: `${process.env.REACT_APP_STRAPI_BASE_URL}/books/${props.book_id}`, method: "PUT", headers: { Authorization: `Bearer ${JSON.parse(localStorage.getItem("user_information")).jwt}` }, data: { pdf_book_path: null, has_pdf: false } })
          .then(res => {
             set_checking_state(true)
          })
@@ -488,39 +470,39 @@ export default function UpdateBook(props) {
          set_state({ loading: false })
       } else {
          if (check_update_field.name || check_update_field.intro || check_update_field.youtube_url || check_update_field.book_price || check_update_field.ebook_price || check_update_field.audio_price || check_update_field.authors || check_update_field.categories) {
-            sendNotIncludedFilesUpdate(categories, authors)
+            await sendNotIncludedFilesUpdate(categories, authors)
          }
 
          if (check_update_field.picture) {
-            updateCoverPic()
+            await updateCoverPic()
          }
 
          if (check_update_field.audio_file) {
-            updateAudios()
+            await updateAudios()
          }
 
          if (check_update_field.remove_audio_file) {
-            deleteChapters()
+            await deleteChapters()
          }
 
          if (check_update_field.pdf_file) {
-            updatePDF()
+            await updatePDF()
          }
 
          if (check_update_field.remove_pdf_file) {
-            removePDF()
+            await removePDF()
          }
 
          if (check_update_field.reference) {
-            updatePictureComment()
+            await updatePictureComment()
          }
 
          if (check_update_field.remove_reference) {
-            removeReference()
+            await removeReference()
          }
 
          if (check_update_field.change_position) {
-            updateAudioFilesStackNumber()
+            await updateAudioFilesStackNumber()
             // await changePosition()
          }
 
@@ -530,7 +512,6 @@ export default function UpdateBook(props) {
    }
 
    useEffect(() => {
-      console.log(checking_state)
       if (checking_state != null)
          if (checking_state) {
             set_state({ loading: false })
@@ -542,26 +523,14 @@ export default function UpdateBook(props) {
    }, [checking_state])
 
    const fetchBookData = () => {
-      axios({
-         url: `${process.env.REACT_APP_STRAPI_BASE_URL}/books/${props.book_id}`,
-         method: "GET",
-         headers: {
-            Authorization: `Bearer ${JSON.parse(localStorage.getItem("user_information")).jwt}`,
-         },
-      })
+      axios({ url: `${process.env.REACT_APP_STRAPI_BASE_URL}/books/${props.book_id}`, method: "GET", headers: { Authorization: `Bearer ${JSON.parse(localStorage.getItem("user_information")).jwt}` } })
          .then(res => {
             set_edit_book_name(res.data.name)
-            {
-               res.data.pdf_book_path != null ? set_edit_has_pdf(true) : set_edit_has_pdf(false)
-            }
-            {
-               res.data.book_audios.length != 0 ? set_edit_has_mp3(true) : set_edit_has_mp3(false)
-            }
             set_edit_has_pdf(res.data.has_pdf)
             set_edit_has_mp3(res.data.has_audio)
             set_edit_has_sale(res.data.has_sale)
-            setCoverImage(`${res.data.picture.url}`)
-            set_send_cover_pic(`${res.data.picture.url}`)
+            setCoverImage(res.data.picture.url)
+            set_send_cover_pic(res.data.picture.url)
             getAuthorsInfo(res.data.book_authors)
             getCategoryInfo(res.data.book_categories)
             set_sale_book_price(res.data.book_price)
@@ -569,10 +538,7 @@ export default function UpdateBook(props) {
             set_ebook_price(res.data.online_book_price)
             set_youtube_url(res.data.youtube_intro)
             set_book_introduction(res.data.introduction)
-            {
-               res.data.pdf_book_path != null && set_book_files([res.data.pdf_book_path])
-            }
-            let sortedList = res.data.book_audios.sort((a, b) => a.id - b.id)
+            let sortedList = res.data.book_audios.sort((a, b) => a.number - b.number)
             set_audio_book_files(getOldItems(sortedList))
             set_audio_book_files_for_save(sortedList)
             set_book_comments_pic(res.data.picture_comment)
@@ -795,7 +761,7 @@ export default function UpdateBook(props) {
                                     }}
                                  >
                                     <span className="step-number mr-2">01</span>
-                                    <p className="my-auto">Ерөнхий мэдээлэл</p>
+                                    <p className="my-auto">Сонгох</p>
                                  </NavLink>
                               </NavItem>
                               <NavItem>
@@ -810,7 +776,7 @@ export default function UpdateBook(props) {
                                     }}
                                  >
                                     <span className="step-number mr-2">02</span>
-                                    <p className="my-auto">Файл</p>
+                                    <p className="my-auto">Мэдээлэл</p>
                                  </NavLink>
                               </NavItem>
                               <NavItem>
@@ -825,7 +791,9 @@ export default function UpdateBook(props) {
                                     }}
                                  >
                                     <span className="step-number mr-2">03</span>
-                                    <p className="my-auto">{book_comments_pic.length == 0 ? `Ишлэл` : `Бататгах`}</p>
+                                    {/* TODO remove та итгэлтэй байна уу? SweetAlert */}
+                                    <p className="my-auto">Баталгаажуулах</p>
+                                    {/* <p className="my-auto">{book_comments_pic.length == 0 ? `Ишлэл` : `Бататгах`}</p> */}
                                  </NavLink>
                               </NavItem>
                            </ul>
@@ -836,142 +804,200 @@ export default function UpdateBook(props) {
                            </div>
                            <TabContent activeTab={activeTab} className="twitter-bs-wizard-tab-content">
                               <TabPane tabId={1} id="personal-info">
-                                 <Form>
-                                    <Row>
-                                       <Col lg="6">
-                                          <FormGroup>
-                                             <Label for="kycfirstname-input">Номын нэр</Label>
-                                             <Input
-                                                type="text"
-                                                value={edit_book_name}
-                                                onChange={event => {
-                                                   if (!check_update_field.name)
-                                                      set_check_update_field({
-                                                         ...check_update_field,
-                                                         name: true,
-                                                      })
-                                                   set_edit_book_name(event.target.value)
-                                                }}
-                                             />
-                                          </FormGroup>
-                                          <Row>
-                                             <Col lg={12}>
-                                                <FormGroup className="select2-container">
-                                                   <label className="control-label">Номны төрөл</label>
-                                                   <Select
-                                                      value={selectedMulti_category}
-                                                      isMulti={true}
-                                                      placeholder="Сонгох ... "
-                                                      onChange={e => {
-                                                         handleMulti_book_category(e)
-                                                      }}
-                                                      options={optionGroup_categories}
-                                                      classNamePrefix="select2-selection"
-                                                   />
-                                                </FormGroup>
-                                             </Col>
-                                             <Col lg="12">
-                                                <FormGroup className="select2-container">
-                                                   <label className="control-label">Номны зохиогч</label>
-                                                   <Select
-                                                      value={selectedMulti_author}
-                                                      isMulti={true}
-                                                      placeholder="Сонгох ... "
-                                                      onChange={e => {
-                                                         handleMulti_book_author(e)
-                                                      }}
-                                                      options={optionGroup_authors}
-                                                      classNamePrefix="select2-selection"
-                                                   />
-                                                </FormGroup>
-                                             </Col>
-                                          </Row>
-                                       </Col>
+                                 <Row>
+                                    {/* TODO add 'change cover pic' button */}
+                                    <Col lg={6}>
+                                       <div
+                                          className="btn btn-primary"
+                                          style={{ width: "100%" }}
+                                          onClick={() => {
+                                             set_edit_step_2_identifier("general")
+                                             toggleTab(activeTab + 1)
+                                          }}
+                                       >
+                                          Ерөнхий мэдээлэл
+                                       </div>
+                                    </Col>
 
-                                       <Col lg={6}>
-                                          <FormGroup className="mx-auto" style={{ width: "85%" }}>
-                                             <Label htmlFor="productdesc">Зураг</Label>
-                                             <img className="rounded" src={coverImage} alt={edit_book_name} id="img" className="img-fluid" style={{ width: "100%", height: "30vh" }} />
-                                             <input type="file" id="input" accept="image/*" className="invisible" onChange={imageHandler} />
-                                             <div className="label">
-                                                <label htmlFor="input" className="image-upload d-flex justify-content-center" style={{ cursor: "pointer" }}>
-                                                   <i className="bx bx-image-add font-size-20 mr-2"></i>
-                                                   <p>Зураг оруулах</p>
-                                                </label>
-                                             </div>
-                                          </FormGroup>
-                                       </Col>
-                                    </Row>
-                                    <Row>
-                                       <Col lg={6}>
-                                          <FormGroup>
-                                             <Label for="kycfirstname-input">Юү түүб хаяг</Label>
-                                             <Input
-                                                type="text"
-                                                required
-                                                value={youtube_url}
-                                                onChange={e => {
-                                                   if (!check_update_field.youtube_url)
-                                                      set_check_update_field({
-                                                         ...check_update_field,
-                                                         youtube_url: true,
-                                                      })
-                                                   set_youtube_url(e.target.value)
-                                                }}
-                                             />
-                                          </FormGroup>
-                                          <Row>
-                                             <Col lg={12}>
-                                                {edit_has_sale ? (
-                                                   <>
-                                                      <Label>Хэвлэмэл номын үнэ</Label>
-                                                      <Input
-                                                         type="number"
-                                                         value={sale_book_price}
-                                                         onChange={e => {
-                                                            if (!check_update_field)
-                                                               set_check_update_field({
-                                                                  ...check_update_field,
-                                                                  book_price: true,
-                                                               })
-                                                            set_sale_book_price(e.target.value)
-                                                         }}
-                                                      />
-                                                   </>
-                                                ) : (
-                                                   false
-                                                )}
-                                             </Col>
-                                          </Row>
-                                       </Col>
-                                       <Col lg={6}>
-                                          <FormGroup>
-                                             <Label htmlFor="productdesc">Танилцуулга</Label>
-                                             <textarea
-                                                className="form-control"
-                                                id="productdesc"
-                                                rows="5"
-                                                value={book_introduction}
-                                                onChange={e => {
-                                                   if (!check_update_field.intro)
-                                                      set_check_update_field({
-                                                         ...check_update_field,
-                                                         intro: true,
-                                                      })
-                                                   set_book_introduction(e.target.value)
-                                                }}
-                                             />
-                                          </FormGroup>
-                                       </Col>
-                                       <Col lg={12}>
-                                          <p className="text-danger">{check_field}</p>
-                                       </Col>
-                                    </Row>
-                                 </Form>
+                                    <Col lg={6}>
+                                       <div
+                                          className="btn btn-primary"
+                                          style={{ width: "100%" }}
+                                          onClick={() => {
+                                             set_edit_step_2_identifier("picture comments")
+                                          }}
+                                       >
+                                          Зурган сэтгэгдлүүд
+                                       </div>
+                                    </Col>
+                                 </Row>
+                                 <Row className="mt-5">
+                                    <Col lg={6}>
+                                       <div
+                                          className="btn btn-primary"
+                                          style={{ width: "100%" }}
+                                          onClick={() => {
+                                             set_edit_step_2_identifier("audio files")
+                                          }}
+                                       >
+                                          Аудио файлууд
+                                       </div>
+                                    </Col>
+
+                                    <Col lg={6}>
+                                       <div
+                                          className="btn btn-primary"
+                                          style={{ width: "100%" }}
+                                          onClick={() => {
+                                             set_edit_step_2_identifier("online book")
+                                          }}
+                                       >
+                                          Онлайн ном
+                                       </div>
+                                    </Col>
+                                 </Row>
                               </TabPane>
 
                               <TabPane tabId={2} id="doc-verification">
                                  <Row className="mb-2">
+                                    {/* TODO wrtie lambda function that returns form JSX dynamically */}
+                                    {() => {
+                                       if (edit_step_2_identifier == "general")
+                                          return (
+                                             <Form>
+                                                <Row>
+                                                   <Col lg="6">
+                                                      <FormGroup>
+                                                         <Label for="kycfirstname-input">Номын нэр</Label>
+                                                         <Input
+                                                            type="text"
+                                                            value={edit_book_name}
+                                                            onChange={event => {
+                                                               if (!check_update_field.name)
+                                                                  set_check_update_field({
+                                                                     ...check_update_field,
+                                                                     name: true,
+                                                                  })
+                                                               set_edit_book_name(event.target.value)
+                                                            }}
+                                                         />
+                                                      </FormGroup>
+                                                      <Row>
+                                                         <Col lg={12}>
+                                                            <FormGroup className="select2-container">
+                                                               <label className="control-label">Номны төрөл</label>
+                                                               <Select
+                                                                  value={selectedMulti_category}
+                                                                  isMulti={true}
+                                                                  placeholder="Сонгох ... "
+                                                                  onChange={e => {
+                                                                     handleMulti_book_category(e)
+                                                                  }}
+                                                                  options={optionGroup_categories}
+                                                                  classNamePrefix="select2-selection"
+                                                               />
+                                                            </FormGroup>
+                                                         </Col>
+                                                         <Col lg="12">
+                                                            <FormGroup className="select2-container">
+                                                               <label className="control-label">Номны зохиогч</label>
+                                                               <Select
+                                                                  value={selectedMulti_author}
+                                                                  isMulti={true}
+                                                                  placeholder="Сонгох ... "
+                                                                  onChange={e => {
+                                                                     handleMulti_book_author(e)
+                                                                  }}
+                                                                  options={optionGroup_authors}
+                                                                  classNamePrefix="select2-selection"
+                                                               />
+                                                            </FormGroup>
+                                                         </Col>
+                                                      </Row>
+                                                   </Col>
+
+                                                   <Col lg={6}>
+                                                      <FormGroup className="mx-auto" style={{ width: "85%" }}>
+                                                         <Label htmlFor="productdesc">Зураг</Label>
+                                                         <img className="rounded" src={coverImage} alt={edit_book_name} id="img" className="img-fluid" style={{ width: "100%", height: "30vh" }} />
+                                                         <input type="file" id="input" accept="image/*" className="invisible" onChange={imageHandler} />
+                                                         <div className="label">
+                                                            <label htmlFor="input" className="image-upload d-flex justify-content-center" style={{ cursor: "pointer" }}>
+                                                               <i className="bx bx-image-add font-size-20 mr-2"></i>
+                                                               <p>Зураг оруулах</p>
+                                                            </label>
+                                                         </div>
+                                                      </FormGroup>
+                                                   </Col>
+                                                </Row>
+                                                <Row>
+                                                   <Col lg={6}>
+                                                      <FormGroup>
+                                                         <Label for="kycfirstname-input">Юү түүб хаяг</Label>
+                                                         <Input
+                                                            type="text"
+                                                            required
+                                                            value={youtube_url}
+                                                            onChange={e => {
+                                                               if (!check_update_field.youtube_url)
+                                                                  set_check_update_field({
+                                                                     ...check_update_field,
+                                                                     youtube_url: true,
+                                                                  })
+                                                               set_youtube_url(e.target.value)
+                                                            }}
+                                                         />
+                                                      </FormGroup>
+                                                      <Row>
+                                                         <Col lg={12}>
+                                                            {edit_has_sale ? (
+                                                               <>
+                                                                  <Label>Хэвлэмэл номын үнэ</Label>
+                                                                  <Input
+                                                                     type="number"
+                                                                     value={sale_book_price}
+                                                                     onChange={e => {
+                                                                        if (!check_update_field)
+                                                                           set_check_update_field({
+                                                                              ...check_update_field,
+                                                                              book_price: true,
+                                                                           })
+                                                                        set_sale_book_price(e.target.value)
+                                                                     }}
+                                                                  />
+                                                               </>
+                                                            ) : (
+                                                               false
+                                                            )}
+                                                         </Col>
+                                                      </Row>
+                                                   </Col>
+                                                   <Col lg={6}>
+                                                      <FormGroup>
+                                                         <Label htmlFor="productdesc">Танилцуулга</Label>
+                                                         <textarea
+                                                            className="form-control"
+                                                            id="productdesc"
+                                                            rows="5"
+                                                            value={book_introduction}
+                                                            onChange={e => {
+                                                               if (!check_update_field.intro)
+                                                                  set_check_update_field({
+                                                                     ...check_update_field,
+                                                                     intro: true,
+                                                                  })
+                                                               set_book_introduction(e.target.value)
+                                                            }}
+                                                         />
+                                                      </FormGroup>
+                                                   </Col>
+                                                   <Col lg={12}>
+                                                      <p className="text-danger">{check_field}</p>
+                                                   </Col>
+                                                </Row>
+                                             </Form>
+                                          )
+                                    }}
                                     <Col lg={6}>
                                        {book_files.length != 0 ? (
                                           <FormGroup>
