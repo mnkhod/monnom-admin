@@ -112,7 +112,7 @@ const AddBook = props => {
                         formdata: tempFormData,
                      })
                   })
-                  .catch(err => {})
+                  .catch(err => { })
             )
          })
 
@@ -163,7 +163,7 @@ const AddBook = props => {
          .then(res => {
             getAuthorsCategoriesInfo(res.data.available_authors, res.data.available_categories)
          })
-         .catch(err => {})
+         .catch(err => { })
    }
 
    // props oos irsen nomnii categoruudiig awah
@@ -270,7 +270,7 @@ const AddBook = props => {
       } else set_category_of_book_message("")
 
       if (selectedMulti_author == null) {
-         ;-set_author_of_book_message("Хоосон утгатай байна !")
+         ; -set_author_of_book_message("Хоосон утгатай байна !")
       } else set_author_of_book_message("")
    }
 
@@ -620,7 +620,7 @@ const AddBook = props => {
                                        <label className="custom-file-upload d-flex">
                                           <input
                                              type="file"
-                                             accept=".pdf,.epub"
+                                             accept=".pdf"
                                              style={{
                                                 display: "none",
                                              }}
