@@ -45,6 +45,9 @@ const EditPodcast = ({ episode_id, setEditPodcastModal, editEpisodeModal }) => {
       set_state({ loading: true })
       let successFlag = false
 
+      console.log("edit_send_file")
+      console.log(edit_send_file)
+
       const config = {
          headers: {
             Authorization: `Bearer ${JSON.parse(localStorage.getItem("user_information")).jwt}`,
@@ -102,25 +105,6 @@ const EditPodcast = ({ episode_id, setEditPodcastModal, editEpisodeModal }) => {
          audioFormData.append("ref", "podcast-episode")
          audioFormData.append("field", "audio_file_path")
 
-         let tempAudioRequests = null
-
-         getAudioFileDuration(edit_send_file)
-            .then(res => {
-               console.log("res")
-               console.log(res)
-               let audio_duration = res
-               let tempFormData = new FormData()
-               let data = {
-                  episode_number: episode_id,
-                  episode_name: edit_send_file.name.split(".").slice(0, -1).join("."),
-                  mp3_duration: audio_duration.toString(),
-               }
-               tempFormData.append("data", JSON.stringify(data))
-               tempFormData.append("files", edit_send_file, edit_send_file.name)
-               tempAudioRequests = tempFormData
-            })
-            .catch(err => {})
-
          await axios({
             url: `${process.env.REACT_APP_STRAPI_BASE_URL}/podcast-episodes/${episode_id}`,
             method: "PUT",
@@ -134,30 +118,38 @@ const EditPodcast = ({ episode_id, setEditPodcastModal, editEpisodeModal }) => {
             url: `${process.env.REACT_APP_STRAPI_BASE_URL}/upload`,
             method: "POST",
             config,
-            data: tempAudioRequests,
+            data: audioFormData,
          })
             .then(async res => {
                successFlag = true
             })
             .catch(e => {})
 
-         // TODO import get audio duration function
-         // TODO axios-iig ajillagaand oruulah
-         // await axios({
-         //    url: `${process.env.REACT_APP_STRAPI_BASE_URL}/podcast-episodes/${episode_id}`,
-         //    method: "PUT",
-         //    config,
-         //    data: {
-         //       mp3_duration: audio duration,
-         //    },
-         // }).catch(e => {})
+         await getAudioFileDuration(edit_send_file)
+            .then(res => {
+               console.log("res")
+               console.log(res)
+               axios({
+                  url: `${process.env.REACT_APP_STRAPI_BASE_URL}/podcast-episodes/${episode_id}`,
+                  method: "PUT",
+                  config,
+                  data: {
+                     mp3_duration: res,
+                  },
+               })
+                  .then(res => {
+                     successFlag = true
+                  })
+                  .catch(e => {})
+            })
+            .catch(err => {})
       }
       if (successFlag) {
          set_state({ loading: false })
          set_state({ success: true })
-         setTimeout(() => {
-            window.location.reload()
-         }, 1500)
+         // setTimeout(() => {
+         //    window.location.reload()
+         // }, 1500)
       } else {
          set_state({ loading: false })
          set_state({ error: true })
@@ -173,6 +165,8 @@ const EditPodcast = ({ episode_id, setEditPodcastModal, editEpisodeModal }) => {
          },
       })
          .then(res => {
+            console.log("res.data")
+            console.log(res.data)
             set_edit_podcast_name(res.data.episode_name)
             set_edit_podcast_desc(res.data.episode_description)
             set_edit_podcast_file(res.data.audio_file_path.name)

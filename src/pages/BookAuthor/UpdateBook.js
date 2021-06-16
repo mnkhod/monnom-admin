@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useContext } from "react"
 import { Link } from "react-router-dom"
 import axios from "axios"
+import Switch from "react-switch"
 import { Row, Col, Card, Label, Input, FormGroup, Modal, ModalHeader, ModalBody, TabContent, TabPane, NavItem, NavLink, Progress, Form, Button } from "reactstrap"
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd"
 import Dropzone from "react-dropzone"
@@ -78,6 +79,9 @@ export default function UpdateBook(props) {
    const [state, set_state] = useContext(ResultPopUp)
    const [checking_state, set_checking_state] = useState(null)
 
+   const [checked, set_checked] = useState(false)
+   const [sale_count, set_sale_count] = useState(0)
+
    const [activeTab, set_activeTab] = useState(1)
    const [progressValue, setprogressValue] = useState(33)
 
@@ -93,7 +97,6 @@ export default function UpdateBook(props) {
    const [edit_has_mp3, set_edit_has_mp3] = useState(false)
    const [edit_has_pdf, set_edit_has_pdf] = useState(false)
    const [edit_book_id, set_edit_book_id] = useState(null)
-   const [edit_reference_id, set_edit_reference_id] = useState(null)
    const [check_field, set_check_field] = useState("")
 
    // update, delete hiih state uud
@@ -113,7 +116,6 @@ export default function UpdateBook(props) {
    const [audio_book_files_for_delete, set_audio_book_files_for_delete] = useState([])
    const [audio_book_files_for_save, set_audio_book_files_for_save] = useState([])
    const [check_update_field, set_check_update_field] = useState({})
-   const [edit_step_2_identifier, set_edit_step_2_identifier] = useState(null)
 
    const [chooseUpdateForm, setChooseUpdateForm] = useState("")
 
@@ -138,7 +140,7 @@ export default function UpdateBook(props) {
             book_authors: authors,
             has_audio: edit_has_mp3,
             has_pdf: edit_has_pdf,
-            has_sale: edit_has_sale,
+            has_sale: sale_book_price > 0 ? true : false,
          },
       })
          .then(res => {
@@ -656,6 +658,11 @@ export default function UpdateBook(props) {
       set_book_comments_pic([...res])
    }
 
+   // Nomiig hudaldah esehiig asuuj input nemne
+   const handleChange = checked => {
+      set_checked(checked)
+   }
+
    return (
       <>
          {props.modal ? (
@@ -926,27 +933,6 @@ export default function UpdateBook(props) {
                                        </Row>
                                        <Row>
                                           <Col lg={6}>
-                                             {edit_has_sale ? (
-                                                <>
-                                                   <Label>Хэвлэмэл номын үнэ</Label>
-                                                   <Input
-                                                      type="number"
-                                                      value={sale_book_price}
-                                                      onChange={e => {
-                                                         if (!check_update_field)
-                                                            set_check_update_field({
-                                                               ...check_update_field,
-                                                               book_price: true,
-                                                            })
-                                                         set_sale_book_price(e.target.value)
-                                                      }}
-                                                   />
-                                                </>
-                                             ) : (
-                                                false
-                                             )}
-                                          </Col>
-                                          <Col lg={6}>
                                              {book_files.length != 0 ? (
                                                 <FormGroup>
                                                    <Label>Цахим номын үнэ</Label>
@@ -988,6 +974,56 @@ export default function UpdateBook(props) {
                                                 </FormGroup>
                                              ) : (
                                                 []
+                                             )}
+                                          </Col>
+                                          <Col lg={6}>
+                                             {edit_has_sale ? (
+                                                <>
+                                                   <Label>Хэвлэмэл номын үнэ</Label>
+                                                   <Input
+                                                      type="number"
+                                                      value={sale_book_price}
+                                                      onChange={e => {
+                                                         if (!check_update_field)
+                                                            set_check_update_field({
+                                                               ...check_update_field,
+                                                               book_price: true,
+                                                            })
+                                                         set_sale_book_price(e.target.value)
+                                                      }}
+                                                   />
+                                                </>
+                                             ) : (
+                                                <>
+                                                   <Row>
+                                                      <Col lg={12} className="d-flex mt-3">
+                                                         <label className="d-flex">
+                                                            <span className="d-block my-auto mr-3">Зарж байгаа юу ?</span>
+                                                            <Switch onChange={handleChange} checked={checked} />
+                                                         </label>
+                                                      </Col>
+                                                   </Row>
+                                                   <Row>
+                                                      {checked ? (
+                                                         <>
+                                                            <Col lg={3} className="my-auto">
+                                                               <Label for="exampleSelect1">Зарагдах тоо оруулах</Label>
+                                                            </Col>
+                                                            <Col lg={3}>
+                                                               <Input type="number" value={sale_count} onChange={e => set_sale_count(e.target.value)} />
+                                                            </Col>
+                                                            <Col lg={3} className="my-auto">
+                                                               <Label for="exampleSelect1" className="text-right w-100">
+                                                                  Нэг бүрийн үнэ
+                                                               </Label>
+                                                            </Col>
+                                                            <Col lg={3}>
+                                                               <Input type="number" value={sale_book_price} onChange={e => set_sale_book_price(e.target.value)} />
+                                                            </Col>
+                                                         </>
+                                                      ) : null}
+                                                   </Row>
+                                                </>
                                              )}
                                           </Col>
                                           <Col lg={12}>
@@ -1398,22 +1434,31 @@ export default function UpdateBook(props) {
                                           if (activeTab === 3) {
                                              if (chooseUpdateForm == "general") {
                                                 updateGeneralBook()
+                                                togglemodal()
                                              } else if (chooseUpdateForm == "image") {
                                                 updatePictureBook()
+                                                togglemodal()
                                              } else if (chooseUpdateForm == "pdf") {
                                                 updatePdfBook()
+                                                togglemodal()
                                              } else if (chooseUpdateForm == "audio") {
                                                 updateAudioBook()
+                                                togglemodal()
                                              } else if (chooseUpdateForm == "comments") {
                                                 updateCommentsBook()
+                                                togglemodal()
                                              } else if (chooseUpdateForm == "removePdf") {
                                                 updateRemovePdfBook()
+                                                togglemodal()
                                              } else if (chooseUpdateForm == "removeAudio") {
                                                 updateRemoveAudioBook()
+                                                togglemodal()
                                              } else if (chooseUpdateForm == "changePosition") {
                                                 updateAudioFilesStackNumber()
+                                                togglemodal()
                                              } else if (chooseUpdateForm == "removeComments") {
                                                 updateRemoveRef()
+                                                togglemodal()
                                              }
                                           }
                                        }}
