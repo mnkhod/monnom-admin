@@ -25,6 +25,21 @@ const EditPodcast = ({ episode_id, setEditPodcastModal, editEpisodeModal }) => {
    })
    const [state, set_state] = useContext(ResultPopUp)
 
+   const getAudioFileDuration = file =>
+      new Promise((resolve, reject) => {
+         let reader = new FileReader()
+
+         reader.onload = function (event) {
+            let audioContext = new (window.AudioContext || window.webkitAudioContext)()
+            audioContext.decodeAudioData(event.target.result).then(buffer => {
+               let duration = buffer.duration
+
+               resolve(duration)
+            })
+         }
+         reader.readAsArrayBuffer(file)
+      })
+
    // axios oor huselt ywuulj update hiih
    const updatePodcast = async () => {
       set_state({ loading: true })
@@ -87,6 +102,25 @@ const EditPodcast = ({ episode_id, setEditPodcastModal, editEpisodeModal }) => {
          audioFormData.append("ref", "podcast-episode")
          audioFormData.append("field", "audio_file_path")
 
+         let tempAudioRequests = null
+
+         getAudioFileDuration(edit_send_file)
+            .then(res => {
+               console.log("res")
+               console.log(res)
+               let audio_duration = res
+               let tempFormData = new FormData()
+               let data = {
+                  episode_number: episode_id,
+                  episode_name: edit_send_file.name.split(".").slice(0, -1).join("."),
+                  mp3_duration: audio_duration.toString(),
+               }
+               tempFormData.append("data", JSON.stringify(data))
+               tempFormData.append("files", edit_send_file, edit_send_file.name)
+               tempAudioRequests = tempFormData
+            })
+            .catch(err => {})
+
          await axios({
             url: `${process.env.REACT_APP_STRAPI_BASE_URL}/podcast-episodes/${episode_id}`,
             method: "PUT",
@@ -100,7 +134,7 @@ const EditPodcast = ({ episode_id, setEditPodcastModal, editEpisodeModal }) => {
             url: `${process.env.REACT_APP_STRAPI_BASE_URL}/upload`,
             method: "POST",
             config,
-            data: audioFormData,
+            data: tempAudioRequests,
          })
             .then(async res => {
                successFlag = true
