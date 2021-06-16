@@ -356,67 +356,44 @@ export default function UpdateBook(props) {
                },
             })
                .then(res => {
-                  set_checking_state(true)
+                  set_state({ success: true })
                   console.log("remove audio done")
                })
                .catch(err => {
-                  set_checking_state(false)
+                  set_state({ error: true })
                   console.log("remove audio error 1")
                   console.log(err)
                })
          })
          .catch(err => {
-            set_checking_state(false)
+            set_state({ error: true })
             console.log("remove audio error 2")
             console.log(err)
          })
    }
 
-   const updateChangePositionBook = async () => {
-      const config = {
-         headers: {
-            Authorization: `Bearer ${JSON.parse(localStorage.getItem("user_information")).jwt}`,
-         },
+   const updateRemoveRef = async () => {
+      const bookComments = new FormData()
+      bookComments.append("data", JSON.stringify({}))
+
+      for (let i = 0; i < book_comments_pic.length; i++) {
+         bookComments.append("files.picture_comment", book_comments_pic[i], book_comments_pic[i].name)
       }
 
-      let tempStackSequence = audio_book_files_for_save.map((file, index) => {
-         return {
-            id: file.id,
-            index,
-         }
-      })
-
-      await axios
-         .all(tempStackSequence.map(stack => axios.put(`${process.env.REACT_APP_STRAPI_BASE_URL}/book-audios/${stack.id}`, { stack_number: stack.index }, config)))
-         .then(() => {
-            set_checking_state(true)
-            console.log("change position done")
-         })
-         .catch(err => {
-            console.log("change position")
-            console.log(err)
-            set_checking_state(false)
-         })
-   }
-
-   const updateRemoveRef = async () => {
-      const delete_req = new FormData()
-      delete_req.append("data", JSON.stringify({}))
-
       await axios({
-         url: `${process.env.REACT_APP_STRAPI_BASE_URL}/`,
+         url: `${process.env.REACT_APP_STRAPI_BASE_URL}/books/${props.book_id}`,
          method: "PUT",
          config,
-         data: {},
+         data: bookComments,
       })
          .then(res => {
-            set_checking_state(true)
-            console.log("remove ref done")
+            set_state({ success: true })
+            console.log("comments book done")
          })
-         .catch(err => {
-            set_checking_state(false)
-            console.log("remove ref error")
-            console.log(err)
+         .catch(e => {
+            set_state({ error: true })
+            console.log("comments book error")
+            console.log(e)
          })
    }
 
@@ -638,11 +615,6 @@ export default function UpdateBook(props) {
       return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + " " + sizes[i]
    }
 
-   const removeRef = id => {
-      let remove_file = referenceFiles.filter(ref => ref.id != id)
-      set_referenceFiles([...remove_file])
-   }
-
    const removeComm = id => {
       let res = book_comments_pic.filter(ref => ref.id != id)
       set_book_comments_pic([...res])
@@ -762,7 +734,6 @@ export default function UpdateBook(props) {
                                           Аудио ном нэмж оруулах
                                        </Button>
                                     </Col>
-
                                     <Col lg={6}>
                                        <Button
                                           type="submit"
@@ -787,7 +758,6 @@ export default function UpdateBook(props) {
                                           Аудио ном устгах
                                        </Button>
                                     </Col>
-
                                     <Col lg={6}>
                                        <Button
                                           type="submit"
@@ -798,6 +768,18 @@ export default function UpdateBook(props) {
                                           }}
                                        >
                                           Онлайн ном оруулах
+                                       </Button>
+                                    </Col>{" "}
+                                    <Col lg={6}>
+                                       <Button
+                                          type="submit"
+                                          className="w-100 bg-primary m-2"
+                                          onClick={() => {
+                                             setChooseUpdateForm("image")
+                                             toggleTab(activeTab + 1)
+                                          }}
+                                       >
+                                          Зураг
                                        </Button>
                                     </Col>
                                     <Col lg={6}>
@@ -810,18 +792,6 @@ export default function UpdateBook(props) {
                                           }}
                                        >
                                           Онлайн ном устгах
-                                       </Button>
-                                    </Col>
-                                    <Col lg={6}>
-                                       <Button
-                                          type="submit"
-                                          className="w-100 bg-primary m-2"
-                                          onClick={() => {
-                                             setChooseUpdateForm("image")
-                                             toggleTab(activeTab + 1)
-                                          }}
-                                       >
-                                          Зураг
                                        </Button>
                                     </Col>
                                  </Row>
@@ -1107,7 +1077,7 @@ export default function UpdateBook(props) {
                                           )}
                                        </Col>
                                     </Row>
-                                 ) : chooseUpdateForm == "comments" || chooseUpdateForm == "removeRef" ? (
+                                 ) : chooseUpdateForm == "comments" ? (
                                     <Row>
                                        <Col lg={12}>
                                           <div className="kyc-doc-verification my-3">
@@ -1140,18 +1110,6 @@ export default function UpdateBook(props) {
                                                                   <Col className="">
                                                                      <Link to="#" className="text-muted font-weight-bold d-flex justify-content-around" style={{ cursor: "default" }}>
                                                                         <p className="w-60 d-block">{f.name.slice(0, 100)}</p>
-                                                                        <i
-                                                                           onClick={() => {
-                                                                              removeComm(f.id)
-                                                                              setChooseUpdateForm("removeRef")
-                                                                           }}
-                                                                           className="dripicons-cross font-size-20 my-auto text-dark d-block"
-                                                                           style={{
-                                                                              cursor: "pointer",
-                                                                              margin: "auto",
-                                                                              marginRight: "0",
-                                                                           }}
-                                                                        />
                                                                      </Link>
                                                                      <p className="m-0 mr-3">
                                                                         <strong>{f.formattedSize}</strong>
@@ -1174,24 +1132,6 @@ export default function UpdateBook(props) {
                                                                   <Col className="">
                                                                      <Link to="#" className="text-muted font-weight-bold d-flex justify-content-around" style={{ cursor: "default" }}>
                                                                         <p className="w-60 d-block">{f.name.slice(0, 100)}</p>
-                                                                        <i
-                                                                           onClick={() => {
-                                                                              removeRef(f.id)
-                                                                              if (!check_update_field.remove_reference) {
-                                                                                 setChooseUpdateForm("removeRef")
-                                                                                 set_check_update_field({
-                                                                                    ...check_update_field,
-                                                                                    remove_reference: true,
-                                                                                 })
-                                                                              }
-                                                                           }}
-                                                                           className="dripicons-cross font-size-20 my-auto text-dark d-block"
-                                                                           style={{
-                                                                              cursor: "pointer",
-                                                                              margin: "auto",
-                                                                              marginRight: "0",
-                                                                           }}
-                                                                        />
                                                                      </Link>
                                                                      <p className="m-0 mr-3">
                                                                         <strong>{f.formattedSize}</strong>
@@ -1337,6 +1277,43 @@ export default function UpdateBook(props) {
                                           )}
                                        </Col>
                                     </Row>
+                                 ) : chooseUpdateForm == "removeComments" ? (
+                                    <Row>
+                                       <Col lg={12}>
+                                          <div className="dropzone-previews mt-3" id="file-previews">
+                                             {book_comments_pic.length != 0 &&
+                                                book_comments_pic.map((f, i) => {
+                                                   return (
+                                                      <Card className="mt-1 mb-0 shadow-none border dz-processing dz-image-preview dz-success dz-complete " key={i + "-file"}>
+                                                         <div className="p-2">
+                                                            <Row className="align-items-center">
+                                                               <Col className="">
+                                                                  <Link to="#" className="text-muted font-weight-bold d-flex justify-content-around" style={{ cursor: "default" }}>
+                                                                     <p className="w-60 d-block">{f.name.slice(0, 100)}</p>
+                                                                     <i
+                                                                        onClick={() => {
+                                                                           removeComm(f.id)
+                                                                        }}
+                                                                        className="dripicons-cross font-size-20 my-auto text-dark d-block"
+                                                                        style={{
+                                                                           cursor: "pointer",
+                                                                           margin: "auto",
+                                                                           marginRight: "0",
+                                                                        }}
+                                                                     />
+                                                                  </Link>
+                                                                  <p className="m-0 mr-3">
+                                                                     <strong>{f.formattedSize}</strong>
+                                                                  </p>
+                                                               </Col>
+                                                            </Row>
+                                                         </div>
+                                                      </Card>
+                                                   )
+                                                })}
+                                          </div>
+                                       </Col>
+                                    </Row>
                                  ) : null}
                               </TabPane>
                               <TabPane tabId={3}>
@@ -1401,7 +1378,7 @@ export default function UpdateBook(props) {
                                                 updateRemoveAudioBook()
                                              } else if (chooseUpdateForm == "changePosition") {
                                                 updateAudioFilesStackNumber()
-                                             } else if (chooseUpdateForm == "removeRef") {
+                                             } else if (chooseUpdateForm == "removeComments") {
                                                 updateRemoveRef()
                                              }
                                           }
