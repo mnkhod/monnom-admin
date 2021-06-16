@@ -58,7 +58,7 @@ const getItemStyle = (isDragging, draggableStyle) => ({
    userSelect: "none",
    padding: GRID * 2,
    margin: `0 0 ${GRID}px 0`,
-   width: 450,
+   width: "100%",
    // styles we need to apply on draggables
    ...draggableStyle,
 })
@@ -66,7 +66,7 @@ const getItemStyle = (isDragging, draggableStyle) => ({
 const getListStyle = isDraggingOver => ({
    background: isDraggingOver ? "lightgreen" : "white",
    padding: GRID,
-   width: 460,
+   width: "100%",
 })
 
 const config = {
@@ -113,6 +113,7 @@ export default function UpdateBook(props) {
    const [audio_book_files_for_delete, set_audio_book_files_for_delete] = useState([])
    const [audio_book_files_for_save, set_audio_book_files_for_save] = useState([])
    const [check_update_field, set_check_update_field] = useState({})
+   const [edit_step_2_identifier, set_edit_step_2_identifier] = useState(null)
 
    const [chooseUpdateForm, setChooseUpdateForm] = useState("")
 
@@ -176,7 +177,6 @@ export default function UpdateBook(props) {
       ebookFile.append(
          "data",
          JSON.stringify({
-            has_audio: audio_book_files.length != 0 ? true : false,
             has_pdf: book_files.length != 0 ? true : false,
          })
       )
@@ -190,7 +190,24 @@ export default function UpdateBook(props) {
       })
          .then(res => {
             set_checking_state(true)
-            console.log("pdf book done")
+         })
+         .catch(e => {
+            set_checking_state(false)
+         })
+   }
+
+   const updateAudioFilesStackNumber = async () => {
+      const config = { headers: { Authorization: `Bearer ${JSON.parse(localStorage.getItem("user_information")).jwt}` } }
+
+      let tempStackSequence = audio_book_files_for_save.map((file, index) => {
+         return { id: file.id, index }
+      })
+
+      await axios
+         .all(tempStackSequence.map(stack => axios.put(`${process.env.REACT_APP_STRAPI_BASE_URL}/book-audios/${stack.id}`, { number: stack.index }, config)))
+         .then(() => {
+            // TODO success dialog
+            window.location.reload()
          })
          .catch(e => {
             set_checking_state(false)
@@ -430,26 +447,17 @@ export default function UpdateBook(props) {
    }, [checking_state])
 
    const fetchBookData = () => {
-      axios({
-         url: `${process.env.REACT_APP_STRAPI_BASE_URL}/books/${props.book_id}`,
-         method: "GET",
-         headers: {
-            Authorization: `Bearer ${JSON.parse(localStorage.getItem("user_information")).jwt}`,
-         },
-      })
+      axios({ url: `${process.env.REACT_APP_STRAPI_BASE_URL}/books/${props.book_id}`, method: "GET", headers: { Authorization: `Bearer ${JSON.parse(localStorage.getItem("user_information")).jwt}` } })
          .then(res => {
+            console.log("res.data")
+            console.log(res.data)
+            set_book_files([res.data.pdf_book_path])
             set_edit_book_name(res.data.name)
-            {
-               res.data.pdf_book_path != null ? set_edit_has_pdf(true) : set_edit_has_pdf(false)
-            }
-            {
-               res.data.book_audios.length != 0 ? set_edit_has_mp3(true) : set_edit_has_mp3(false)
-            }
             set_edit_has_pdf(res.data.has_pdf)
             set_edit_has_mp3(res.data.has_audio)
             set_edit_has_sale(res.data.has_sale)
-            setCoverImage(`${res.data.picture.url}`)
-            set_send_cover_pic(`${res.data.picture.url}`)
+            setCoverImage(res.data.picture.url)
+            set_send_cover_pic(res.data.picture.url)
             getAuthorsInfo(res.data.book_authors)
             getCategoryInfo(res.data.book_categories)
             set_sale_book_price(res.data.book_price)
@@ -457,10 +465,7 @@ export default function UpdateBook(props) {
             set_ebook_price(res.data.online_book_price)
             set_youtube_url(res.data.youtube_intro)
             set_book_introduction(res.data.introduction)
-            {
-               res.data.pdf_book_path != null && set_book_files([res.data.pdf_book_path])
-            }
-            let sortedList = res.data.book_audios.sort((a, b) => a.id - b.id)
+            let sortedList = res.data.book_audios.sort((a, b) => a.number - b.number)
             set_audio_book_files(getOldItems(sortedList))
             set_audio_book_files_for_save(sortedList)
             set_book_comments_pic(res.data.picture_comment)
@@ -570,15 +575,11 @@ export default function UpdateBook(props) {
 
       set_audio_book_files(items)
       set_audio_book_files_for_save(uploadItems)
-
-      setChooseUpdateForm("changePosition")
    }
 
    // pdf file upload hiih
    const uploadBook = e => {
       var files = e.target.files
-
-      setChooseUpdateForm("pdf")
       set_book_files([files[0]])
    }
 
@@ -586,8 +587,6 @@ export default function UpdateBook(props) {
    const removeBookFiles = f => {
       set_edit_book_id(book_files[0].id)
       set_book_files(book_files.filter(book => book == f))
-
-      setChooseUpdateForm("removePdf")
    }
 
    // mp3 file upload hiih, nemeh
@@ -598,8 +597,6 @@ export default function UpdateBook(props) {
       for (let i = 0; i < files.length; i++) {
          tempfiles.push(files[i])
       }
-
-      setChooseUpdateForm("audio")
       set_audio_book_files_for_save(tempfiles)
 
       let newAudioBook = getItems(tempfiles)
@@ -616,8 +613,6 @@ export default function UpdateBook(props) {
       set_audio_book_files_for_delete(prevState => [...audio_book_files_for_delete, f.book_id])
       set_audio_book_files(audio_book_files.filter(x => x !== f))
       set_audio_book_files_for_save(Array.from(audio_book_files_for_save).filter(file => file.name != f.content))
-
-      setChooseUpdateForm("removeAudio")
    }
 
    // ishlel upload hiih
@@ -705,6 +700,7 @@ export default function UpdateBook(props) {
                                     }}
                                  >
                                     <span className="step-number mr-2">03</span>
+                                    {/* TODO remove та итгэлтэй байна уу? SweetAlert */}
                                     <p className="my-auto">Баталгаажуулах</p>
                                     {/* <p className="my-auto">{book_comments_pic.length == 0 ? `Ишлэл` : `Бататгах`}</p> */}
                                  </NavLink>
@@ -735,11 +731,85 @@ export default function UpdateBook(props) {
                                           type="submit"
                                           className="w-100 bg-primary m-2"
                                           onClick={() => {
+                                             setChooseUpdateForm("changePosition")
+                                             toggleTab(activeTab + 1)
+                                          }}
+                                       >
+                                          Аудио ном дараалал өөрчлөх
+                                       </Button>
+                                    </Col>
+                                    <Col lg={6}>
+                                       <Button
+                                          type="submit"
+                                          className="w-100 bg-primary m-2"
+                                          onClick={() => {
+                                             setChooseUpdateForm("comments")
+                                             toggleTab(activeTab + 1)
+                                          }}
+                                       >
+                                          Ишлэл нэмж оруулах
+                                       </Button>
+                                    </Col>
+                                    <Col lg={6}>
+                                       <Button
+                                          type="submit"
+                                          className="w-100 bg-primary m-2"
+                                          onClick={() => {
                                              setChooseUpdateForm("audio")
                                              toggleTab(activeTab + 1)
                                           }}
                                        >
-                                          Аудио ном
+                                          Аудио ном нэмж оруулах
+                                       </Button>
+                                    </Col>
+
+                                    <Col lg={6}>
+                                       <Button
+                                          type="submit"
+                                          className="w-100 bg-primary m-2"
+                                          onClick={() => {
+                                             setChooseUpdateForm("removeComments")
+                                             toggleTab(activeTab + 1)
+                                          }}
+                                       >
+                                          Ишлэл устгах
+                                       </Button>
+                                    </Col>
+                                    <Col lg={6}>
+                                       <Button
+                                          type="submit"
+                                          className="w-100 bg-primary m-2"
+                                          onClick={() => {
+                                             setChooseUpdateForm("removeAudio")
+                                             toggleTab(activeTab + 1)
+                                          }}
+                                       >
+                                          Аудио ном устгах
+                                       </Button>
+                                    </Col>
+
+                                    <Col lg={6}>
+                                       <Button
+                                          type="submit"
+                                          className="w-100 bg-primary m-2"
+                                          onClick={() => {
+                                             setChooseUpdateForm("pdf")
+                                             toggleTab(activeTab + 1)
+                                          }}
+                                       >
+                                          Онлайн ном оруулах
+                                       </Button>
+                                    </Col>
+                                    <Col lg={6}>
+                                       <Button
+                                          type="submit"
+                                          className="w-100 bg-primary m-2"
+                                          onClick={() => {
+                                             setChooseUpdateForm("removePdf")
+                                             toggleTab(activeTab + 1)
+                                          }}
+                                       >
+                                          Онлайн ном устгах
                                        </Button>
                                     </Col>
                                     <Col lg={6}>
@@ -752,30 +822,6 @@ export default function UpdateBook(props) {
                                           }}
                                        >
                                           Зураг
-                                       </Button>
-                                    </Col>
-                                    <Col lg={6}>
-                                       <Button
-                                          type="submit"
-                                          className="w-100 bg-primary m-2"
-                                          onClick={() => {
-                                             setChooseUpdateForm("pdf")
-                                             toggleTab(activeTab + 1)
-                                          }}
-                                       >
-                                          Онлайн ном
-                                       </Button>
-                                    </Col>
-                                    <Col lg={6}>
-                                       <Button
-                                          type="submit"
-                                          className="w-100 bg-primary m-2"
-                                          onClick={() => {
-                                             setChooseUpdateForm("comments")
-                                             toggleTab(activeTab + 1)
-                                          }}
-                                       >
-                                          Ишлэл
                                        </Button>
                                     </Col>
                                  </Row>
@@ -957,7 +1003,7 @@ export default function UpdateBook(props) {
                                           </div>
                                        </FormGroup>
                                     </Col>
-                                 ) : chooseUpdateForm == "pdf" || chooseUpdateForm == "removePdf" ? (
+                                 ) : chooseUpdateForm == "pdf" ? (
                                     <Row>
                                        <Col xl={4} gl={4} xs={4} className="mb-2" style={{ borderRight: "1px solid #000" }}>
                                           <label>
@@ -980,6 +1026,8 @@ export default function UpdateBook(props) {
                                           </label>
                                        </Col>
                                        <Col xl={8} gl={8} xs={8}>
+                                          {console.log("book_files.length")}
+                                          {console.log(book_files.length)}
                                           {book_files.length != 0 && (
                                              <>
                                                 <div className="d-flex justify-content-between bg-light border rounded py-2 px-3 mb-3 align-items-center" style={{ width: "450px", marginLeft: "10px" }}>
@@ -995,15 +1043,6 @@ export default function UpdateBook(props) {
                                                    >
                                                       {book_files[0].name != undefined && book_files[0].name}{" "}
                                                    </p>
-                                                   <i
-                                                      className="dripicons-cross font-size-20 my-auto text-dark"
-                                                      onClick={removeBookFiles.bind(this, book_files)}
-                                                      style={{
-                                                         cursor: "pointer",
-                                                         margin: "auto",
-                                                         marginRight: "0",
-                                                      }}
-                                                   />
                                                 </div>
 
                                                 {progress_mp3 > 0 ? (
@@ -1017,7 +1056,7 @@ export default function UpdateBook(props) {
                                           )}
                                        </Col>
                                     </Row>
-                                 ) : chooseUpdateForm == "audio" || chooseUpdateForm == "removeAudio" || chooseUpdateForm == "changePosition" ? (
+                                 ) : chooseUpdateForm == "audio" ? (
                                     <Row>
                                        <Col xl={4} gl={4} xs={4} className="mt-2" style={{ borderRight: "1px solid #000" }}>
                                           <label className="custom-file-upload">
@@ -1039,17 +1078,11 @@ export default function UpdateBook(props) {
                                              <DragDropContext onDragEnd={onDragEnd} className="bt-5">
                                                 <Droppable droppableId="droppable">
                                                    {(provided, snapshot) => (
-                                                      <div {...provided.droppableProps} ref={provided.innerRef} style={getListStyle(snapshot.isDraggingOver)}>
+                                                      <div {...provided.droppableProps} ref={provided.innerRef}>
                                                          {audio_book_files.map((item, index) => (
-                                                            <Draggable key={item.id} draggableId={item.id} index={index}>
+                                                            <Draggable key={item.id}>
                                                                {(provided, snapshot) => (
-                                                                  <div
-                                                                     className="file-preview bg-light d-flex py-2 px-3 text-white justify-content-between align-items-center border rounded mt-3"
-                                                                     ref={provided.innerRef}
-                                                                     {...provided.draggableProps}
-                                                                     {...provided.dragHandleProps}
-                                                                     style={getItemStyle(snapshot.isDragging, provided.draggableProps.style)}
-                                                                  >
+                                                                  <div className="file-preview bg-light d-flex py-2 px-3 text-white justify-content-between align-items-center border rounded mt-3" ref={provided.innerRef} {...provided.draggableProps} {...provided.dragHandleProps}>
                                                                      <i className="bx bxs-music font-size-22 text-warning mr-2" />
                                                                      <p
                                                                         style={{
@@ -1062,15 +1095,6 @@ export default function UpdateBook(props) {
                                                                      >
                                                                         {item.content.length > 50 ? `${item.content.slice(0, 50)}...` : item.content}{" "}
                                                                      </p>
-                                                                     {/* <i
-                                                                        className="dripicons-cross font-size-20 my-auto text-dark"
-                                                                        onClick={removeAudioBookFiles.bind(this, item)}
-                                                                        style={{
-                                                                           cursor: "pointer",
-                                                                           margin: "auto",
-                                                                           marginRight: "0",
-                                                                        }}
-                                                                     /> */}
                                                                   </div>
                                                                )}
                                                             </Draggable>
@@ -1182,6 +1206,137 @@ export default function UpdateBook(props) {
                                           </div>
                                        </Col>
                                     </Row>
+                                 ) : chooseUpdateForm == "changePosition" ? (
+                                    <Row>
+                                       {audio_book_files.length != 0 && (
+                                          <Col xl={12} gl={12} xs={12} style={{ paddingTop: "20px" }}>
+                                             <DragDropContext onDragEnd={onDragEnd} className="bt-5">
+                                                <Droppable droppableId="droppable">
+                                                   {(provided, snapshot) => (
+                                                      <div {...provided.droppableProps} ref={provided.innerRef} style={getListStyle(snapshot.isDraggingOver)}>
+                                                         {audio_book_files.map((item, index) => (
+                                                            <Draggable key={item.id} draggableId={item.id} index={index}>
+                                                               {(provided, snapshot) => (
+                                                                  <div
+                                                                     className="file-preview bg-light d-flex py-2 px-3 text-white justify-content-between align-items-center border rounded mt-3"
+                                                                     ref={provided.innerRef}
+                                                                     {...provided.draggableProps}
+                                                                     {...provided.dragHandleProps}
+                                                                     style={getItemStyle(snapshot.isDragging, provided.draggableProps.style)}
+                                                                  >
+                                                                     <i className="bx bxs-music font-size-22 text-warning mr-2" />
+                                                                     <p
+                                                                        style={{
+                                                                           overflow: "hidden",
+                                                                           color: "#000",
+                                                                           margin: "auto",
+                                                                           marginLeft: "0",
+                                                                           width: "125%",
+                                                                        }}
+                                                                     >
+                                                                        {item.content.length > 50 ? `${item.content.slice(0, 50)}...` : item.content}{" "}
+                                                                     </p>
+                                                                  </div>
+                                                               )}
+                                                            </Draggable>
+                                                         ))}
+                                                         {provided.placeholder}
+                                                      </div>
+                                                   )}
+                                                </Droppable>
+                                             </DragDropContext>
+                                          </Col>
+                                       )}
+                                    </Row>
+                                 ) : chooseUpdateForm == "removeAudio" ? (
+                                    <Col xl={12} gl={12} xs={12} style={{ paddingTop: "20px" }}>
+                                       {audio_book_files.length != 0 && (
+                                          <DragDropContext onDragEnd={onDragEnd} className="bt-5">
+                                             <Droppable droppableId="droppable">
+                                                {(provided, snapshot) => (
+                                                   <div {...provided.droppableProps} ref={provided.innerRef} style={getListStyle(snapshot.isDraggingOver)}>
+                                                      {audio_book_files.map((item, index) => (
+                                                         <Draggable key={item.id}>
+                                                            {(provided, snapshot) => (
+                                                               <div
+                                                                  className="file-preview bg-light d-flex py-2 px-3 text-white justify-content-between align-items-center border rounded mt-3"
+                                                                  ref={provided.innerRef}
+                                                                  {...provided.draggableProps}
+                                                                  {...provided.dragHandleProps}
+                                                                  style={getItemStyle(snapshot.isDragging, provided.draggableProps.style)}
+                                                               >
+                                                                  <i className="bx bxs-music font-size-22 text-warning mr-2" />
+                                                                  <p
+                                                                     style={{
+                                                                        overflow: "hidden",
+                                                                        color: "#000",
+                                                                        margin: "auto",
+                                                                        marginLeft: "0",
+                                                                        width: "125%",
+                                                                     }}
+                                                                  >
+                                                                     {item.content.length > 50 ? `${item.content.slice(0, 50)}...` : item.content}{" "}
+                                                                  </p>
+                                                                  <i
+                                                                     className="dripicons-cross font-size-20 my-auto text-dark"
+                                                                     onClick={removeAudioBookFiles.bind(this, item)}
+                                                                     style={{
+                                                                        cursor: "pointer",
+                                                                        margin: "auto",
+                                                                        marginRight: "0",
+                                                                     }}
+                                                                  />
+                                                               </div>
+                                                            )}
+                                                         </Draggable>
+                                                      ))}
+                                                      {provided.placeholder}
+                                                   </div>
+                                                )}
+                                             </Droppable>
+                                          </DragDropContext>
+                                       )}
+                                    </Col>
+                                 ) : chooseUpdateForm == "removePdf" ? (
+                                    <Row>
+                                       <Col xl={12} gl={12} xs={12}>
+                                          {book_files.length != 0 && (
+                                             <>
+                                                <div className="d-flex justify-content-between bg-light border rounded py-2 px-3 mb-3 align-items-center" style={{ width: "450px", marginLeft: "10px" }}>
+                                                   <i className="bx bxs-file font-size-22 text-danger mr-2" />
+                                                   <p
+                                                      style={{
+                                                         overflow: "hidden",
+                                                         color: "#000",
+                                                         margin: "auto",
+                                                         marginLeft: "0",
+                                                         width: "85%",
+                                                      }}
+                                                   >
+                                                      {book_files[0].name != undefined && book_files[0].name}{" "}
+                                                   </p>
+                                                   <i
+                                                      className="dripicons-cross font-size-20 my-auto text-dark"
+                                                      onClick={removeBookFiles.bind(this, book_files)}
+                                                      style={{
+                                                         cursor: "pointer",
+                                                         margin: "auto",
+                                                         marginRight: "0",
+                                                      }}
+                                                   />
+                                                </div>
+
+                                                {progress_mp3 > 0 ? (
+                                                   <div className="progress mt-2 w-60 mx-auto">
+                                                      <div className="progress-bar progress-bar-info progress-bar-striped" role="progressbar" aria-valuenow={progress_mp3} aria-valuemin="0" aria-valuemax="100" style={{ width: progress_mp3 + "%" }}>
+                                                         {progress_mp3}%
+                                                      </div>
+                                                   </div>
+                                                ) : null}
+                                             </>
+                                          )}
+                                       </Col>
+                                    </Row>
                                  ) : null}
                               </TabPane>
                               <TabPane tabId={3}>
@@ -1226,24 +1381,26 @@ export default function UpdateBook(props) {
                                              toggleTab(activeTab + 1)
                                              set_check_field("")
                                           }
-                                          if (activeTab === 3 && chooseUpdateForm == "general") {
-                                             updateGeneralBook()
-                                          } else if (activeTab === 3 && chooseUpdateForm == "image") {
-                                             updatePictureBook()
-                                          } else if (activeTab === 3 && chooseUpdateForm == "pdf") {
-                                             updatePdfBook()
-                                          } else if (activeTab === 3 && chooseUpdateForm == "audio") {
-                                             updateAudioBook()
-                                          } else if (activeTab === 3 && chooseUpdateForm == "comments") {
-                                             updateCommentsBook()
-                                          } else if (activeTab === 3 && chooseUpdateForm == "removePdf") {
-                                             updateRemovePdfBook()
-                                          } else if (activeTab === 3 && chooseUpdateForm == "removeAudio") {
-                                             updateRemoveAudioBook()
-                                          } else if (activeTab === 3 && chooseUpdateForm == "changePosition") {
-                                             updateChangePositionBook()
-                                          } else if (activeTab === 3 && chooseUpdateForm == "removeRef") {
-                                             updateRemoveRef()
+                                          if (activeTab === 3) {
+                                             if (chooseUpdateForm == "general") {
+                                                updateGeneralBook()
+                                             } else if (chooseUpdateForm == "image") {
+                                                updatePictureBook()
+                                             } else if (chooseUpdateForm == "pdf") {
+                                                updatePdfBook()
+                                             } else if (chooseUpdateForm == "audio") {
+                                                updateAudioBook()
+                                             } else if (chooseUpdateForm == "comments") {
+                                                updateCommentsBook()
+                                             } else if (chooseUpdateForm == "removePdf") {
+                                                updateRemovePdfBook()
+                                             } else if (chooseUpdateForm == "removeAudio") {
+                                                updateRemoveAudioBook()
+                                             } else if (chooseUpdateForm == "changePosition") {
+                                                updateAudioFilesStackNumber()
+                                             } else if (chooseUpdateForm == "removeRef") {
+                                                updateRemoveRef()
+                                             }
                                           }
                                        }}
                                     >

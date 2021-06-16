@@ -140,6 +140,17 @@ const EditPodcast = ({ episode_id, setEditPodcastModal, editEpisodeModal }) => {
                successFlag = true
             })
             .catch(e => {})
+
+         // TODO import get audio duration function
+         // TODO axios-iig ajillagaand oruulah
+         // await axios({
+         //    url: `${process.env.REACT_APP_STRAPI_BASE_URL}/podcast-episodes/${episode_id}`,
+         //    method: "PUT",
+         //    config,
+         //    data: {
+         //       mp3_duration: audio duration,
+         //    },
+         // }).catch(e => {})
       }
       if (successFlag) {
          set_state({ loading: false })
