@@ -115,7 +115,13 @@ export default function BlogCategoryCrud(props) {
                               <option selected defaultValue hidden value={deleteCategoryId}>
                                  --Сонгох--
                               </option>
-                              {categories.length != 0 ? categories.map(category => <option value={category.id}>{category.name}</option>) : null}
+                              {categories.length != 0
+                                 ? categories.map((category, index) => (
+                                      <option key={index} value={category.id}>
+                                         {category.name}
+                                      </option>
+                                   ))
+                                 : null}
                            </select>
                         </Col>
                         <Col lg={2}>

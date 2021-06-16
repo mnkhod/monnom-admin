@@ -49,8 +49,8 @@ export default function BlogSingle(props) {
 
    const imageUrl = useMemo(() => {
       if (blog) {
-         const url = blog.picture?.url || '';
-         return url.startsWith('/') ? `${process.env.REACT_APP_STRAPI_BASE_URL}${blog.picture?.url}` : url;
+         const url = blog.picture?.url || ""
+         return url.startsWith("/") ? `${process.env.REACT_APP_STRAPI_BASE_URL}${blog.picture?.url}` : url
       }
       if (imageFile) {
          return URL.createObjectURL(imageFile)
@@ -71,7 +71,7 @@ export default function BlogSingle(props) {
       try {
          const response = await axios.get(`${process.env.REACT_APP_STRAPI_BASE_URL}/blog-categories`, config)
          setCategories(response.data)
-      } catch (e) { }
+      } catch (e) {}
    }
 
    useEffect(() => {
@@ -90,13 +90,13 @@ export default function BlogSingle(props) {
 
    // create/update
    const handleSubmit = async e => {
-      if (!(title || '').length) {
-         setWarningMessage('Мэдээний гарчиг оруулна уу')
-         return;
+      if (!(title || "").length) {
+         setWarningMessage("Мэдээний гарчиг оруулна уу")
+         return
       }
-      if (!(imageUrl || '').length) {
-         setWarningMessage('Мэдээний зураг оруулна уу')
-         return;
+      if (!(imageUrl || "").length) {
+         setWarningMessage("Мэдээний зураг оруулна уу")
+         return
       }
       set_state({ loading: true })
       e.preventDefault()
@@ -263,7 +263,9 @@ export default function BlogSingle(props) {
                         <Label>Мэдээний ангилал</Label>
                         <Input type="select" value={categoryId} onChange={handleCategory}>
                            {categories.map(c => (
-                              <option value={c.id}>{c.name}</option>
+                              <option key={c.id} value={c.id}>
+                                 {c.name}
+                              </option>
                            ))}
                         </Input>
                      </FormGroup>
@@ -273,7 +275,7 @@ export default function BlogSingle(props) {
                   <Col>
                      <FormGroup>
                         <Label>Мэдээний зураг</Label>
-                        <Input type="file" onChange={imageHandler} accept={'image/png, image/gif, image/jpeg'} />
+                        <Input type="file" onChange={imageHandler} accept={"image/png, image/gif, image/jpeg"} />
                      </FormGroup>
                   </Col>
                </Row>

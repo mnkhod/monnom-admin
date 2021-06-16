@@ -502,7 +502,13 @@ const SettingsForm = props => {
                                        <option selected defaultValue hidden value={null}>
                                           --Сонгох--
                                        </option>
-                                       {old_author_category.length != 0 ? old_author_category.map(author => <option value={author.value}>{author.label}</option>) : null}
+                                       {old_author_category.length != 0
+                                          ? old_author_category.map((author, index) => (
+                                               <option key={index} value={author.value}>
+                                                  {author.label}
+                                               </option>
+                                            ))
+                                          : null}
                                     </select>
                                  </Col>
                                  <Col lg={12} className="mb-2">
@@ -566,8 +572,12 @@ const SettingsForm = props => {
                                           --Сонгох--
                                        </option>
                                        {old_book_category.length != 0
-                                          ? old_book_category.map(book => {
-                                               return <option value={book.value}>{book.label}</option>
+                                          ? old_book_category.map((book, index) => {
+                                               return (
+                                                  <option key={index} value={book.value}>
+                                                     {book.label}
+                                                  </option>
+                                               )
                                             })
                                           : null}
                                     </select>
@@ -640,7 +650,13 @@ const SettingsForm = props => {
                                           --Сонгох--
                                        </option>
 
-                                       {old_podcast_category.length != 0 ? old_podcast_category.map(podcast => <option value={podcast.value}>{podcast.label}</option>) : null}
+                                       {old_podcast_category.length != 0
+                                          ? old_podcast_category.map((podcast, index) => (
+                                               <option key={index} value={podcast.value}>
+                                                  {podcast.label}
+                                               </option>
+                                            ))
+                                          : null}
                                     </select>
                                  </Col>
 
@@ -702,7 +718,13 @@ const SettingsForm = props => {
                                              <option selected defaultValue hidden value={null}>
                                                 --Сонгох--
                                              </option>
-                                             {all_books.length != 0 ? all_books.map(book => <option value={book.id}>{book.name}</option>) : null}
+                                             {all_books.length != 0
+                                                ? all_books.map((book, index) => (
+                                                     <option key={index} value={book.id}>
+                                                        {book.name}
+                                                     </option>
+                                                  ))
+                                                : null}
                                           </select>
                                        </Col>
                                        <Col lg={2}>
@@ -753,7 +775,13 @@ const SettingsForm = props => {
                                        <option selected defaultValue hidden value={null}>
                                           --Сонгох--
                                        </option>
-                                       {all_admins.length != 0 ? all_admins.map(admin => <option value={admin.id}>{admin.username}</option>) : null}
+                                       {all_admins.length != 0
+                                          ? all_admins.map((admin, index) => (
+                                               <option key={index} value={admin.id}>
+                                                  {admin.username}
+                                               </option>
+                                            ))
+                                          : null}
                                     </select>
                                  </Col>
                                  <Col lg={12} className="mt-3">
@@ -814,7 +842,13 @@ const SettingsForm = props => {
                                              <option selected defaultValue hidden value={null}>
                                                 --Сонгох--
                                              </option>
-                                             {all_channels.length != 0 ? all_channels.map(channel => <option value={channel.id}>{channel.name}</option>) : null}
+                                             {all_channels.length != 0
+                                                ? all_channels.map(channel => (
+                                                     <option key={channel.id} value={channel.id}>
+                                                        {channel.name}
+                                                     </option>
+                                                  ))
+                                                : null}
                                           </select>
                                        </Col>
                                        <Col lg={2}>

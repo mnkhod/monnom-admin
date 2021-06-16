@@ -74,6 +74,7 @@ const List = props => {
             sale_quantity: d.sale_quantity,
             book_comments: (
                <Link
+                  to="#"
                   className="d-block text-center"
                   onClick={() => {
                      set_book_comments_section(true)
@@ -85,8 +86,10 @@ const List = props => {
             ),
             book_author: (
                <div style={{ maxHeight: "60px", overflow: "scroll" }}>
-                  {d.book_author.map(author => (
-                     <p className="m-0 mb-1">{author.name}</p>
+                  {d.book_author.map((author, index) => (
+                     <p key={index} className="m-0 mb-1">
+                        {author.name}
+                     </p>
                   ))}
                </div>
             ),
@@ -103,8 +106,10 @@ const List = props => {
                //   ))}
                // </select>
                <div style={{ maxHeight: "60px", overflow: "scroll" }}>
-                  {d.book_category.map(category => (
-                     <p className="m-0 mb-1">{category.name}</p>
+                  {d.book_category.map((category, index) => (
+                     <p key={index} className="m-0 mb-1">
+                        {category.name}
+                     </p>
                   ))}
                </div>
             ),
@@ -128,7 +133,7 @@ const List = props => {
                </Link>
             ),
             type: (
-               <Link className="d-flex justify-content-around align-items-center">
+               <Link to="#" className="d-flex justify-content-around align-items-center">
                   <i style={{ color: d.has_sale ? "#24ea75" : "#767676" }} className="bx bxs-book-open font-size-20" />
                   <i style={{ color: d.has_mp3 ? "#fe2379" : "#767676" }} className="bx bxs-music font-size-20" />
                   <i style={{ color: d.has_pdf ? "#ffd722" : "#767676" }} className="bx bxs-file-pdf font-size-20" />
@@ -279,7 +284,7 @@ const List = props => {
                         entries={5}
                         entriesOptions={[5, 10, 20]}
                         paginationLabel={["Өмнөх", "Дараах"]}
-                        searchingLabel={"Хайх"}
+                        searchinglabel={"Хайх"}
                         searching
                      />
                   </CardBody>

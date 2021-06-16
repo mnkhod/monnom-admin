@@ -87,8 +87,9 @@ const ContactsGrid = props => {
                      </PaginationLink>
                   </PaginationItem>
 
-                  {pagination_pages.map(page => (
+                  {pagination_pages.map((page, index) => (
                      <PaginationItem
+                        key={index}
                         onClick={() => {
                            set_pagination_current(page)
                         }}
@@ -117,11 +118,11 @@ const ContactsGrid = props => {
                        }
                     })
 
-                    .map(podcast => {
+                    .map((podcast, index) => {
                        try {
                           if (podcast.pagination_number <= pagination_current * ITEMS_PER_PAGE && podcast.pagination_number > pagination_current * ITEMS_PER_PAGE - ITEMS_PER_PAGE)
                              return (
-                                <Col xl={3} lg={4} md={4} sm={4} xs={6}>
+                                <Col key={index} xl={3} lg={4} md={4} sm={4} xs={6}>
                                    <Card>
                                       <CardImg
                                          top

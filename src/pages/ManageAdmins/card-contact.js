@@ -176,6 +176,7 @@ const CardContact = props => {
                   <div className="contact-links d-flex font-size-20">
                      <div className="flex-fill">
                         <Link
+                           to="#"
                            onClick={() => {
                               toggle_user_update_modal()
                            }}
@@ -188,7 +189,7 @@ const CardContact = props => {
                         </Link>
                      </div>
                      <div className="flex-fill">
-                        <Link id={"project" + user.id} onClick={() => toggle_user_desc_modal()}>
+                        <Link to="#" id={"project" + user.id} onClick={() => toggle_user_desc_modal()}>
                            <i className="bx bx-pie-chart-alt" />
                            <UncontrolledTooltip placement="top" target={"project" + user.id}>
                               Дэлгэрэнгүй
@@ -295,8 +296,8 @@ const CardContact = props => {
                {!edit_form_loading ? (
                   <form>
                      <Col xs={12}>
-                        {edit_form_elements.map(element => (
-                           <>
+                        {edit_form_elements.map((element, index) => (
+                           <div key={index}>
                               <b>{element.verbose}</b>
                               <input
                                  type="text"
@@ -306,7 +307,7 @@ const CardContact = props => {
                                     handleFormChange(e)
                                  }}
                               />
-                           </>
+                           </div>
                         ))}
 
                         <Row>

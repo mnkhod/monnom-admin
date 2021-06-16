@@ -111,7 +111,7 @@ const AddBook = props => {
                         formdata: tempFormData,
                      })
                   })
-                  .catch(err => { })
+                  .catch(err => {})
             )
          })
 
@@ -357,7 +357,7 @@ const AddBook = props => {
             <i className="bx bx-plus-medical font-size-18 text-center" id="edittooltip" />
          </Button>
          {netWork === false ? (
-            <Col xs={1} class="position-relative">
+            <Col xs={1}>
                {confirm_edit ? (
                   <SweetAlert
                      title="Та итгэлтэй байна уу ?"
@@ -452,7 +452,7 @@ const AddBook = props => {
                                                       set_book_name_value(e.target.value)
                                                    }}
                                                 />
-                                                <p class="text-danger">{book_name_message}</p>
+                                                <p className="text-danger font-size-10">{book_name_message}</p>
                                              </FormGroup>
                                              <Row>
                                                 <Col lg={12}>
@@ -484,7 +484,7 @@ const AddBook = props => {
                                                          options={optionGroup_authors}
                                                          classNamePrefix="select2-selection"
                                                       />
-                                                      <p class="text-danger">{author_of_book_message}</p>
+                                                      <p className="text-danger font-size-10">{author_of_book_message}</p>
                                                    </FormGroup>
                                                 </Col>
                                              </Row>
@@ -724,7 +724,7 @@ const AddBook = props => {
                                                       set_youtube_url_value(e.target.value)
                                                    }}
                                                 />
-                                                <p class="text-danger">{youtube_url_name}</p>
+                                                <p className="text-danger font-size-10">{youtube_url_name}</p>
                                              </FormGroup>
                                              <Row></Row>
                                           </Col>
@@ -740,7 +740,7 @@ const AddBook = props => {
                                                       set_book_introduction_value(e.target.value)
                                                    }}
                                                 />
-                                                <p class="text-danger">{book_introduction_message}</p>
+                                                <p className="text-danger font-size-10">{book_introduction_message}</p>
                                              </FormGroup>
                                           </Col>
                                        </Row>

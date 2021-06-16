@@ -86,8 +86,8 @@ export default function LandingAdmin({ landingData }) {
                                     </Col>
                                     <Col>
                                        <div className="d-flex w-100 justify-content-around flex-wrap">
-                                          {homeImages.map(homeImg => (
-                                             <div className="w-25">
+                                          {homeImages.map((homeImg, index) => (
+                                             <div key={index} className="w-25">
                                                 <ImagePicker src={`${process.env.REACT_APP_STRAPI_BASE_URL}${homeImg?.url}`} />
                                              </div>
                                           ))}
@@ -103,8 +103,8 @@ export default function LandingAdmin({ landingData }) {
                               </FormGroup>
                               <FormGroup>
                                  <div className="d-flex w-100 justify-content-around">
-                                    {section1.map(s => (
-                                       <div className="w-25 d-flex flex-column">
+                                    {section1.map((s, index) => (
+                                       <div key={index} className="w-25 d-flex flex-column">
                                           <ImagePicker src={s.image} />
                                           <Field as={Input} name={s.titleName} />
                                           <Field as={Input} name={s.descriptionName} />
@@ -142,8 +142,8 @@ export default function LandingAdmin({ landingData }) {
                               </FormGroup>
                               <FormGroup>
                                  <div className="d-flex justify-content-around">
-                                    {section3.map(s => (
-                                       <div>
+                                    {section3.map((s, index) => (
+                                       <div key={index}>
                                           <ImagePicker src={`${s.image}`} />
                                           <Field as={Input} name={s.titleName} />
                                           <Field as={Input} name={s.descriptionName} />
@@ -160,8 +160,8 @@ export default function LandingAdmin({ landingData }) {
                               </FormGroup>
                               <FormGroup>
                                  <div className="d-flex justify-content-around">
-                                    {values?.FooterImages.map(f => (
-                                       <div className="w-25">
+                                    {values?.FooterImages.map((f, index) => (
+                                       <div key={index} className="w-25">
                                           <ImagePicker src={`${process.env.REACT_APP_STRAPI_BASE_URL}${f.url}`} />
                                        </div>
                                     ))}

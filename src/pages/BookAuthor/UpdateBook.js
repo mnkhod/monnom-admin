@@ -146,13 +146,10 @@ export default function UpdateBook(props) {
          .then(res => {
             set_state({ loading: false })
             set_state({ success: true })
-            console.log("general done")
          })
          .catch(e => {
             set_state({ loading: false })
             set_state({ error: true })
-            console.log("general error")
-            console.log(e)
          })
    }
 
@@ -1265,7 +1262,7 @@ export default function UpdateBook(props) {
                                              <Droppable droppableId="droppable">
                                                 {(provided, snapshot) => (
                                                    <div {...provided.droppableProps} ref={provided.innerRef} style={getListStyle(snapshot.isDraggingOver)}>
-                                                      {audio_book_files.map((item, index) => (
+                                                      {audio_book_files.map(item => (
                                                          <Draggable key={item.id}>
                                                             {(provided, snapshot) => (
                                                                <div

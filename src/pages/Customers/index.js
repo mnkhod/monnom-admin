@@ -147,7 +147,7 @@ const Customers = () => {
                                        entries={10}
                                        entriesOptions={[10, 15, 20]}
                                        paginationLabel={["Өмнөх", "Дараах"]}
-                                       searchingLabel={"Хайх"}
+                                       searchinglabel={"Хайх"}
                                        searching
                                     />
                                  </CardBody>

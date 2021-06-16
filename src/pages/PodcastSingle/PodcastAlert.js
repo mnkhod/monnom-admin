@@ -113,7 +113,7 @@ const PodcastAlert = props => {
                <CardFooter className="bg-transparent border-top">
                   <div className="contact-links d-flex font-size-20">
                      <div className="flex-fill">
-                        <Link onClick={() => toggle_user_update_modal()} id={"message" + user.id}>
+                        <Link to="#" onClick={() => toggle_user_update_modal()} id={"message" + user.id}>
                            <i className="bx bx-edit" />
                            <UncontrolledTooltip placement="top" target={"message" + user.id}>
                               Засварлах
@@ -121,7 +121,7 @@ const PodcastAlert = props => {
                         </Link>
                      </div>
                      <div className="flex-fill">
-                        <Link id={"project" + user.id} onClick={() => toggle_user_desc_modal()}>
+                        <Link to="#" id={"project" + user.id} onClick={() => toggle_user_desc_modal()}>
                            <i className="bx bx-pie-chart-alt" />
                            <UncontrolledTooltip placement="top" target={"project" + user.id}>
                               Дэлгэрэнгүй
@@ -195,8 +195,8 @@ const PodcastAlert = props => {
             <div className="modal-body">
                <form>
                   <Col xs={12}>
-                     {edit_form_elements.map(element => (
-                        <>
+                     {edit_form_elements.map((element, index) => (
+                        <div key={index}>
                            <b>{element.verbose}</b>
                            <input
                               type="text"
@@ -206,7 +206,7 @@ const PodcastAlert = props => {
                                  handleFormChange(e)
                               }}
                            />
-                        </>
+                        </div>
                      ))}
 
                      <Row>

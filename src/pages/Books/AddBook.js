@@ -112,7 +112,7 @@ const AddBook = props => {
                         formdata: tempFormData,
                      })
                   })
-                  .catch(err => { })
+                  .catch(err => {})
             )
          })
 
@@ -163,7 +163,7 @@ const AddBook = props => {
          .then(res => {
             getAuthorsCategoriesInfo(res.data.available_authors, res.data.available_categories)
          })
-         .catch(err => { })
+         .catch(err => {})
    }
 
    // props oos irsen nomnii categoruudiig awah
@@ -270,7 +270,7 @@ const AddBook = props => {
       } else set_category_of_book_message("")
 
       if (selectedMulti_author == null) {
-         ; -set_author_of_book_message("Хоосон утгатай байна !")
+         ;-set_author_of_book_message("Хоосон утгатай байна !")
       } else set_author_of_book_message("")
    }
 
@@ -372,7 +372,7 @@ const AddBook = props => {
             Ном нэмэх
          </Button>
          {/* {props.shiftBookform ? togglemodal() : null} */}
-         <Col xs={1} class="position-relative">
+         <Col xs={1}>
             <Card>
                <Modal style={{ zIndex: "101" }} isOpen={modal} role="dialog" size="lg" autoFocus={true} centered={true} id="verificationModal" tabIndex="-1" toggle={togglemodal}>
                   <div className="modal-content">
@@ -482,7 +482,7 @@ const AddBook = props => {
                                                 options={optionGroup_categories}
                                                 classNamePrefix="select2-selection"
                                              />
-                                             <p class="text-danger font-size-10">{category_of_book_message}</p>
+                                             <p className="text-danger font-size-10">{category_of_book_message}</p>
                                           </FormGroup>
                                           <Row>
                                              <Col lg="12">
@@ -498,7 +498,7 @@ const AddBook = props => {
                                                       options={optionGroup_authors}
                                                       classNamePrefix="select2-selection"
                                                    />
-                                                   <p class="text-danger font-size-10">{author_of_book_message}</p>
+                                                   <p className="text-danger font-size-10">{author_of_book_message}</p>
                                                 </FormGroup>
                                              </Col>
                                           </Row>
@@ -583,8 +583,8 @@ const AddBook = props => {
 
                                  <Row style={{ borderBottom: "1px solid #1f3bcc" }}>
                                     <Col xl={8}>
-                                       {book_files.map(file => (
-                                          <div className="d-flex justify-content-between bg-light border  rounded py-2 px-3 mb-3 align-items-center" style={{ width: "450px", marginLeft: "10px" }}>
+                                       {book_files.map((file, index) => (
+                                          <div key={index} className="d-flex justify-content-between bg-light border  rounded py-2 px-3 mb-3 align-items-center" style={{ width: "450px", marginLeft: "10px" }}>
                                              <i className="bx bxs-file font-size-22 text-danger mr-2" />
                                              <p
                                                 style={{
@@ -717,7 +717,7 @@ const AddBook = props => {
                                                    set_youtube_url_value(e.target.value)
                                                 }}
                                              />
-                                             <p class="text-danger">{youtube_url_name}</p>
+                                             <p className="text-danger font-size-10">{youtube_url_name}</p>
                                           </FormGroup>
                                        </Col>
                                        <Col lg={6}>
@@ -732,7 +732,7 @@ const AddBook = props => {
                                                    set_book_introduction_value(e.target.value)
                                                 }}
                                              />
-                                             <p class="text-danger">{book_introduction_message}</p>
+                                             <p className="text-danger font-size-10">{book_introduction_message}</p>
                                           </FormGroup>
                                        </Col>
                                     </Row>
@@ -804,19 +804,10 @@ const AddBook = props => {
                                           toggleTab(activeTab + 1)
                                        }
                                        if (activeTab == 2 && (next_button_label == "Алгасах" || next_button_label == "Дараах")) {
-                                          // if (book_files.length != 0 && pdf_price <= 0) {
-                                          //    set_files_checked("Үнийн дүн оруулна уу ?")
-                                          // } else {
                                           toggleTab(activeTab + 1)
                                           set_files_checked("")
-                                          // }
-
-                                          // if (audio_book_files.length != 0 && audio_book_price <= 0) {
-                                          // set_files_checked("Үнийн дүн оруулна уу ?")
-                                          // } else {
                                           toggleTab(activeTab + 1)
                                           set_files_checked("")
-                                          // }
                                        }
                                        if (activeTab === 3) {
                                           handle2(e)

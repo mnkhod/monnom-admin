@@ -197,7 +197,7 @@ export default function Delivery() {
                                        entries={5}
                                        entriesOptions={[5, 10, 20]}
                                        paginationLabel={["Өмнөх", "Дараах"]}
-                                       searchingLabel={"Хайх"}
+                                       searchinglabel={"Хайх"}
                                        searching
                                     />
                                  </CardBody>
@@ -220,7 +220,7 @@ export default function Delivery() {
                                        entries={5}
                                        entriesOptions={[5, 10, 20]}
                                        paginationLabel={["Өмнөх", "Дараах"]}
-                                       searchingLabel={"Хайх"}
+                                       searchinglabel={"Хайх"}
                                        searching
                                     />
                                  </CardBody>

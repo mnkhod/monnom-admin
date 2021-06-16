@@ -110,8 +110,9 @@ const BlogsList = () => {
                                           <i className="mdi mdi-chevron-left" />
                                        </PaginationLink>
                                     </PaginationItem>
-                                    {paginationPages.map(page => (
+                                    {paginationPages.map((page, index) => (
                                        <PaginationItem
+                                          key={index}
                                           onClick={() => {
                                              paginate(page, PAGINATION)
                                           }}
@@ -150,7 +151,7 @@ const BlogsList = () => {
 
 const BlogCard = props => {
    const imageUrl = useMemo(() => {
-      return (props.blog.picture?.url || '').startsWith('/') ? process.env.REACT_APP_STRAPI_BASE_URL + props.blog.picture?.url : props.blog.picture?.url;
+      return (props.blog.picture?.url || "").startsWith("/") ? process.env.REACT_APP_STRAPI_BASE_URL + props.blog.picture?.url : props.blog.picture?.url
    }, [props.blog.picture?.url])
    return (
       <Col xl={3} lg={4} md={4} sm={4}>

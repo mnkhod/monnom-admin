@@ -511,7 +511,7 @@ const List = props => {
                         entries={5}
                         entriesOptions={[5, 10, 20]}
                         paginationLabel={["Өмнөх", "Дараах"]}
-                        searchingLabel={"Хайх"}
+                        searchinglabel={"Хайх"}
                         searching
                      />
                   </CardBody>

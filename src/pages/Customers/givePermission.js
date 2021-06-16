@@ -36,7 +36,7 @@ const GivePermission = props => {
          return {
             name: book.name,
             type: (
-               <Link className="d-flex justify-content-around align-items-center">
+               <Link to="#" className="d-flex justify-content-around align-items-center">
                   <i style={{ color: book.has_pdf ? "#ffd722" : "#767676" }} className="bx bxs-file-pdf font-size-20" />
                   <i style={{ color: book.has_audio ? "#fe2379" : "#767676" }} className="bx bxs-music font-size-20" />
                   <i style={{ color: book.has_sale ? "#24ea75" : "#767676" }} className="bx bxs-book-open font-size-20" />

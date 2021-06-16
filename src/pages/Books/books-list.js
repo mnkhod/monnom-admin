@@ -158,7 +158,6 @@ const Books = () => {
          url: `${process.env.REACT_APP_EXPRESS_BASE_URL}/all-books-list`,
       })
          .then(res => {
-            console.log(res.data)
             setBooksList(res.data)
             axios({
                url: `${process.env.REACT_APP_EXPRESS_BASE_URL}/all-admins-list`,
