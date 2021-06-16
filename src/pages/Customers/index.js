@@ -109,6 +109,9 @@ const Customers = () => {
       <React.Fragment>
          <div className="page-content">
             <Container fluid>
+               <MetaTags>
+                  <title>Монном Хэрэглэгчид</title>
+               </MetaTags>
                <Breadcrumbs title="Хэрэглэгчид" breadcrumbItem="Хэрэглэгчдийн жагсаалт" />
                {isNetworkError ? (
                   <Alert color="danger" role="alert">

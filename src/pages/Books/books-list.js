@@ -271,8 +271,6 @@ const Books = () => {
                                  }
                               })
                               .map(book => {
-                                 console.log(book)
-                                 console.log("book")
                                  if (book.pagination_number <= pagination_current * ITEMS_PER_PAGE && book.pagination_number > pagination_current * ITEMS_PER_PAGE - ITEMS_PER_PAGE) {
                                     return <BookCard book={book} key={book.id} set_are_you_sure_title={set_are_you_sure_title} set_book_info_to_update={set_book_info_to_update} set_confirm_allow={set_confirm_allow} />
                                  }

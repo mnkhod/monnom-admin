@@ -14,7 +14,6 @@ const columns = [
    { label: "Төрөл", field: "type", sort: "asc", width: 100 },
    { label: "Онлайн ном худалдан авалт", field: "online_books_order", sort: "disabled", width: 60 },
    { label: "Аудио ном худалдан авалт", field: "audio_books_order", sort: "disabled", width: 60 },
-   // { label: "Биет худалдан авалт", field: "physical_books_order", sort: "disabled", width: 60 },
 ]
 
 const GivePermission = props => {
@@ -24,7 +23,6 @@ const GivePermission = props => {
    const [book_data, set_book_data] = useState([])
    const [paid_online_books, set_paid_online_books] = useState([])
    const [paid_audio_books, set_paid_audio_books] = useState([])
-   const [paid_books, set_paid_books] = useState([])
    const [confirm_allow_ebooks, set_confirm_allow_ebooks] = useState(false)
    const [selected_book, set_selected_book] = useState(null)
 
@@ -34,8 +32,6 @@ const GivePermission = props => {
    }
 
    const initialState = () => {
-      console.log(props.selected_user_id)
-      console.log(books)
       let tempCols = books.map(book => {
          return {
             name: book.name,
@@ -45,11 +41,6 @@ const GivePermission = props => {
                   <i style={{ color: book.has_audio ? "#fe2379" : "#767676" }} className="bx bxs-music font-size-20" />
                   <i style={{ color: book.has_sale ? "#24ea75" : "#767676" }} className="bx bxs-book-open font-size-20" />
                </Link>
-            ),
-            physical_books_order: book.has_sale && (
-               <Badge color={noticeIsBoughtBook(book.id) ? "success" : "primary"} className="mr-1 font-size-13">
-                  <strong>{noticeIsBoughtBook(book.id) ? "Худалдаж авсан" : "Худалдаж аваагүй"}</strong>
-               </Badge>
             ),
             online_books_order: book.has_pdf && (
                <Badge color={noticeIsBoughtEbook(book.id) ? "success" : "primary"} className="mr-1 font-size-13">
@@ -82,6 +73,7 @@ const GivePermission = props => {
             ),
          }
       })
+
       set_book_data(tempCols)
    }
 
@@ -102,9 +94,7 @@ const GivePermission = props => {
       await axios({
          url: `${process.env.REACT_APP_STRAPI_BASE_URL}/${selected_book.model_name}`,
          method: "POST",
-         headers: {
-            Authorization: `Bearer ${JSON.parse(localStorage.getItem("user_information")).jwt}`,
-         },
+         headers: { Authorization: `Bearer ${JSON.parse(localStorage.getItem("user_information")).jwt}` },
          data: {
             book: selected_book.id,
             users_permissions_user: props.selected_user_id,
@@ -112,11 +102,14 @@ const GivePermission = props => {
          },
       })
          .then(res => {
+            if (selected_book.model_name == "customer-paid-audio-books") {
+               set_paid_audio_books([...paid_audio_books, res.data])
+            } else if (selected_book.model_name == "customer-paid-ebooks") {
+               set_paid_online_books([...paid_online_books, res.data])
+            }
+
             set_state({ loading: false })
             set_state({ success: true })
-            setTimeout(() => {
-               window.location.reload()
-            }, 1500)
          })
          .catch(err => {
             set_state({ loading: false })
@@ -133,9 +126,7 @@ const GivePermission = props => {
          },
       })
          .then(async res => {
-            console.log(res.data)
             let delete_payment_ids = res.data.map(d => d.id)
-            console.log(delete_payment_ids)
             await axios
                .all(
                   delete_payment_ids.map(id => {
@@ -148,14 +139,18 @@ const GivePermission = props => {
                      })
                   })
                )
+               .then(resp => {
+                  if (selected_book.model_name == "customer-paid-audio-books") {
+                     set_paid_audio_books(paid_audio_books.filter(book => book.book.id != selected_book.id))
+                  } else if (selected_book.model_name == "customer-paid-ebooks") {
+                     set_paid_online_books(paid_online_books.filter(book => book.book.id != selected_book.id))
+                  }
+               })
                .catch(err => {
                   throw "error on deletion"
                })
             set_state({ loading: false })
             set_state({ success: true })
-            setTimeout(() => {
-               window.location.reload()
-            }, 1500)
          })
          .catch(err => {
             set_state({ loading: false })
@@ -198,23 +193,7 @@ const GivePermission = props => {
             Authorization: `Bearer ${JSON.parse(localStorage.getItem("user_information")).jwt}`,
          },
       })
-         .then(book => {
-            set_paid_audio_books(book.data)
-         })
-         .catch(err => {
-            props.setIsNetworkError(true)
-         })
-
-      await axios({
-         url: `${process.env.REACT_APP_STRAPI_BASE_URL}/customer-paid-books?users_permissions_user.id=${props.selected_user_id}`,
-         method: "GET",
-         headers: {
-            Authorization: `Bearer ${JSON.parse(localStorage.getItem("user_information")).jwt}`,
-         },
-      })
-         .then(paidBook => {
-            set_paid_books(paidBook.data)
-         })
+         .then(book => set_paid_audio_books(book.data))
          .catch(err => {
             props.setIsNetworkError(true)
          })
@@ -222,11 +201,15 @@ const GivePermission = props => {
 
    useEffect(() => {
       initialState()
-   }, [books, paid_online_books, paid_books])
+   }, [paid_online_books, paid_audio_books])
 
    useEffect(() => {
       fetchData()
    }, [])
+
+   useEffect(() => {
+      initialState()
+   }, [books, paid_online_books])
 
    return (
       <React.Fragment>
@@ -280,11 +263,6 @@ const GivePermission = props => {
          ) : null}
       </React.Fragment>
    )
-
-   function noticeIsBoughtBook(book_id) {
-      if (paid_books.filter(paid_book => book_id == paid_book.book?.id).length != 0) return true
-      return false
-   }
 
    function noticeIsBoughtEbook(book_id) {
       if (paid_online_books.filter(paid_book => book_id == paid_book.book?.id).length != 0) return true
