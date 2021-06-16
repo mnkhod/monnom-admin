@@ -118,6 +118,8 @@ export default function UpdateBook(props) {
    const [chooseUpdateForm, setChooseUpdateForm] = useState("")
 
    const updateGeneralBook = async () => {
+      set_state({ loading: true })
+
       let categories = selectedMulti_category.map(category => category.value.toString())
       let authors = selectedMulti_author.map(author => author.value.toString())
 
@@ -140,17 +142,21 @@ export default function UpdateBook(props) {
          },
       })
          .then(res => {
-            set_checking_state(true)
+            set_state({ loading: false })
+            set_state({ success: true })
             console.log("general done")
          })
          .catch(e => {
-            set_checking_state(false)
+            set_state({ loading: false })
+            set_state({ error: true })
             console.log("general error")
             console.log(e)
          })
    }
 
    const updatePictureBook = async () => {
+      set_state({ loading: true })
+
       let coverPicture = new FormData()
       coverPicture.append("data", JSON.stringify({}))
       coverPicture.append("files.picture", send_cover_pic, send_cover_pic.name)
@@ -162,17 +168,21 @@ export default function UpdateBook(props) {
          data: coverPicture,
       })
          .then(res => {
-            set_checking_state(true)
+            set_state({ loading: false })
+            set_state({ success: true })
             console.log("picture done")
          })
          .catch(e => {
-            set_checking_state(false)
+            set_state({ loading: false })
+            set_state({ error: true })
             console.log("picture error")
             console.log(e)
          })
    }
 
    const updatePdfBook = async () => {
+      set_state({ loading: true })
+
       let ebookFile = new FormData()
       ebookFile.append(
          "data",
@@ -189,14 +199,18 @@ export default function UpdateBook(props) {
          data: ebookFile,
       })
          .then(res => {
-            set_checking_state(true)
+            set_state({ loading: false })
+            set_state({ success: true })
          })
          .catch(e => {
-            set_checking_state(false)
+            set_state({ loading: false })
+            set_state({ error: true })
          })
    }
 
    const updateAudioFilesStackNumber = async () => {
+      set_state({ loading: true })
+
       const config = { headers: { Authorization: `Bearer ${JSON.parse(localStorage.getItem("user_information")).jwt}` } }
 
       let tempStackSequence = audio_book_files_for_save.map((file, index) => {
@@ -206,17 +220,21 @@ export default function UpdateBook(props) {
       await axios
          .all(tempStackSequence.map(stack => axios.put(`${process.env.REACT_APP_STRAPI_BASE_URL}/book-audios/${stack.id}`, { number: stack.index }, config)))
          .then(() => {
-            // TODO success dialog
+            set_state({ loading: false })
+            set_state({ success: true })
             window.location.reload()
          })
          .catch(e => {
-            set_checking_state(false)
+            set_state({ loading: false })
+            set_state({ error: true })
             console.log("pdf book error")
             console.log(e)
          })
    }
 
    const updateAudioBook = async () => {
+      set_state({ loading: true })
+
       let tempAudioRequests = []
       let promises = []
 
@@ -268,30 +286,36 @@ export default function UpdateBook(props) {
                      },
                   })
                      .then(res => {
-                        set_checking_state(true)
+                        set_state({ loading: false })
+                        set_state({ success: true })
                         console.log("audio book done")
                      })
 
                      .catch(err => {
-                        set_checking_state(false)
+                        set_state({ loading: false })
+                        set_state({ error: true })
                         console.log("audio book error 1")
                         console.log(err)
                      })
                })
                .catch(err => {
-                  set_checking_state(false)
+                  set_state({ loading: false })
+                  set_state({ error: true })
                   console.log("audio book error 2")
                   console.log(err)
                })
          })
          .catch(e => {
-            set_checking_state(false)
+            set_state({ loading: false })
+            set_state({ error: true })
             console.log("audio book error 3")
             console.log(err)
          })
    }
 
    const updateCommentsBook = async () => {
+      set_state({ loading: true })
+
       const bookComments = new FormData()
       bookComments.append("data", JSON.stringify({}))
 
@@ -306,17 +330,21 @@ export default function UpdateBook(props) {
          data: bookComments,
       })
          .then(res => {
-            set_checking_state(true)
+            set_state({ loading: false })
+            set_state({ success: true })
             console.log("comments book done")
          })
          .catch(e => {
-            set_checking_state(false)
+            set_state({ loading: false })
+            set_state({ error: true })
             console.log("comments book error")
             console.log(e)
          })
    }
 
    const updateRemovePdfBook = async () => {
+      set_state({ loading: true })
+
       await axios({
          url: `${process.env.REACT_APP_STRAPI_BASE_URL}/books/${props.book_id}`,
          method: "PUT",
@@ -329,17 +357,21 @@ export default function UpdateBook(props) {
          },
       })
          .then(res => {
-            set_checking_state(true)
+            set_state({ loading: false })
+            set_state({ success: true })
             console.log("remove pdf done")
          })
          .catch(err => {
+            set_state({ loading: false })
+            set_state({ error: true })
             console.log("remove pdf")
             console.log(err)
-            set_checking_state(false)
          })
    }
 
    const updateRemoveAudioBook = async () => {
+      set_state({ loading: true })
+
       let delete_requests = audio_book_files_for_delete.map(id => `${process.env.REACT_APP_STRAPI_BASE_URL}/book-audios/${id}`)
 
       await axios
@@ -356,16 +388,19 @@ export default function UpdateBook(props) {
                },
             })
                .then(res => {
+                  set_state({ loading: false })
                   set_state({ success: true })
                   console.log("remove audio done")
                })
                .catch(err => {
+                  set_state({ loading: false })
                   set_state({ error: true })
                   console.log("remove audio error 1")
                   console.log(err)
                })
          })
          .catch(err => {
+            set_state({ loading: false })
             set_state({ error: true })
             console.log("remove audio error 2")
             console.log(err)
@@ -373,6 +408,7 @@ export default function UpdateBook(props) {
    }
 
    const updateRemoveRef = async () => {
+      set_state({ loading: true })
       const bookComments = new FormData()
       bookComments.append("data", JSON.stringify({}))
 
@@ -387,10 +423,12 @@ export default function UpdateBook(props) {
          data: bookComments,
       })
          .then(res => {
+            set_state({ loading: false })
             set_state({ success: true })
             console.log("comments book done")
          })
          .catch(e => {
+            set_state({ loading: false })
             set_state({ error: true })
             console.log("comments book error")
             console.log(e)
@@ -426,8 +464,6 @@ export default function UpdateBook(props) {
    const fetchBookData = () => {
       axios({ url: `${process.env.REACT_APP_STRAPI_BASE_URL}/books/${props.book_id}`, method: "GET", headers: { Authorization: `Bearer ${JSON.parse(localStorage.getItem("user_information")).jwt}` } })
          .then(res => {
-            console.log("res.data")
-            console.log(res.data)
             res.data.pdf_book_path != null && set_book_files([...book_files, res.data.pdf_book_path])
             set_edit_book_name(res.data.name)
             set_edit_has_pdf(res.data.has_pdf)
@@ -996,8 +1032,6 @@ export default function UpdateBook(props) {
                                           </label>
                                        </Col>
                                        <Col xl={8} gl={8} xs={8}>
-                                          {console.log("book_files.length")}
-                                          {console.log(book_files)}
                                           {book_files.length != 0 && (
                                              <>
                                                 <div className="d-flex justify-content-between bg-light border rounded py-2 px-3 mb-3 align-items-center" style={{ width: "450px", marginLeft: "10px" }}>
