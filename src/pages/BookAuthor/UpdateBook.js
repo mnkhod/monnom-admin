@@ -451,7 +451,7 @@ export default function UpdateBook(props) {
          .then(res => {
             console.log("res.data")
             console.log(res.data)
-            set_book_files([res.data.pdf_book_path])
+            res.data.pdf_book_path != null && set_book_files([...book_files, res.data.pdf_book_path])
             set_edit_book_name(res.data.name)
             set_edit_has_pdf(res.data.has_pdf)
             set_edit_has_mp3(res.data.has_audio)
@@ -1027,7 +1027,7 @@ export default function UpdateBook(props) {
                                        </Col>
                                        <Col xl={8} gl={8} xs={8}>
                                           {console.log("book_files.length")}
-                                          {console.log(book_files.length)}
+                                          {console.log(book_files)}
                                           {book_files.length != 0 && (
                                              <>
                                                 <div className="d-flex justify-content-between bg-light border rounded py-2 px-3 mb-3 align-items-center" style={{ width: "450px", marginLeft: "10px" }}>
@@ -1380,6 +1380,9 @@ export default function UpdateBook(props) {
                                           } else {
                                              toggleTab(activeTab + 1)
                                              set_check_field("")
+                                          }
+                                          if (activeTab === 2) {
+                                             toggleTab(activeTab + 1)
                                           }
                                           if (activeTab === 3) {
                                              if (chooseUpdateForm == "general") {
