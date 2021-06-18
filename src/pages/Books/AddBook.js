@@ -52,6 +52,11 @@ const AddBook = props => {
    const [sale_price, set_sale_price] = useState(0)
    const [audio_book_price, set_audio_book_price] = useState(0)
 
+   // debug data
+   useEffect(() => {
+
+   }, []);
+
    // create
    const createBook = async () => {
       const formData = new FormData()
@@ -93,28 +98,47 @@ const AddBook = props => {
          let tempAudioRequests = []
          let promises = []
 
-         audio_book_files_for_save.forEach((file, index) => {
-            promises.push(
-               getAudioFileDuration(audio_book_files_for_save[index])
-                  .then(resp => {
-                     let audio_duration = resp
-                     let tempFormData = new FormData()
-                     let data = {
-                        chapter_name: audio_book_files_for_save[index].name.split(".").slice(0, -1).join("."),
-                        book: res.data.id,
-                        number: index,
-                        audio_duration: audio_duration.toString(),
-                     }
-                     tempFormData.append("data", JSON.stringify(data))
-                     tempFormData.append("files.mp3_file", audio_book_files_for_save[index])
-                     tempAudioRequests.push({
-                        url: `${process.env.REACT_APP_STRAPI_BASE_URL}/book-audios`,
-                        formdata: tempFormData,
-                     })
-                  })
-                  .catch(err => {})
-            )
-         })
+         for (let index = 0; index < audio_book_files.length; index++) {
+            let promise = getAudioFileDuration(audio_book_files_for_save[index]);
+            promises.push(promise);
+            let audio_duration = await promise;
+            let tempFormData = new FormData()
+            let data = {
+               chapter_name: audio_book_files_for_save[index].name.split(".").slice(0, -1).join("."),
+               book: res.data.id,
+               number: index,
+               audio_duration: audio_duration.toString(),
+            }
+            tempFormData.append("data", JSON.stringify(data))
+            tempFormData.append("files.mp3_file", audio_book_files_for_save[index])
+            tempAudioRequests.push({
+               url: `${process.env.REACT_APP_STRAPI_BASE_URL}/book-audios`,
+               method: 'PUT',
+               formdata: tempFormData,
+            })
+         }
+         // audio_book_files_for_save.forEach((file, index) => {
+         //    promises.push(
+         //       getAudioFileDuration(audio_book_files_for_save[index])
+         //          .then(resp => {
+         //             let audio_duration = resp
+         //             let tempFormData = new FormData()
+         //             let data = {
+         //                chapter_name: audio_book_files_for_save[index].name.split(".").slice(0, -1).join("."),
+         //                book: res.data.id,
+         //                number: index,
+         //                audio_duration: audio_duration.toString(),
+         //             }
+         //             tempFormData.append("data", JSON.stringify(data))
+         //             tempFormData.append("files.mp3_file", audio_book_files_for_save[index])
+         //             tempAudioRequests.push({
+         //                url: `${process.env.REACT_APP_STRAPI_BASE_URL}/book-audios`,
+         //                formdata: tempFormData,
+         //             })
+         //          })
+         //          .catch(err => { })
+         //    )
+         // })
 
          Promise.all(promises)
             .then(() => {
@@ -141,15 +165,21 @@ const AddBook = props => {
 
    const getAudioFileDuration = file =>
       new Promise((resolve, reject) => {
-         let reader = new FileReader()
-
-         reader.onload = function (event) {
-            let audioContext = new (window.AudioContext || window.webkitAudioContext)()
-            audioContext.decodeAudioData(event.target.result).then(buffer => {
-               resolve(buffer.duration)
-            })
-         }
-         reader.readAsArrayBuffer(file)
+         let audio = document.createElement('audio');
+         let objectUrl = URL.createObjectURL(file);
+         audio.src = objectUrl;
+         audio.addEventListener('loadedmetadata', () => {
+            console.log(`audio duration: ${audio.duration}`);
+            resolve(audio.duration);
+         })
+         // let reader = new FileReader()
+         // reader.onload = function (event) {
+         //    let audioContext = new (window.AudioContext || window.webkitAudioContext)()
+         //    audioContext.decodeAudioData(event.target.result).then(buffer => {
+         //       resolve(buffer.duration)
+         //    })
+         // }
+         // reader.readAsArrayBuffer(file)
       })
 
    async function getBookInfo() {
@@ -163,7 +193,7 @@ const AddBook = props => {
          .then(res => {
             getAuthorsCategoriesInfo(res.data.available_authors, res.data.available_categories)
          })
-         .catch(err => {})
+         .catch(err => { })
    }
 
    // props oos irsen nomnii categoruudiig awah
@@ -270,7 +300,7 @@ const AddBook = props => {
       } else set_category_of_book_message("")
 
       if (selectedMulti_author == null) {
-         ;-set_author_of_book_message("Хоосон утгатай байна !")
+         ; -set_author_of_book_message("Хоосон утгатай байна !")
       } else set_author_of_book_message("")
    }
 
