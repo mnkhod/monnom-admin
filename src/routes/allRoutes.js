@@ -23,13 +23,20 @@ import Customers from "../pages/Customers"
 import Books from "../pages/Books/books-list"
 import BlogSingle from "../pages/BlogSingle"
 import BlogsList from "../pages/BlogsList"
-import LandingAdmin from "../pages/LandingAdmin"
+// import LandingAdmin from "../pages/LandingAdmin"
+import Notifications from '../pages/Notifications';
 
 // import Logout from "../pages/Authentication/Logout"
 
-const bookPulisherRoutes = [{ verbose: "Ном дэлгэрэнгүй", path: "/bookSingle/:id", component: BookSinglePage }]
+const bookPulisherRoutes = [
+   { verbose: "Ном дэлгэрэнгүй", path: "/bookSingle/:id", component: BookSinglePage },
+]
 
-const podcastPublisherRoutes = [{ verbose: "Подкаст дэлгэрэнгүй", path: "/podcastSingle/:id", component: PodcastSinglePage }]
+const podcastPublisherRoutes = [
+   { verbose: "Подкаст дэлгэрэнгүй", path: "/podcastSingle/:id", component: PodcastSinglePage },
+
+   { verbose: 'Notification', path: "/notifications", component: Notifications },
+]
 
 const deliveryManRoutes = [{ verbose: "Хүргэлтийн мэдээлэл", path: "/delivery", component: Delivery }]
 
@@ -41,6 +48,8 @@ const managerRoutes = [
    { verbose: "Радио", path: "/live-list", component: LiveChannel },
    { path: "/blogs-list", component: BlogsList },
    { path: "/blog/:id?", component: BlogSingle },
+
+   { path: "/notifications", component: Notifications },
 ]
 
 const userRoutes = [

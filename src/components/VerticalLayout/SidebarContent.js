@@ -105,6 +105,12 @@ const SidebarContent = props => {
                            <span>{props.t("Мэдээний жагсаалт")}</span>
                         </Link>
                      </li>
+                     <li>
+                        <Link to="/notifications" className=" waves-effect">
+                           <i className="bx bx-notification "></i>
+                           <span>{props.t("Notification")}</span>
+                        </Link>
+                     </li>
                   </>
                )}
 

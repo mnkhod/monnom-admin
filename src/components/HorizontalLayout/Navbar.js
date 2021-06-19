@@ -11,8 +11,8 @@ import { connect } from "react-redux"
 
 const Navbar = props => {
   let userRole = JSON.parse(localStorage.getItem("user_information"))?.user?.user_role
-  
-  
+
+
   const [statistics, set_statistics] = useState(false)
   const [manage_admins, set_manage_admins] = useState(false)
   const [content, set_content] = useState(false)
@@ -72,10 +72,10 @@ const Navbar = props => {
               className="navbar-collapse"
               id="topnav-menu-content"
             >
-              <ul className="navbar-nav">                
+              <ul className="navbar-nav">
                 {/* ------------------- STATISTICS START ------------------- */}
-                  {(userRole == 1 || userRole == 2) && (
-                    <li className="nav-item dropdown">
+                {(userRole == 1 || userRole == 2) && (
+                  <li className="nav-item dropdown">
                     <Link
                       className="nav-link dropdown-toggle arrow-none"
                       onClick={e => {
@@ -95,13 +95,13 @@ const Navbar = props => {
                         <Link to="/dashboard" className="dropdown-item">
                           {props.t("Хянах самбар")}
                         </Link>
-                      )}                      
+                      )}
                       <Link to="/sales" className="dropdown-item">
                         {props.t("Борлуулалт")}
                       </Link>
                     </div>
                   </li>
-                  )} 
+                )}
                 {/* ------------------- STATISTICS END ------------------- */}
                 {/* ------------------- BLOG PAGE START ------------------- */}
                 {(userRole == 1 || userRole == 2) && (
@@ -123,6 +123,9 @@ const Navbar = props => {
                     >
                       <Link to="/blogs-list" className="dropdown-item">
                         {props.t("Мэдээний жагсаалт")}
+                      </Link>
+                      <Link to="/notifications" className="dropdown-item">
+                        {props.t("Notification")}
                       </Link>
                       {/* <Link to="/landing-admin" className="dropdown-item">
                         {props.t("Веб админ")}
@@ -154,69 +157,69 @@ const Navbar = props => {
                       {(userRole == 1 || userRole == 6) && (
                         <Link to="/manage-admins" className="dropdown-item">
                           {props.t("Ажилчид")}
-                        </Link>  
+                        </Link>
                       )}
                       {(userRole == 1 || userRole == 2) && (
                         <Link to="/app-users" className="dropdown-item">
                           {props.t("Хэрэглэгчид")}
-                        </Link>  
-                      )}       
+                        </Link>
+                      )}
                       {(userRole == 1 || userRole == 3) && (
                         <Link to="/delivery" className="dropdown-item">
                           {props.t("Хүргэлтийн мэдээлэл")}
-                        </Link>  
-                      )}                                     
+                        </Link>
+                      )}
                       {(userRole == 1 || userRole == 6) && (
                         <Link to="/settings" className="dropdown-item">
                           {props.t("Тохиргоо")}
                         </Link>
-                      )}                                            
+                      )}
                     </div>
                   </li>
                 )}
                 {/* ------------------- ADMIN CONTROL END ------------------- */}
                 {/* ------------------- CONTENT START ------------------- */}
-                  {(userRole == 1 || userRole == 2 || userRole == 4 || userRole == 5) && (
-                    <li className="nav-item dropdown">
-                      <Link
-                        className="nav-link dropdown-toggle arrow-none"
-                        onClick={e => {
-                          e.preventDefault()
-                          set_content(!content)
-                        }}
-                        to="dashboard"
-                      >
-                        <i className="bx bx-home-circle mr"></i>
-                        {props.t("Контент")} {props.menuOpen}
-                        <div className="arrow-down"></div>
-                      </Link>
-                      <div
-                        className={classname("dropdown-menu", { show: content })}
-                      >
-                        {(userRole == 1 || userRole == 2 || userRole == 5) && (
-                          userRole == 5 ? 
+                {(userRole == 1 || userRole == 2 || userRole == 4 || userRole == 5) && (
+                  <li className="nav-item dropdown">
+                    <Link
+                      className="nav-link dropdown-toggle arrow-none"
+                      onClick={e => {
+                        e.preventDefault()
+                        set_content(!content)
+                      }}
+                      to="dashboard"
+                    >
+                      <i className="bx bx-home-circle mr"></i>
+                      {props.t("Контент")} {props.menuOpen}
+                      <div className="arrow-down"></div>
+                    </Link>
+                    <div
+                      className={classname("dropdown-menu", { show: content })}
+                    >
+                      {(userRole == 1 || userRole == 2 || userRole == 5) && (
+                        userRole == 5 ?
                           <Link to="#" className="dropdown-item">
                             {props.t("Ном")}
                           </Link> : <Link to="books-list" className="dropdown-item">
-                          {props.t("Ном")}
-                        </Link>  
-                        )} 
-                        {(userRole == 1 || userRole == 2 || userRole == 4) && (
-                          userRole == 4 ? 
+                            {props.t("Ном")}
+                          </Link>
+                      )}
+                      {(userRole == 1 || userRole == 2 || userRole == 4) && (
+                        userRole == 4 ?
                           <Link to="#" className="dropdown-item">
                             {props.t("Подкаст")}
                           </Link> : <Link to="podcastsList" className="dropdown-item">
-                          {props.t("Подкаст")}
-                        </Link>
-                        )}                        
-                        {userRole == 1 || userRole == 2 && (
-                          <Link to="/live-list" className="dropdown-item">
-                            {props.t("Радио")}
+                            {props.t("Подкаст")}
                           </Link>
-                        )}                          
-                      </div>
-                    </li>
-                  )}                
+                      )}
+                      {userRole == 1 || userRole == 2 && (
+                        <Link to="/live-list" className="dropdown-item">
+                          {props.t("Радио")}
+                        </Link>
+                      )}
+                    </div>
+                  </li>
+                )}
                 {/* ------------------- CONTENT END ------------------- */}
               </ul>
             </Collapse>
