@@ -27,17 +27,21 @@ const EditPodcast = ({ episode_id, setEditPodcastModal, editEpisodeModal }) => {
 
    const getAudioFileDuration = file =>
       new Promise((resolve, reject) => {
-         let reader = new FileReader()
-
-         reader.onload = function (event) {
-            let audioContext = new (window.AudioContext || window.webkitAudioContext)()
-            audioContext.decodeAudioData(event.target.result).then(buffer => {
-               let duration = buffer.duration
-
-               resolve(duration)
-            })
-         }
-         reader.readAsArrayBuffer(file)
+         let audio = document.createElement('audio');
+         let objectUrl = URL.createObjectURL(file);
+         audio.src = objectUrl;
+         audio.addEventListener('loadedmetadata', () => {
+            console.log(`audio duration: ${audio.duration}`);
+            resolve(audio.duration);
+         })
+         // let reader = new FileReader()
+         // reader.onload = function (event) {
+         //    let audioContext = new (window.AudioContext || window.webkitAudioContext)()
+         //    audioContext.decodeAudioData(event.target.result).then(buffer => {
+         //       resolve(buffer.duration)
+         //    })
+         // }
+         // reader.readAsArrayBuffer(file)
       })
 
    // axios oor huselt ywuulj update hiih
@@ -67,7 +71,7 @@ const EditPodcast = ({ episode_id, setEditPodcastModal, editEpisodeModal }) => {
             .then(async res => {
                successFlag = true
             })
-            .catch(e => {})
+            .catch(e => { })
       }
 
       if (difference_identifier.cover_pic) {
@@ -84,7 +88,7 @@ const EditPodcast = ({ episode_id, setEditPodcastModal, editEpisodeModal }) => {
             data: {
                picture: null,
             },
-         }).catch(e => {})
+         }).catch(e => { })
 
          await axios({
             url: `${process.env.REACT_APP_STRAPI_BASE_URL}/upload`,
@@ -95,7 +99,7 @@ const EditPodcast = ({ episode_id, setEditPodcastModal, editEpisodeModal }) => {
             .then(async res => {
                successFlag = true
             })
-            .catch(e => {})
+            .catch(e => { })
       }
 
       if (difference_identifier.audio_file) {
@@ -112,7 +116,7 @@ const EditPodcast = ({ episode_id, setEditPodcastModal, editEpisodeModal }) => {
             data: {
                audio_file_path: null,
             },
-         }).catch(e => {})
+         }).catch(e => { })
 
          await axios({
             url: `${process.env.REACT_APP_STRAPI_BASE_URL}/upload`,
@@ -123,7 +127,7 @@ const EditPodcast = ({ episode_id, setEditPodcastModal, editEpisodeModal }) => {
             .then(async res => {
                successFlag = true
             })
-            .catch(e => {})
+            .catch(e => { })
 
          await getAudioFileDuration(edit_send_file)
             .then(res => {
@@ -140,9 +144,9 @@ const EditPodcast = ({ episode_id, setEditPodcastModal, editEpisodeModal }) => {
                   .then(res => {
                      successFlag = true
                   })
-                  .catch(e => {})
+                  .catch(e => { })
             })
-            .catch(err => {})
+            .catch(err => { })
       }
       if (successFlag) {
          set_state({ loading: false })
@@ -173,7 +177,7 @@ const EditPodcast = ({ episode_id, setEditPodcastModal, editEpisodeModal }) => {
             setCoverImage(`${res.data.picture.url}`)
             podcast_pic(`${res.data.picture.url}`)
          })
-         .catch(err => {})
+         .catch(err => { })
    }
 
    // zurag oorchloh

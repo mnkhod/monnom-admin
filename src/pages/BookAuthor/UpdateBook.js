@@ -436,17 +436,21 @@ export default function UpdateBook(props) {
 
    const getAudioFileDuration = file =>
       new Promise((resolve, reject) => {
-         let reader = new FileReader()
-
-         reader.onload = function (event) {
-            let audioContext = new (window.AudioContext || window.webkitAudioContext)()
-            audioContext.decodeAudioData(event.target.result).then(buffer => {
-               let duration = buffer.duration
-
-               resolve(duration)
-            })
-         }
-         reader.readAsArrayBuffer(file)
+         let audio = document.createElement('audio');
+         let objectUrl = URL.createObjectURL(file);
+         audio.src = objectUrl;
+         audio.addEventListener('loadedmetadata', () => {
+            console.log(`audio duration: ${audio.duration}`);
+            resolve(audio.duration);
+         })
+         // let reader = new FileReader()
+         // reader.onload = function (event) {
+         //    let audioContext = new (window.AudioContext || window.webkitAudioContext)()
+         //    audioContext.decodeAudioData(event.target.result).then(buffer => {
+         //       resolve(buffer.duration)
+         //    })
+         // }
+         // reader.readAsArrayBuffer(file)
       })
 
    useEffect(() => {
@@ -482,7 +486,7 @@ export default function UpdateBook(props) {
             set_audio_book_files_for_save(sortedList)
             set_book_comments_pic(res.data.picture_comment)
          })
-         .catch(err => {})
+         .catch(err => { })
    }
 
    useEffect(() => {

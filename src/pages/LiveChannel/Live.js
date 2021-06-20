@@ -201,17 +201,21 @@ const Live = () => {
 
    const getAudioFileDuration = file =>
       new Promise((resolve, reject) => {
-         let reader = new FileReader()
-
-         reader.onload = function (event) {
-            let audioContext = new (window.AudioContext || window.webkitAudioContext)()
-            audioContext.decodeAudioData(event.target.result).then(buffer => {
-               let duration = buffer.duration
-
-               resolve(duration)
-            })
-         }
-         reader.readAsArrayBuffer(file)
+         let audio = document.createElement('audio');
+         let objectUrl = URL.createObjectURL(file);
+         audio.src = objectUrl;
+         audio.addEventListener('loadedmetadata', () => {
+            console.log(`audio duration: ${audio.duration}`);
+            resolve(audio.duration);
+         })
+         // let reader = new FileReader()
+         // reader.onload = function (event) {
+         //    let audioContext = new (window.AudioContext || window.webkitAudioContext)()
+         //    audioContext.decodeAudioData(event.target.result).then(buffer => {
+         //       resolve(buffer.duration)
+         //    })
+         // }
+         // reader.readAsArrayBuffer(file)
       })
 
    // upload hiij bga mp3 file aa ustgah
