@@ -70,11 +70,6 @@ const getListStyle = isDraggingOver => ({
    width: "100%",
 })
 
-const config = {
-   "content-type": "multipart/form-data",
-   // Authorization: `Bearer ${JSON.parse(localStorage.getItem("user_information")).jwt}`,
-}
-
 export default function UpdateBook(props) {
    const [state, set_state] = useContext(ResultPopUp)
    const [checking_state, set_checking_state] = useState(null)
@@ -119,6 +114,7 @@ export default function UpdateBook(props) {
 
    const [chooseUpdateForm, setChooseUpdateForm] = useState("")
 
+   // DONE
    const updateGeneralBook = async () => {
       set_state({ loading: true })
 
@@ -146,6 +142,9 @@ export default function UpdateBook(props) {
          .then(res => {
             set_state({ loading: false })
             set_state({ success: true })
+            setTimeout(() => {
+               window.location.reload()
+            }, 2000)
          })
          .catch(e => {
             set_state({ loading: false })
@@ -153,6 +152,7 @@ export default function UpdateBook(props) {
          })
    }
 
+   // DONE
    const updatePictureBook = async () => {
       set_state({ loading: true })
 
@@ -163,12 +163,18 @@ export default function UpdateBook(props) {
       await axios({
          url: `${process.env.REACT_APP_STRAPI_BASE_URL}/books/${props.book_id}`,
          method: "PUT",
-         headers: config,
+         headers: {
+            Authorization: `Bearer ${JSON.parse(localStorage.getItem("user_information")).jwt}`,
+            "content-type": "multipart/form-data",
+         },
          data: coverPicture,
       })
          .then(res => {
             set_state({ loading: false })
             set_state({ success: true })
+            setTimeout(() => {
+               window.location.reload()
+            }, 2000)
             console.log("picture done")
          })
          .catch(e => {
@@ -179,6 +185,7 @@ export default function UpdateBook(props) {
          })
    }
 
+   // DONE
    const updatePdfBook = async () => {
       set_state({ loading: true })
 
@@ -194,12 +201,18 @@ export default function UpdateBook(props) {
       await axios({
          url: `${process.env.REACT_APP_STRAPI_BASE_URL}/books/${props.book_id}`,
          method: "PUT",
-         headers: config,
+         headers: {
+            Authorization: `Bearer ${JSON.parse(localStorage.getItem("user_information")).jwt}`,
+            "content-type": "multipart/form-data",
+         },
          data: ebookFile,
       })
          .then(res => {
             set_state({ loading: false })
             set_state({ success: true })
+            setTimeout(() => {
+               window.location.reload()
+            }, 2000)
          })
          .catch(e => {
             set_state({ loading: false })
@@ -221,6 +234,9 @@ export default function UpdateBook(props) {
          .then(() => {
             set_state({ loading: false })
             set_state({ success: true })
+            setTimeout(() => {
+               window.location.reload()
+            }, 2000)
             window.location.reload()
          })
          .catch(e => {
@@ -231,6 +247,7 @@ export default function UpdateBook(props) {
          })
    }
 
+   // DONE
    const updateAudioBook = async () => {
       set_state({ loading: true })
 
@@ -278,15 +295,19 @@ export default function UpdateBook(props) {
                   axios({
                      url: `${process.env.REACT_APP_STRAPI_BASE_URL}/books/${props.book_id}`,
                      method: "PUT",
-                     headers: config,
+                     headers: {
+                        Authorization: `Bearer ${JSON.parse(localStorage.getItem("user_information")).jwt}`,
+                     },
                      data: {
-                        has_audio: audio_book_files.length != 0 ? true : false,
-                        has_pdf: book_files.length != 0 ? true : false,
+                        has_audio: true,
                      },
                   })
                      .then(res => {
                         set_state({ loading: false })
                         set_state({ success: true })
+                        setTimeout(() => {
+                           window.location.reload()
+                        }, 2000)
                         console.log("audio book done")
                      })
 
@@ -312,6 +333,7 @@ export default function UpdateBook(props) {
          })
    }
 
+   // DONE
    const updateCommentsBook = async () => {
       set_state({ loading: true })
 
@@ -325,12 +347,18 @@ export default function UpdateBook(props) {
       await axios({
          url: `${process.env.REACT_APP_STRAPI_BASE_URL}/books/${props.book_id}`,
          method: "PUT",
-         config,
+         headers: {
+            Authorization: `Bearer ${JSON.parse(localStorage.getItem("user_information")).jwt}`,
+            "content-type": "multipart/form-data",
+         },
          data: bookComments,
       })
          .then(res => {
             set_state({ loading: false })
             set_state({ success: true })
+            setTimeout(() => {
+               window.location.reload()
+            }, 2000)
             console.log("comments book done")
          })
          .catch(e => {
@@ -341,23 +369,22 @@ export default function UpdateBook(props) {
          })
    }
 
+   // DONE
    const updateRemovePdfBook = async () => {
       set_state({ loading: true })
 
       await axios({
          url: `${process.env.REACT_APP_STRAPI_BASE_URL}/books/${props.book_id}`,
          method: "PUT",
-         headers: {
-            Authorization: `Bearer ${JSON.parse(localStorage.getItem("user_information")).jwt}`,
-         },
-         data: {
-            pdf_book_path: null,
-            has_pdf: false,
-         },
+         headers: { Authorization: `Bearer ${JSON.parse(localStorage.getItem("user_information")).jwt}` },
+         data: { pdf_book_path: null, has_pdf: false },
       })
          .then(res => {
             set_state({ loading: false })
             set_state({ success: true })
+            setTimeout(() => {
+               window.location.reload()
+            }, 2000)
             console.log("remove pdf done")
          })
          .catch(err => {
@@ -368,27 +395,33 @@ export default function UpdateBook(props) {
          })
    }
 
+   // DONE
    const updateRemoveAudioBook = async () => {
       set_state({ loading: true })
 
       let delete_requests = audio_book_files_for_delete.map(id => `${process.env.REACT_APP_STRAPI_BASE_URL}/book-audios/${id}`)
 
       await axios
-         .all(delete_requests.map(request_url => axios.delete(request_url, config)))
+         .all(
+            delete_requests.map(request_url =>
+               axios.delete(request_url, {
+                  headers: { Authorization: `Bearer ${JSON.parse(localStorage.getItem("user_information")).jwt}` },
+               })
+            )
+         )
          .then((...res) => {
             axios({
                url: `${process.env.REACT_APP_STRAPI_BASE_URL}/books/${props.book_id}`,
                method: "PUT",
-               config,
-               data: {
-                  pdf_book_path: [],
-                  has_audio: audio_book_files.length != 0 ? true : false,
-                  has_pdf: book_files.length != 0 ? true : false,
-               },
+               headers: { Authorization: `Bearer ${JSON.parse(localStorage.getItem("user_information")).jwt}` },
+               data: { has_audio: audio_book_files.length != 0 ? true : false },
             })
                .then(res => {
                   set_state({ loading: false })
                   set_state({ success: true })
+                  setTimeout(() => {
+                     window.location.reload()
+                  }, 2000)
                   console.log("remove audio done")
                })
                .catch(err => {
@@ -406,24 +439,26 @@ export default function UpdateBook(props) {
          })
    }
 
+   // TODO
    const updateRemoveRef = async () => {
       set_state({ loading: true })
-      const bookComments = new FormData()
-      bookComments.append("data", JSON.stringify({}))
-
-      for (let i = 0; i < book_comments_pic.length; i++) {
-         bookComments.append("files.picture_comment", book_comments_pic[i], book_comments_pic[i].name)
-      }
 
       await axios({
          url: `${process.env.REACT_APP_STRAPI_BASE_URL}/books/${props.book_id}`,
          method: "PUT",
-         config,
-         data: bookComments,
+         headers: {
+            Authorization: `Bearer ${JSON.parse(localStorage.getItem("user_information")).jwt}`,
+         },
+         data: {
+            picture_comment: null,
+         },
       })
          .then(res => {
             set_state({ loading: false })
             set_state({ success: true })
+            setTimeout(() => {
+               window.location.reload()
+            }, 2000)
             console.log("comments book done")
          })
          .catch(e => {
@@ -436,33 +471,14 @@ export default function UpdateBook(props) {
 
    const getAudioFileDuration = file =>
       new Promise((resolve, reject) => {
-         let audio = document.createElement('audio');
-         let objectUrl = URL.createObjectURL(file);
-         audio.src = objectUrl;
-         audio.addEventListener('loadedmetadata', () => {
-            console.log(`audio duration: ${audio.duration}`);
-            resolve(audio.duration);
+         let audio = document.createElement("audio")
+         let objectUrl = URL.createObjectURL(file)
+         audio.src = objectUrl
+         audio.addEventListener("loadedmetadata", () => {
+            console.log(`audio duration: ${audio.duration}`)
+            resolve(audio.duration)
          })
-         // let reader = new FileReader()
-         // reader.onload = function (event) {
-         //    let audioContext = new (window.AudioContext || window.webkitAudioContext)()
-         //    audioContext.decodeAudioData(event.target.result).then(buffer => {
-         //       resolve(buffer.duration)
-         //    })
-         // }
-         // reader.readAsArrayBuffer(file)
       })
-
-   useEffect(() => {
-      if (checking_state != null)
-         if (checking_state) {
-            set_state({ loading: false })
-            set_state({ success: true })
-         } else {
-            set_state({ loading: false })
-            set_state({ error: true })
-         }
-   }, [checking_state])
 
    const fetchBookData = () => {
       axios({ url: `${process.env.REACT_APP_STRAPI_BASE_URL}/books/${props.book_id}`, method: "GET", headers: { Authorization: `Bearer ${JSON.parse(localStorage.getItem("user_information")).jwt}` } })
@@ -486,12 +502,26 @@ export default function UpdateBook(props) {
             set_audio_book_files_for_save(sortedList)
             set_book_comments_pic(res.data.picture_comment)
          })
-         .catch(err => { })
+         .catch(err => {})
    }
 
    useEffect(() => {
       fetchBookData()
    }, [props.book_id])
+
+   useEffect(() => {
+      if (checking_state != null)
+         if (checking_state) {
+            set_state({ loading: false })
+            set_state({ success: true })
+            setTimeout(() => {
+               window.location.reload()
+            }, 2000)
+         } else {
+            set_state({ loading: false })
+            set_state({ error: true })
+         }
+   }, [checking_state])
 
    // multiple book authors selected
    function handleMulti_book_author(selectedMulti) {
@@ -679,11 +709,7 @@ export default function UpdateBook(props) {
                                     className={classnames({
                                        active: activeTab === 1,
                                     })}
-                                    style={{
-                                       display: "flex",
-                                       alignItems: "center",
-                                       height: "100%",
-                                    }}
+                                    style={{ display: "flex", alignItems: "center", height: "100%" }}
                                  >
                                     <span className="step-number mr-2">01</span>
                                     <p className="my-auto">Сонгох</p>
@@ -694,11 +720,7 @@ export default function UpdateBook(props) {
                                     className={classnames({
                                        active: activeTab === 2,
                                     })}
-                                    style={{
-                                       display: "flex",
-                                       alignItems: "center",
-                                       height: "100%",
-                                    }}
+                                    style={{ display: "flex", alignItems: "center", height: "100%" }}
                                  >
                                     <span className="step-number mr-2">02</span>
                                     <p className="my-auto">Мэдээлэл</p>
@@ -730,10 +752,10 @@ export default function UpdateBook(props) {
                            <TabContent activeTab={activeTab} className="twitter-bs-wizard-tab-content">
                               <TabPane tabId={1} id="personal-info">
                                  <Row>
-                                    <Col lg={6}>
+                                    <Col lg={12} className="px-5 py-2">
                                        <Button
                                           type="submit"
-                                          className="w-100 bg-primary m-2"
+                                          className="w-100 bg-primary font-size-15 m-2"
                                           onClick={() => {
                                              setChooseUpdateForm("general")
                                              toggleTab(activeTab + 1)
@@ -742,22 +764,50 @@ export default function UpdateBook(props) {
                                           Ерөнхий мэдээлэл
                                        </Button>
                                     </Col>
-                                    <Col lg={6}>
+                                    {edit_has_mp3 && (
+                                       <Col lg={12} className="px-5 py-2">
+                                          <Button
+                                             type="submit"
+                                             className="w-100 bg-primary font-size-15 m-2"
+                                             onClick={() => {
+                                                setChooseUpdateForm("changePosition")
+                                                toggleTab(activeTab + 1)
+                                             }}
+                                          >
+                                             Аудио ном дараалал өөрчлөх
+                                          </Button>
+                                       </Col>
+                                    )}
+                                    <Col lg={12} className="px-5 py-2">
                                        <Button
                                           type="submit"
-                                          className="w-100 bg-primary m-2"
+                                          className="w-100 bg-primary font-size-15 m-2"
                                           onClick={() => {
-                                             setChooseUpdateForm("changePosition")
+                                             setChooseUpdateForm("audio")
                                              toggleTab(activeTab + 1)
                                           }}
                                        >
-                                          Аудио ном дараалал өөрчлөх
+                                          {!edit_has_mp3 ? "Аудио ном оруулах" : "Аудио ном нэмж оруулах"}
                                        </Button>
                                     </Col>
-                                    <Col lg={6}>
+                                    {edit_has_mp3 && (
+                                       <Col lg={12} className="px-5 py-2">
+                                          <Button
+                                             type="submit"
+                                             className="w-100 bg-primary font-size-15 m-2"
+                                             onClick={() => {
+                                                setChooseUpdateForm("removeAudio")
+                                                toggleTab(activeTab + 1)
+                                             }}
+                                          >
+                                             Аудио ном устгах
+                                          </Button>
+                                       </Col>
+                                    )}
+                                    <Col lg={12} className="px-5 py-2">
                                        <Button
                                           type="submit"
-                                          className="w-100 bg-primary m-2"
+                                          className="w-100 bg-primary font-size-15 m-2"
                                           onClick={() => {
                                              setChooseUpdateForm("comments")
                                              toggleTab(activeTab + 1)
@@ -766,76 +816,57 @@ export default function UpdateBook(props) {
                                           Ишлэл нэмж оруулах
                                        </Button>
                                     </Col>
-                                    <Col lg={6}>
+
+                                    <Col lg={12} className="px-5 py-2">
                                        <Button
                                           type="submit"
-                                          className="w-100 bg-primary m-2"
-                                          onClick={() => {
-                                             setChooseUpdateForm("audio")
-                                             toggleTab(activeTab + 1)
-                                          }}
-                                       >
-                                          Аудио ном нэмж оруулах
-                                       </Button>
-                                    </Col>
-                                    <Col lg={6}>
-                                       <Button
-                                          type="submit"
-                                          className="w-100 bg-primary m-2"
+                                          className="w-100 bg-primary font-size-15 m-2"
                                           onClick={() => {
                                              setChooseUpdateForm("removeComments")
-                                             toggleTab(activeTab + 1)
+                                             toggleTab(activeTab + 2)
                                           }}
                                        >
                                           Ишлэл устгах
                                        </Button>
                                     </Col>
-                                    <Col lg={6}>
+                                    {!edit_has_pdf && (
+                                       <Col lg={12} className="px-5 py-2">
+                                          <Button
+                                             type="submit"
+                                             className="w-100 bg-primary font-size-15 m-2"
+                                             onClick={() => {
+                                                setChooseUpdateForm("pdf")
+                                                toggleTab(activeTab + 1)
+                                             }}
+                                          >
+                                             Онлайн ном оруулах
+                                          </Button>
+                                       </Col>
+                                    )}
+                                    {edit_has_pdf && (
+                                       <Col lg={12} className="px-5 py-2">
+                                          <Button
+                                             type="submit"
+                                             className="w-100 bg-primary font-size-15 m-2"
+                                             onClick={() => {
+                                                setChooseUpdateForm("removePdf")
+                                                toggleTab(activeTab + 1)
+                                             }}
+                                          >
+                                             Онлайн ном устгах
+                                          </Button>
+                                       </Col>
+                                    )}
+                                    <Col lg={12} className="px-5 py-2">
                                        <Button
                                           type="submit"
-                                          className="w-100 bg-primary m-2"
-                                          onClick={() => {
-                                             setChooseUpdateForm("removeAudio")
-                                             toggleTab(activeTab + 1)
-                                          }}
-                                       >
-                                          Аудио ном устгах
-                                       </Button>
-                                    </Col>
-                                    <Col lg={6}>
-                                       <Button
-                                          type="submit"
-                                          className="w-100 bg-primary m-2"
-                                          onClick={() => {
-                                             setChooseUpdateForm("pdf")
-                                             toggleTab(activeTab + 1)
-                                          }}
-                                       >
-                                          Онлайн ном оруулах
-                                       </Button>
-                                    </Col>{" "}
-                                    <Col lg={6}>
-                                       <Button
-                                          type="submit"
-                                          className="w-100 bg-primary m-2"
+                                          className="w-100 bg-primary font-size-15 m-2"
                                           onClick={() => {
                                              setChooseUpdateForm("image")
                                              toggleTab(activeTab + 1)
                                           }}
                                        >
                                           Зураг
-                                       </Button>
-                                    </Col>
-                                    <Col lg={6}>
-                                       <Button
-                                          type="submit"
-                                          className="w-100 bg-primary m-2"
-                                          onClick={() => {
-                                             setChooseUpdateForm("removePdf")
-                                             toggleTab(activeTab + 1)
-                                          }}
-                                       >
-                                          Онлайн ном устгах
                                        </Button>
                                     </Col>
                                  </Row>
@@ -980,7 +1011,10 @@ export default function UpdateBook(props) {
                                           <Col lg={6}>
                                              {edit_has_sale ? (
                                                 <>
-                                                   <Label>Хэвлэмэл номын үнэ</Label>
+                                                   <Label>
+                                                      Хэвлэмэл номын үнэ <br />
+                                                      <i>Үнийн дүнг 0 болгож идэвхгүй болгоно</i>
+                                                   </Label>
                                                    <Input
                                                       type="number"
                                                       value={sale_book_price}
@@ -1236,17 +1270,7 @@ export default function UpdateBook(props) {
                                                                      style={getItemStyle(snapshot.isDragging, provided.draggableProps.style)}
                                                                   >
                                                                      <i className="bx bxs-music font-size-22 text-warning mr-2" />
-                                                                     <p
-                                                                        style={{
-                                                                           overflow: "hidden",
-                                                                           color: "#000",
-                                                                           margin: "auto",
-                                                                           marginLeft: "0",
-                                                                           width: "125%",
-                                                                        }}
-                                                                     >
-                                                                        {item.content.length > 50 ? `${item.content.slice(0, 50)}...` : item.content}{" "}
-                                                                     </p>
+                                                                     <p style={{ overflow: "hidden", color: "#000", margin: "auto", marginLeft: "0", width: "125%" }}>{item.content.length > 50 ? `${item.content.slice(0, 50)}...` : item.content} </p>
                                                                   </div>
                                                                )}
                                                             </Draggable>
@@ -1277,26 +1301,8 @@ export default function UpdateBook(props) {
                                                                   style={getItemStyle(snapshot.isDragging, provided.draggableProps.style)}
                                                                >
                                                                   <i className="bx bxs-music font-size-22 text-warning mr-2" />
-                                                                  <p
-                                                                     style={{
-                                                                        overflow: "hidden",
-                                                                        color: "#000",
-                                                                        margin: "auto",
-                                                                        marginLeft: "0",
-                                                                        width: "125%",
-                                                                     }}
-                                                                  >
-                                                                     {item.content.length > 50 ? `${item.content.slice(0, 50)}...` : item.content}{" "}
-                                                                  </p>
-                                                                  <i
-                                                                     className="dripicons-cross font-size-20 my-auto text-dark"
-                                                                     onClick={removeAudioBookFiles.bind(this, item)}
-                                                                     style={{
-                                                                        cursor: "pointer",
-                                                                        margin: "auto",
-                                                                        marginRight: "0",
-                                                                     }}
-                                                                  />
+                                                                  <p style={{ overflow: "hidden", color: "#000", margin: "auto", marginLeft: "0", width: "125%" }}>{item.content.length > 50 ? `${item.content.slice(0, 50)}...` : item.content} </p>
+                                                                  <i className="dripicons-cross font-size-20 my-auto text-dark" onClick={removeAudioBookFiles.bind(this, item)} style={{ cursor: "pointer", margin: "auto", marginRight: "0" }} />
                                                                </div>
                                                             )}
                                                          </Draggable>
@@ -1443,7 +1449,7 @@ export default function UpdateBook(props) {
                                                 updatePdfBook()
                                                 togglemodal()
                                              } else if (chooseUpdateForm == "audio") {
-                                                updateAudioBook()
+                                                if (audio_book_files_for_save.length != 0) updateAudioBook()
                                                 togglemodal()
                                              } else if (chooseUpdateForm == "comments") {
                                                 updateCommentsBook()
