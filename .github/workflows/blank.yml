@@ -40,6 +40,7 @@ jobs:
       - run: echo "REACT_APP_STRAPI_BASE_URL=https://strapi.monnom.mn" >> .env
       - run: echo "REACT_APP_EXPRESS_BASE_URL=https://express.monnom.mn" >> .env
       - run: echo "GENERATE_SOURCEMAP=false" >> .env
+      - run: echo "REACT_APP_FCM_KEY=AAAA6YS5v-A:APA91bEXNmz80Kywb3Yeh48n1U9O47GUSt81AoCKYWp5CLGbiQBfIasJ_P2Yu7zVUGDKcInuLvVPtzXhD_fPWQd494-UK5yFl-usQHIRyKoBTphNCY8qEQk0v0QqiMayjVWnohzA7MNy" >> .env
       - run: npm i --legacy-peer-deps
       - run: npm run build
       - run: pm2 delete static-page-server-3000 --silent
