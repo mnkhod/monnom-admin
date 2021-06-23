@@ -175,13 +175,10 @@ export default function UpdateBook(props) {
             setTimeout(() => {
                window.location.reload()
             }, 2000)
-            console.log("picture done")
          })
          .catch(e => {
             set_state({ loading: false })
             set_state({ error: true })
-            console.log("picture error")
-            console.log(e)
          })
    }
 
@@ -237,13 +234,10 @@ export default function UpdateBook(props) {
             setTimeout(() => {
                window.location.reload()
             }, 2000)
-            window.location.reload()
          })
          .catch(e => {
             set_state({ loading: false })
             set_state({ error: true })
-            console.log("pdf book error")
-            console.log(e)
          })
    }
 
@@ -308,28 +302,21 @@ export default function UpdateBook(props) {
                         setTimeout(() => {
                            window.location.reload()
                         }, 2000)
-                        console.log("audio book done")
                      })
 
                      .catch(err => {
                         set_state({ loading: false })
                         set_state({ error: true })
-                        console.log("audio book error 1")
-                        console.log(err)
                      })
                })
                .catch(err => {
                   set_state({ loading: false })
                   set_state({ error: true })
-                  console.log("audio book error 2")
-                  console.log(err)
                })
          })
          .catch(e => {
             set_state({ loading: false })
             set_state({ error: true })
-            console.log("audio book error 3")
-            console.log(err)
          })
    }
 
@@ -359,13 +346,10 @@ export default function UpdateBook(props) {
             setTimeout(() => {
                window.location.reload()
             }, 2000)
-            console.log("comments book done")
          })
          .catch(e => {
             set_state({ loading: false })
             set_state({ error: true })
-            console.log("comments book error")
-            console.log(e)
          })
    }
 
@@ -385,13 +369,10 @@ export default function UpdateBook(props) {
             setTimeout(() => {
                window.location.reload()
             }, 2000)
-            console.log("remove pdf done")
          })
          .catch(err => {
             set_state({ loading: false })
             set_state({ error: true })
-            console.log("remove pdf")
-            console.log(err)
          })
    }
 
@@ -422,19 +403,16 @@ export default function UpdateBook(props) {
                   setTimeout(() => {
                      window.location.reload()
                   }, 2000)
-                  console.log("remove audio done")
                })
                .catch(err => {
                   set_state({ loading: false })
                   set_state({ error: true })
-                  console.log("remove audio error 1")
                   console.log(err)
                })
          })
          .catch(err => {
             set_state({ loading: false })
             set_state({ error: true })
-            console.log("remove audio error 2")
             console.log(err)
          })
    }
@@ -459,12 +437,10 @@ export default function UpdateBook(props) {
             setTimeout(() => {
                window.location.reload()
             }, 2000)
-            console.log("comments book done")
          })
          .catch(e => {
             set_state({ loading: false })
             set_state({ error: true })
-            console.log("comments book error")
             console.log(e)
          })
    }
@@ -1417,7 +1393,11 @@ export default function UpdateBook(props) {
                                     <Link
                                        to="#"
                                        onClick={() => {
-                                          toggleTab(activeTab - 1)
+                                          if (activeTab === 3 && chooseUpdateForm == "removeComments") {
+                                             toggleTab(activeTab - 2)
+                                          } else {
+                                             toggleTab(activeTab - 1)
+                                          }
                                        }}
                                     >
                                        Өмнөх
@@ -1429,14 +1409,13 @@ export default function UpdateBook(props) {
                                     <Link
                                        to="#"
                                        onClick={() => {
-                                          if (edit_book_name == "" || selectedMulti_category == null || selectedMulti_author == null) {
-                                             set_check_field("Гүйцэд утга оруулна уу !")
-                                          } else {
-                                             toggleTab(activeTab + 1)
-                                             set_check_field("")
-                                          }
                                           if (activeTab === 2) {
-                                             toggleTab(activeTab + 1)
+                                             if (edit_book_name == "" || selectedMulti_category == null || selectedMulti_author == null) {
+                                                set_check_field("Гүйцэд утга оруулна уу !")
+                                             } else {
+                                                toggleTab(activeTab + 1)
+                                                set_check_field("")
+                                             }
                                           }
                                           if (activeTab === 3) {
                                              if (chooseUpdateForm == "general") {
