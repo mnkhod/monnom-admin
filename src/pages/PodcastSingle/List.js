@@ -62,7 +62,7 @@ const EditPodcast = ({ episode_id, setEditPodcastModal, editEpisodeModal }) => {
          await axios({
             url: `${process.env.REACT_APP_STRAPI_BASE_URL}/podcast-episodes/${episode_id}`,
             method: "PUT",
-            config,
+            ...config,
             data: {
                episode_description: edit_podcast_desc,
                episode_name: edit_podcast_name,
@@ -84,7 +84,7 @@ const EditPodcast = ({ episode_id, setEditPodcastModal, editEpisodeModal }) => {
          await axios({
             url: `${process.env.REACT_APP_STRAPI_BASE_URL}/podcast-episodes/${episode_id}`,
             method: "PUT",
-            config,
+            ...config,
             data: {
                picture: null,
             },
@@ -112,7 +112,7 @@ const EditPodcast = ({ episode_id, setEditPodcastModal, editEpisodeModal }) => {
          await axios({
             url: `${process.env.REACT_APP_STRAPI_BASE_URL}/podcast-episodes/${episode_id}`,
             method: "PUT",
-            config,
+            ...config,
             data: {
                audio_file_path: null,
             },
@@ -151,9 +151,9 @@ const EditPodcast = ({ episode_id, setEditPodcastModal, editEpisodeModal }) => {
       if (successFlag) {
          set_state({ loading: false })
          set_state({ success: true })
-         // setTimeout(() => {
-         //    window.location.reload()
-         // }, 1500)
+         setTimeout(() => {
+            window.location.reload()
+         }, 1500)
       } else {
          set_state({ loading: false })
          set_state({ error: true })
