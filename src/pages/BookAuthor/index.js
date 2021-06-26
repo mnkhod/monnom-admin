@@ -23,7 +23,7 @@ const BookAuthor = () => {
          url: `${process.env.REACT_APP_EXPRESS_BASE_URL}/book-single-by-author/${id}`,
          method: "GET",
          headers: {
-            Authorization: `Bearer ${JSON.parse(localStorage.getItem("user_information")).jwt}`,
+            Authorization: `${JSON.parse(localStorage.getItem("user_information")).jwt}`,
          },
       })
          .then(res => {

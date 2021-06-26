@@ -255,7 +255,7 @@ const SettingsForm = props => {
       const formData = new FormData()
       formData.append("terms", draftToHtml(convertToRaw(wysiwyg_content.getCurrentContent())))
       const config = {
-         headers: { "Content-Type": "multipart/form-data", Authorization: `Bearer ${JSON.parse(localStorage.getItem("user_information")).jwt}` },
+         headers: { "Content-Type": "multipart/form-data", Authorization: `${JSON.parse(localStorage.getItem("user_information")).jwt}` },
       }
       axios
          .put(url, formData, config)
@@ -332,7 +332,7 @@ const SettingsForm = props => {
          url: `${process.env.REACT_APP_EXPRESS_BASE_URL}/all-admins-settings`,
          method: "GET",
          headers: {
-            Authorization: `Bearer ${JSON.parse(localStorage.getItem("user_information")).jwt}`,
+            Authorization: `${JSON.parse(localStorage.getItem("user_information")).jwt}`,
          },
       })
          .then(res => {
@@ -504,10 +504,10 @@ const SettingsForm = props => {
                                        </option>
                                        {old_author_category.length != 0
                                           ? old_author_category.map((author, index) => (
-                                               <option key={index} value={author.value}>
-                                                  {author.label}
-                                               </option>
-                                            ))
+                                             <option key={index} value={author.value}>
+                                                {author.label}
+                                             </option>
+                                          ))
                                           : null}
                                     </select>
                                  </Col>
@@ -573,12 +573,12 @@ const SettingsForm = props => {
                                        </option>
                                        {old_book_category.length != 0
                                           ? old_book_category.map((book, index) => {
-                                               return (
-                                                  <option key={index} value={book.value}>
-                                                     {book.label}
-                                                  </option>
-                                               )
-                                            })
+                                             return (
+                                                <option key={index} value={book.value}>
+                                                   {book.label}
+                                                </option>
+                                             )
+                                          })
                                           : null}
                                     </select>
                                  </Col>
@@ -652,10 +652,10 @@ const SettingsForm = props => {
 
                                        {old_podcast_category.length != 0
                                           ? old_podcast_category.map((podcast, index) => (
-                                               <option key={index} value={podcast.value}>
-                                                  {podcast.label}
-                                               </option>
-                                            ))
+                                             <option key={index} value={podcast.value}>
+                                                {podcast.label}
+                                             </option>
+                                          ))
                                           : null}
                                     </select>
                                  </Col>
@@ -720,10 +720,10 @@ const SettingsForm = props => {
                                              </option>
                                              {all_books.length != 0
                                                 ? all_books.map((book, index) => (
-                                                     <option key={index} value={book.id}>
-                                                        {book.name}
-                                                     </option>
-                                                  ))
+                                                   <option key={index} value={book.id}>
+                                                      {book.name}
+                                                   </option>
+                                                ))
                                                 : null}
                                           </select>
                                        </Col>
@@ -777,10 +777,10 @@ const SettingsForm = props => {
                                        </option>
                                        {all_admins.length != 0
                                           ? all_admins.map((admin, index) => (
-                                               <option key={index} value={admin.id}>
-                                                  {admin.username}
-                                               </option>
-                                            ))
+                                             <option key={index} value={admin.id}>
+                                                {admin.username}
+                                             </option>
+                                          ))
                                           : null}
                                     </select>
                                  </Col>
@@ -844,10 +844,10 @@ const SettingsForm = props => {
                                              </option>
                                              {all_channels.length != 0
                                                 ? all_channels.map(channel => (
-                                                     <option key={channel.id} value={channel.id}>
-                                                        {channel.name}
-                                                     </option>
-                                                  ))
+                                                   <option key={channel.id} value={channel.id}>
+                                                      {channel.name}
+                                                   </option>
+                                                ))
                                                 : null}
                                           </select>
                                        </Col>

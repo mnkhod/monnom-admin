@@ -42,11 +42,11 @@ const PodcastAlert = props => {
          url: `${process.env.REACT_APP_EXPRESS_BASE_URL}/update-employee`,
          data: tempData,
          headers: {
-            Authorization: `Bearer ${JSON.parse(localStorage.getItem("user_information")).jwt}`,
+            Authorization: `${JSON.parse(localStorage.getItem("user_information")).jwt}`,
          },
       })
-         .then(res => {})
-         .catch(err => {})
+         .then(res => { })
+         .catch(err => { })
    }
 
    const handleFormChange = e => {

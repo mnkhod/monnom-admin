@@ -153,7 +153,7 @@ const Books = () => {
       await axios({
          method: "GET",
          headers: {
-            Authorization: `Bearer ${JSON.parse(localStorage.getItem("user_information")).jwt}`,
+            Authorization: `${JSON.parse(localStorage.getItem("user_information")).jwt}`,
          },
          url: `${process.env.REACT_APP_EXPRESS_BASE_URL}/all-books-list`,
       })
@@ -163,7 +163,7 @@ const Books = () => {
                url: `${process.env.REACT_APP_EXPRESS_BASE_URL}/all-admins-list`,
                method: "GET",
                headers: {
-                  Authorization: `Bearer ${JSON.parse(localStorage.getItem("user_information")).jwt}`,
+                  Authorization: `${JSON.parse(localStorage.getItem("user_information")).jwt}`,
                },
             })
                .then(admin => {

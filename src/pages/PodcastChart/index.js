@@ -23,9 +23,8 @@ const PodcastList = () => {
       url: `${process.env.REACT_APP_EXPRESS_BASE_URL}/podcast-channels`,
       method: "GET",
       headers: {
-        Authorization: `Bearer ${
-          JSON.parse(localStorage.getItem("user_information")).jwt
-        }`,
+        Authorization: `${JSON.parse(localStorage.getItem("user_information")).jwt
+          }`,
       },
     })
       .then(res => {

@@ -29,7 +29,7 @@ const AddPodcast = props => {
    const [checked, set_checked] = useState(false)
    const [episode_picture, set_episode_picture] = useState(null)
    const [profileImage, set_profileImage] = useState()
-   const [mp3_file_duration, set_mp3_file_duration] = useState(0)
+   const [mp3_file_duration, set_mp3_file_duration] = useState(null)
    const [selectedFiles, set_selectedFiles] = useState([])
 
    // update and delete
@@ -103,7 +103,7 @@ const AddPodcast = props => {
    }
 
    // file upload hiih
-   const handleAcceptedFiles = files => {
+   const handleAcceptedFiles = async (files) => {
       files.map(file =>
          Object.assign(file, {
             preview: URL.createObjectURL(file),
@@ -112,23 +112,31 @@ const AddPodcast = props => {
       )
 
       var file = files[0]
-
-      var reader = new FileReader()
-
-      reader.onload = function (event) {
-         var audioContext = new (window.AudioContext || window.webkitAudioContext)()
-
-         audioContext.decodeAudioData(event.target.result, function (buffer) {
-            var duration = buffer.duration
-            set_mp3_file_duration(duration.toString())
-         })
-      }
-
-      reader.readAsArrayBuffer(file)
-
-      set_selectedFiles(files[0])
+      const duration = await getAudioFileDuration(file);
+      console.log(`podcast duration: ${duration}`);
+      set_mp3_file_duration(duration.toString())
+      set_selectedFiles(file)
       set_file_upload_name_message("")
    }
+
+   const getAudioFileDuration = file =>
+      new Promise((resolve, reject) => {
+         let audio = document.createElement('audio');
+         let objectUrl = URL.createObjectURL(file);
+         audio.src = objectUrl;
+         audio.addEventListener('loadedmetadata', () => {
+            console.log(`audio duration: ${audio.duration}`);
+            resolve(audio.duration);
+         })
+         // let reader = new FileReader()
+         // reader.onload = function (event) {
+         //    let audioContext = new (window.AudioContext || window.webkitAudioContext)()
+         //    audioContext.decodeAudioData(event.target.result).then(buffer => {
+         //       resolve(buffer.duration)
+         //    })
+         // }
+         // reader.readAsArrayBuffer(file)
+      })
 
    // file iin formatuud
    const formatBytes = (bytes, decimals = 2) => {

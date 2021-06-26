@@ -42,7 +42,7 @@ const Dashboard = () => {
    const fetchData = async () => {
       await axios({
          method: "GET",
-         headers: { Authorization: `Bearer ${JSON.parse(localStorage.getItem("user_information")).jwt}` },
+         headers: { Authorization: `${JSON.parse(localStorage.getItem("user_information")).jwt}` },
          url: `${process.env.REACT_APP_EXPRESS_BASE_URL}/dashboard`,
       })
          .then(res => {

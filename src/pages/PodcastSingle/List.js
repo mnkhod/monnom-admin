@@ -392,7 +392,7 @@ const List = props => {
       const config = {
          headers: {
             "content-type": "multipart/form-data",
-            Authorization: `Bearer ${JSON.parse(localStorage.getItem("user_information")).jwt}`,
+            Authorization: `${JSON.parse(localStorage.getItem("user_information")).jwt}`,
          },
       }
 
