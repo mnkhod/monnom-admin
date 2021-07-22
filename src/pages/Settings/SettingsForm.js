@@ -329,18 +329,16 @@ const SettingsForm = props => {
 
    async function fetchAdmins() {
       await axios({
-         url: `${process.env.REACT_APP_EXPRESS_BASE_URL}/all-admins-settings`,
+         url: `${process.env.REACT_APP_STRAPI_BASE_URL}/users?user_role=1&user_role=2&user_role=4`,
          method: "GET",
-         headers: {
-            Authorization: `${JSON.parse(localStorage.getItem("user_information")).jwt}`,
-         },
+         // headers: {
+         //    Authorization: `${JSON.parse(localStorage.getItem("user_information")).jwt}`,
+         // },
       })
          .then(res => {
             console.log("res.data2")
-            console.log(res.data)
+            console.log(res)
             set_all_admins(res.data)
-            // setIsNetworkLoading(false)
-            // setIsNetworkingError(false)
          })
          .catch(err => {
             console.log("err2")
@@ -407,12 +405,12 @@ const SettingsForm = props => {
       setSelectedMulti_category(selected_categories)
    }
 
-   useEffect(() => {
+   useEffect( async () => {
       console.log("effect")
-      fetchData()
-      fetchAdmins()
-      fetchAllBooks()
-      fetchAllChannels()
+      await fetchData()
+      await fetchAdmins()
+      await fetchAllBooks()
+      await fetchAllChannels()
       setIsNetworkLoading(false)
    }, [])
 
