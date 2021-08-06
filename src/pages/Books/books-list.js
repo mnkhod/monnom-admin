@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useContext } from "react"
+import React, { useEffect, useState, useMemo, useContext } from "react"
 import SweetAlert from "react-bootstrap-sweetalert"
 import { Link } from "react-router-dom"
 import { Container, Row, Col, Card, CardBody, CardTitle, CardImg, CardText, Alert, Pagination, PaginationLink, PaginationItem } from "reactstrap"
@@ -9,6 +9,7 @@ import MetaTags from "react-meta-tags"
 
 import axios from "axios"
 import { ResultPopUp } from "../../contexts/CheckActionsContext"
+import { isEmpty } from "lodash"
 require("dotenv").config()
 
 let BookCard = props => {
@@ -107,23 +108,24 @@ let BookCard = props => {
 }
 
 const Books = () => {
-   var ITEMS_PER_PAGE = 12
+   var ITEMS_PER_PAGE = 16
 
    const [state, set_state] = useContext(ResultPopUp)
 
    const [booksList, setBooksList] = useState([])
    const [admins_info, set_admins_info] = useState([])
-   const [searchItms, setSearchItms] = useState("")
+   const [searchFilter, setSeatchFilter] = useState("")
    const [isNetworkingError, setIsNetworkingError] = useState(false)
    const [isNetworkLoading, SetIsNetworkLoading] = useState(true)
    const [confirm_allow, set_confirm_allow] = useState(false)
-   const [pagination_current, set_pagination_current] = useState(1)
-   const [pagination_pages, set_pagination_pages] = useState([])
    const [are_you_sure_title, set_are_you_sure_title] = useState("")
    const [book_info_to_update, set_book_info_to_update] = useState({
       id: null,
       state: null,
    })
+
+   const [showPaginationIndex, setShowPaginationIndex] = useState(0)
+   const [showBookIndex, setShowBookIndex] = useState(0)
 
    async function featureBook() {
       await axios({
@@ -137,9 +139,13 @@ const Books = () => {
          },
       })
          .then(res => {
+            console.log("res data")
+            console.log(res.data.picture)
+            
             set_confirm_allow(false)
             let tempBook = Object.assign(booksList)
             tempBook.find(book => book.id === res.data.id).is_featured = res.data.is_featured
+            res.data.is_featured ? tempBook.find(book => book.id === res.data.id).featured_picture = res.data.picture : null
             set_state({ loading: false })
             set_state({ success: true })
          })
@@ -182,17 +188,60 @@ const Books = () => {
    }
 
    useEffect(() => {
-      let tempPaginations = []
-      for (let i = 1; i <= Math.ceil(booksList.length / ITEMS_PER_PAGE); i++) {
-         tempPaginations.push(i)
-      }
-
-      set_pagination_pages(tempPaginations)
-   }, [booksList])
-
-   useEffect(() => {
       fetchData()
    }, [])
+
+   const visibleBooks = useMemo(() => {
+
+      let temp = booksList
+
+      if (searchFilter !== '') {
+
+         temp = booksList.filter((p) => {
+            console.log("p is : ");
+            console.log(p);
+            
+            let found = false
+
+            if (p != null && p.book_name.toUpperCase().includes(searchFilter.toUpperCase())) {
+               found = true
+            }
+
+            return found
+         })
+      }
+
+      return temp
+      
+   }, [booksList, searchFilter])
+
+   const showBooks = useMemo(() => {
+      let result = []
+      let temp = []
+      let count = 0
+      let counts = 0
+
+      visibleBooks.forEach((book) => {
+         if (count == ITEMS_PER_PAGE) {
+            count = 1
+            result.push(temp)
+            temp = []
+            temp.push(book)
+         } else {
+            temp.push(book)
+            count += 1
+         }
+
+         counts += 1
+      })
+      result.push(temp)
+
+      return result
+   }, [visibleBooks])
+
+   console.log("showBooks")
+   console.log(showBooks)
+   console.log(booksList.length);
 
    return (
       <React.Fragment>
@@ -209,7 +258,7 @@ const Books = () => {
                <>
                   {isNetworkLoading && admins_info.length != 0 ? (
                      <Container fluid>
-                        <Row>
+                        <Row className="d-flex justify-content-between align-items-center">
                            <Col lg={4}>
                               <AddBook admins_info={admins_info} setIsNetworkingError={setIsNetworkingError} />
                            </Col>
@@ -222,58 +271,66 @@ const Books = () => {
                                        className="form-control"
                                        placeholder="Search..."
                                        onChange={event => {
-                                          setSearchItms(event.target.value)
+                                          setSeatchFilter(event.target.value)
                                        }}
                                     />
                                     <span className="bx bx-search-alt" />
                                  </div>
                               </form>
                            </Col>
-                           <Col lg={3}>
-                              <Pagination style={{ backgroundColor: "red" }} aria-label="Page navigation example" className="d-flex justify-content-end mt-3">
-                                 <PaginationItem
-                                    disabled={pagination_current == 1}
-                                    onClick={() => {
-                                       if (pagination_current != 1) set_pagination_current(pagination_current - 1)
-                                    }}
-                                 >
-                                    <PaginationLink>
-                                       <i className="mdi mdi-chevron-left" />
-                                    </PaginationLink>
-                                 </PaginationItem>
-
-                                 {pagination_pages.map(page => (
-                                    <PaginationItem
+                           <Col lg={4}>
+                              <Pagination className="pagination pagination-rounded d-flex justify-content-end mb-2">
+                                 <PaginationItem disabled={showPaginationIndex == 0}>
+                                    <PaginationLink
+                                       previous
+                                       href="#"
                                        onClick={() => {
-                                          set_pagination_current(page)
+                                          setShowBookIndex(showBookIndex - 1),
+                                          setShowPaginationIndex(showPaginationIndex - 1)
                                        }}
-                                       active={page == pagination_current}
-                                    >
-                                       <PaginationLink href="#">{page}</PaginationLink>
-                                    </PaginationItem>
-                                 ))}
-                                 <PaginationItem disabled={pagination_current == pagination_pages[pagination_pages.length - 1]}>
-                                    <PaginationLink href="#" onClick={() => set_pagination_current(pagination_current + 1)}>
-                                       <i className="mdi mdi-chevron-right" />
-                                    </PaginationLink>
+                                    />
+                                 </PaginationItem>
+                                 {showBooks.length > 6 
+                                    ? showBooks.slice(showPaginationIndex, showPaginationIndex + 5).map((item, i) => (
+                                       <PaginationItem active={i + showPaginationIndex == showBookIndex} key={i}>
+                                          <PaginationLink
+                                             onClick={() => setShowBookIndex(showPaginationIndex + i)}
+                                             href="#"
+                                          >
+                                             {i + showPaginationIndex + 1}
+                                          </PaginationLink>
+                                       </PaginationItem>
+                                    )) 
+                                    : showBooks.map((item, i) => (
+                                       <PaginationItem active={i == showBookIndex} key={i}>
+                                          <PaginationLink
+                                             onClick={() => setShowBookIndex(i)}
+                                             href="#"
+                                          >
+                                             {i+1}
+                                          </PaginationLink>
+                                       </PaginationItem>
+                                    )) 
+                                 }
+                                 <PaginationItem disabled={showBooks.length > 6 ? showPaginationIndex == showBooks.length - 5 : showBookIndex == showBooks.length - 1}>
+                                    <PaginationLink
+                                       next
+                                       href="#"
+                                       onClick={() => {
+                                          setShowBookIndex(showBookIndex + 1)
+                                          setShowPaginationIndex(showPaginationIndex + 1)
+                                       }}
+                                    />
                                  </PaginationItem>
                               </Pagination>
                            </Col>
                         </Row>
                         <Row>
-                           {booksList
-                              .filter(book => {
-                                 if (searchItms === "") {
-                                    return book
-                                 } else if (book.book_name.toLocaleLowerCase().includes(searchItms.toLocaleLowerCase())) {
-                                    return book
-                                 }
-                              })
-                              .map(book => {
-                                 if (book.pagination_number <= pagination_current * ITEMS_PER_PAGE && book.pagination_number > pagination_current * ITEMS_PER_PAGE - ITEMS_PER_PAGE) {
-                                    return <BookCard book={book} key={book.id} set_are_you_sure_title={set_are_you_sure_title} set_book_info_to_update={set_book_info_to_update} set_confirm_allow={set_confirm_allow} />
-                                 }
-                              })}
+                              {!isEmpty(showBooks) &&
+                                 (showBooks[showBookIndex] || []).map((book) => (
+                                    book != null ? <BookCard book={book} key={book.id} set_are_you_sure_title={set_are_you_sure_title} set_book_info_to_update={set_book_info_to_update} set_confirm_allow={set_confirm_allow} /> : null
+                                 ))
+                              }
                         </Row>
                      </Container>
                   ) : (
