@@ -108,6 +108,7 @@ export default function UpdateBook(props) {
    const [youtube_url, set_youtube_url] = useState("")
    const [book_introduction, set_book_introduction] = useState("")
    const [book_files, set_book_files] = useState([])
+   const [epub_file, set_epub_file] = useState([])
    const [audio_book_files_for_delete, set_audio_book_files_for_delete] = useState([])
    const [audio_book_files_for_save, set_audio_book_files_for_save] = useState([])
    const [check_update_field, set_check_update_field] = useState({})
@@ -190,10 +191,10 @@ export default function UpdateBook(props) {
       ebookFile.append(
          "data",
          JSON.stringify({
-            has_pdf: book_files.length != 0 ? true : false,
+            has_pdf: book_files.length > 0 || epub_file.length > 0 ? true : false,
          })
       )
-      ebookFile.append("files.pdf_book_path", book_files[0], book_files[0].name)
+      book_files.length > 0 ? ebookFile.append("files.pdf_book_path", book_files[0], book_files[0].name) : ebookFile.append("files.epub_book_path", epub_file[0], epub_file[0].name)
 
       await axios({
          url: `${process.env.REACT_APP_STRAPI_BASE_URL}/books/${props.book_id}`,
@@ -361,7 +362,7 @@ export default function UpdateBook(props) {
          url: `${process.env.REACT_APP_STRAPI_BASE_URL}/books/${props.book_id}`,
          method: "PUT",
          headers: { Authorization: `Bearer ${JSON.parse(localStorage.getItem("user_information")).jwt}` },
-         data: { pdf_book_path: null, has_pdf: false },
+         data: { pdf_book_path: null, epub_book_path: null, has_pdf: false },
       })
          .then(res => {
             set_state({ loading: false })
@@ -460,6 +461,7 @@ export default function UpdateBook(props) {
       axios({ url: `${process.env.REACT_APP_STRAPI_BASE_URL}/books/${props.book_id}`, method: "GET", headers: { Authorization: `Bearer ${JSON.parse(localStorage.getItem("user_information")).jwt}` } })
          .then(res => {
             res.data.pdf_book_path != null && set_book_files([...book_files, res.data.pdf_book_path])
+            res.data.epub_book_path.length > 0 && set_epub_file([...epub_file, res.data.epub_book_path[0]])
             set_edit_book_name(res.data.name)
             set_edit_has_pdf(res.data.has_pdf)
             set_edit_has_mp3(res.data.has_audio)
@@ -477,6 +479,8 @@ export default function UpdateBook(props) {
             set_audio_book_files(getOldItems(sortedList))
             set_audio_book_files_for_save(sortedList)
             set_book_comments_pic(res.data.picture_comment)
+            console.log('res.data')
+            console.log(res.data)
          })
          .catch(err => {})
    }
@@ -605,10 +609,22 @@ export default function UpdateBook(props) {
       set_book_files([files[0]])
    }
 
+   // epub file upload hiih
+   const uploadEpub = e => {
+      let file = e.target.files
+      set_epub_file([file[0]])
+   }
+
    // upload hiisen pdf file aa ustgah
    const removeBookFiles = f => {
       set_edit_book_id(book_files[0].id)
       set_book_files(book_files.filter(book => book == f))
+   }
+
+   // upload hsen epub file aa ustgah
+   const removeEpubFile = f => {
+      set_edit_book_id(epub_file[0].id)
+      set_epub_file(epub_file.filter(book => book == f))
    }
 
    // mp3 file upload hiih, nemeh
@@ -1058,18 +1074,19 @@ export default function UpdateBook(props) {
                                     </Col>
                                  ) : chooseUpdateForm == "pdf" ? (
                                     <Row>
-                                       <Col xl={4} gl={4} xs={4} className="mb-2" style={{ borderRight: "1px solid #000" }}>
+                                       <Col xl={2} gl={2} xs={2} className="mb-2">
                                           <label>
                                              <input
                                                 type="file"
                                                 accept=".pdf"
+                                                disabled={epub_file.length > 0 ? true : false}
                                                 style={{
                                                    display: "none",
                                                 }}
                                                 onChange={e => uploadBook(e)}
                                              />
                                              <i
-                                                className="font-size-15 btn btn-danger text-dark btn-rounded py-2 px-3"
+                                                className={`btn-rounded font-size-15 text-dark py-2 px-3 btn ${epub_file.length ? 'btn-secondary' : 'btn-danger'}`}
                                                 style={{
                                                    cursor: "pointer",
                                                 }}
@@ -1078,33 +1095,67 @@ export default function UpdateBook(props) {
                                              </i>
                                           </label>
                                        </Col>
+                                       <Col xl={2} gl={2} xs={2} className="mb-2" style={{ borderRight: "1px solid #000" }}>
+                                          <label>
+                                             <input
+                                                type="file"
+                                                accept=".epub"
+                                                disabled={book_files.length > 0 ? true : false}
+                                                style={{
+                                                   display: "none",
+                                                }}
+                                                onChange={e => uploadEpub(e)}
+                                             />
+                                             <i
+                                                className={`btn-rounded font-size-15 text-dark py-2 px-3 btn ${book_files.length ? 'btn-secondary' : 'btn-warning'}`}
+                                                style={{
+                                                   cursor: "pointer",
+                                                }}
+                                             >
+                                                epub ном
+                                             </i>
+                                          </label>
+                                       </Col>
                                        <Col xl={8} gl={8} xs={8}>
-                                          {book_files.length != 0 && (
-                                             <>
-                                                <div className="d-flex justify-content-between bg-light border rounded py-2 px-3 mb-3 align-items-center" style={{ width: "450px", marginLeft: "10px" }}>
-                                                   <i className="bx bxs-file font-size-22 text-danger mr-2" />
-                                                   <p
-                                                      style={{
-                                                         overflow: "hidden",
-                                                         color: "#000",
-                                                         margin: "auto",
-                                                         marginLeft: "0",
-                                                         width: "85%",
-                                                      }}
-                                                   >
-                                                      {book_files[0].name != undefined && book_files[0].name}{" "}
-                                                   </p>
-                                                </div>
-
-                                                {progress_mp3 > 0 ? (
-                                                   <div className="progress mt-2 w-60 mx-auto">
-                                                      <div className="progress-bar progress-bar-info progress-bar-striped" role="progressbar" aria-valuenow={progress_mp3} aria-valuemin="0" aria-valuemax="100" style={{ width: progress_mp3 + "%" }}>
-                                                         {progress_mp3}%
-                                                      </div>
-                                                   </div>
-                                                ) : null}
-                                             </>
+                                          {book_files.length > 0 && (
+                                             <div className="d-flex justify-content-between bg-light border rounded py-2 px-3 mb-3 align-items-center" style={{ width: "450px", marginLeft: "10px" }}>
+                                                <i className="bx bxs-file font-size-22 text-danger mr-2" />
+                                                <p
+                                                   style={{
+                                                      overflow: "hidden",
+                                                      color: "#000",
+                                                      margin: "auto",
+                                                      marginLeft: "0",
+                                                      width: "85%",
+                                                   }}
+                                                >
+                                                   {book_files[0] != undefined ? book_files[0].name : ''}
+                                                </p>
+                                             </div>
                                           )}
+                                          {epub_file.length > 0 && (
+                                             <div className="d-flex justify-content-between bg-light border rounded py-2 px-3 mb-3 align-items-center" style={{ width: "450px", marginLeft: "10px" }}>
+                                                <i className="bx bxs-file font-size-22 text-danger mr-2" />
+                                                <p
+                                                   style={{
+                                                      overflow: "hidden",
+                                                      color: "#000",
+                                                      margin: "auto",
+                                                      marginLeft: "0",
+                                                      width: "85%",
+                                                   }}
+                                                >
+                                                   {epub_file[0] != undefined ? epub_file[0].name : ''} 
+                                                </p>
+                                             </div>
+                                          )}
+                                          {progress_mp3 > 0 ? (
+                                             <div className="progress mt-2 w-60 mx-auto">
+                                                <div className="progress-bar progress-bar-info progress-bar-striped" role="progressbar" aria-valuenow={progress_mp3} aria-valuemin="0" aria-valuemax="100" style={{ width: progress_mp3 + "%" }}>
+                                                   {progress_mp3}%
+                                                </div>
+                                             </div>
+                                          ) : null}
                                        </Col>
                                     </Row>
                                  ) : chooseUpdateForm == "audio" ? (
@@ -1306,11 +1357,49 @@ export default function UpdateBook(props) {
                                                          width: "85%",
                                                       }}
                                                    >
+                                                      {console.log("bookfile[0]")}
+                                                      {console.log(book_files[0].name)}
                                                       {book_files[0].name != undefined && book_files[0].name}{" "}
                                                    </p>
                                                    <i
                                                       className="dripicons-cross font-size-20 my-auto text-dark"
                                                       onClick={removeBookFiles.bind(this, book_files)}
+                                                      style={{
+                                                         cursor: "pointer",
+                                                         margin: "auto",
+                                                         marginRight: "0",
+                                                      }}
+                                                   />
+                                                </div>
+
+                                                {progress_mp3 > 0 ? (
+                                                   <div className="progress mt-2 w-60 mx-auto">
+                                                      <div className="progress-bar progress-bar-info progress-bar-striped" role="progressbar" aria-valuenow={progress_mp3} aria-valuemin="0" aria-valuemax="100" style={{ width: progress_mp3 + "%" }}>
+                                                         {progress_mp3}%
+                                                      </div>
+                                                   </div>
+                                                ) : null}
+                                             </>
+                                          )}
+
+                                          {epub_file.length != 0 && (
+                                             <>
+                                                <div className="d-flex justify-content-between bg-light border rounded py-2 px-3 mb-3 align-items-center" style={{ width: "450px", marginLeft: "10px" }}>
+                                                   <i className="bx bxs-file font-size-22 text-danger mr-2" />
+                                                   <p
+                                                      style={{
+                                                         overflow: "hidden",
+                                                         color: "#000",
+                                                         margin: "auto",
+                                                         marginLeft: "0",
+                                                         width: "100%",
+                                                      }}
+                                                   >
+                                                      {epub_file[0].name != undefined && epub_file[0].name}{" "}
+                                                   </p>
+                                                   <i
+                                                      className="dripicons-cross font-size-20 my-auto text-dark"
+                                                      onClick={removeEpubFile.bind(this, epub_file)}
                                                       style={{
                                                          cursor: "pointer",
                                                          margin: "auto",
