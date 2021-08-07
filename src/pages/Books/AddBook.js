@@ -43,6 +43,8 @@ const AddBook = props => {
 
    const [book_name_value, set_book_name_value] = useState("")
    const [book_picture, set_book_picture] = useState(null)
+   const [featurePicture, setFeaturePicture] = useState(null)
+   const [featureUrl, setFeatureUrl] = useState('')
    const [audio_book_files, set_audio_book_files] = useState([])
    const [audio_book_files_for_save, set_audio_book_files_for_save] = useState([])
    const [book_files, set_book_files] = useState([])
@@ -88,6 +90,8 @@ const AddBook = props => {
       if (book_files[0] != undefined) formData.append("files.pdf_book_path", book_files[0], book_files[0].name)
       if (epub_file[0] != undefined) formData.append("files.epub_book_path", epub_file[0], epub_file[0].name)
       if (book_picture != null) formData.append("files.picture", book_picture, book_picture.name)
+      if (featurePicture != null) formData.append("files.featured_picture", featurePicture, featurePicture.name)
+
       for (let i = 0; i < selectedFiles.length; i++) {
          formData.append("files.picture_comment", selectedFiles[i], selectedFiles[i].name)
       }
@@ -285,6 +289,17 @@ const AddBook = props => {
       }
       reader.readAsDataURL(e.target.files[0])
       set_book_picture(e.target.files[0])
+   }
+
+   const handleFeaturePicture = f => {
+      const reader = new FileReader()
+      reader.onload = () => {
+         if (reader.readyState === 2) {
+            setFeatureUrl(reader.result)
+         }
+      }
+      reader.readAsDataURL(f.target.files[0])
+      setFeaturePicture(f.target.files[0])
    }
 
    // inputiin utga hooson esehiig shalgah
@@ -554,6 +569,18 @@ const AddBook = props => {
                                                       classNamePrefix="select2-selection"
                                                    />
                                                    <p className="text-danger font-size-10">{author_of_book_message}</p>
+                                                </FormGroup>
+                                             </Col>
+                                             <Col lg="6">
+                                                <FormGroup>
+                                                   <img className="rounded" src={featureUrl} alt={book_name_value} id="img" className="img-fluid" style={{ height: "150px", width: "400px" }} />
+                                                   <input type="file" id="feature" accept="image/*" className="invisible" onChange={handleFeaturePicture} />
+                                                   <div className="label">
+                                                      <label htmlFor="feature" className="image-upload d-flex justify-content-center" style={{ cursor: "pointer" }}>
+                                                         <i className="bx bx-image-add font-size-20 mr-2"></i>
+                                                         <p>Нэмэлт зураг оруулах</p>
+                                                      </label>
+                                                   </div>
                                                 </FormGroup>
                                              </Col>
                                           </Row>

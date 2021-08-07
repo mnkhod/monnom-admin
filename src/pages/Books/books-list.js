@@ -60,6 +60,7 @@ let BookCard = props => {
                                     id: props.book.id,
                                     state: props.book.is_featured,
                                  })
+                                 props.setSelectedBook(props.book)
                                  props.set_confirm_allow(true)
                               }}
                               checked={props.book.is_featured}
@@ -119,37 +120,38 @@ const Books = () => {
    const [isNetworkLoading, SetIsNetworkLoading] = useState(true)
    const [confirm_allow, set_confirm_allow] = useState(false)
    const [are_you_sure_title, set_are_you_sure_title] = useState("")
-   const [book_info_to_update, set_book_info_to_update] = useState({
-      id: null,
-      state: null,
-   })
+   const [book_info_to_update, set_book_info_to_update] = useState({ id: null, state: null })
+
+   const [selectedBook, setSelectedBook] = useState(null)
 
    const [showPaginationIndex, setShowPaginationIndex] = useState(0)
    const [showBookIndex, setShowBookIndex] = useState(0)
 
    async function featureBook() {
+      set_state({ loading: true })
+      
+      const featuredPicture = new FormData()
+
+      let data = {}
+
+      data["is_featured"] = !book_info_to_update.state
+      featuredPicture.append("data", JSON.stringify(data))
+
       await axios({
          url: `${process.env.REACT_APP_STRAPI_BASE_URL}/books/${book_info_to_update.id}`,
          method: "PUT",
          headers: {
             Authorization: `Bearer ${JSON.parse(localStorage.getItem("user_information")).jwt}`,
          },
-         data: {
-            is_featured: !book_info_to_update.state,
-         },
+         data: featuredPicture
       })
          .then(res => {
-            console.log("res data")
-            console.log(res.data.picture)
-            
-            set_confirm_allow(false)
-            let tempBook = Object.assign(booksList)
-            tempBook.find(book => book.id === res.data.id).is_featured = res.data.is_featured
-            res.data.is_featured ? tempBook.find(book => book.id === res.data.id).featured_picture = res.data.picture : null
             set_state({ loading: false })
             set_state({ success: true })
+            let tempBook = Object.assign(booksList)
+            tempBook.find(book => book.id === res.data.id).is_featured = res.data.is_featured
          })
-         .catch(err => {
+         .catch(e => {
             set_state({ loading: false })
             set_state({ error: true })
          })
@@ -198,9 +200,6 @@ const Books = () => {
       if (searchFilter !== '') {
 
          temp = booksList.filter((p) => {
-            console.log("p is : ");
-            console.log(p);
-            
             let found = false
 
             if (p != null && p.book_name.toUpperCase().includes(searchFilter.toUpperCase())) {
@@ -238,10 +237,6 @@ const Books = () => {
 
       return result
    }, [visibleBooks])
-
-   console.log("showBooks")
-   console.log(showBooks)
-   console.log(booksList.length);
 
    return (
       <React.Fragment>
@@ -326,11 +321,11 @@ const Books = () => {
                            </Col>
                         </Row>
                         <Row>
-                              {!isEmpty(showBooks) &&
-                                 (showBooks[showBookIndex] || []).map((book) => (
-                                    book != null ? <BookCard book={book} key={book.id} set_are_you_sure_title={set_are_you_sure_title} set_book_info_to_update={set_book_info_to_update} set_confirm_allow={set_confirm_allow} /> : null
-                                 ))
-                              }
+                           {!isEmpty(showBooks) &&
+                              (showBooks[showBookIndex] || []).map((book) => (
+                                 book != null ? <BookCard book={book} key={book.id} setSelectedBook={setSelectedBook} set_are_you_sure_title={set_are_you_sure_title} set_book_info_to_update={set_book_info_to_update} set_confirm_allow={set_confirm_allow} /> : null
+                              ))
+                           }
                         </Row>
                      </Container>
                   ) : (

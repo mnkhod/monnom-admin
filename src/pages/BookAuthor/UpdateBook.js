@@ -83,6 +83,7 @@ export default function UpdateBook(props) {
    const [optionGroup_authors, set_optionGroup_authors] = useState([])
    const [optionGroup_categories, set_optionGroup_categories] = useState([])
    const [coverImage, setCoverImage] = useState(null)
+   const [featureUrl, setFeatureUrl] = useState(null)
 
    const [progress_mp3, set_progress_mp3] = useState(0)
    const [audio_book_files, set_audio_book_files] = useState([])
@@ -97,6 +98,7 @@ export default function UpdateBook(props) {
    // update, delete hiih state uud
    const [edit_book_name, set_edit_book_name] = useState("")
    const [send_cover_pic, set_send_cover_pic] = useState(null)
+   const [featuredPicture, setFeaturedPicture] = useState(null)
    const [selectedMulti_author, setselectedMulti_author] = useState([])
    const [selectedMulti_category, setselectedMulti_category] = useState([])
    const [referenceFiles, set_referenceFiles] = useState([])
@@ -169,6 +171,35 @@ export default function UpdateBook(props) {
             "content-type": "multipart/form-data",
          },
          data: coverPicture,
+      })
+         .then(res => {
+            set_state({ loading: false })
+            set_state({ success: true })
+            setTimeout(() => {
+               window.location.reload()
+            }, 2000)
+         })
+         .catch(e => {
+            set_state({ loading: false })
+            set_state({ error: true })
+         })
+   }
+
+   const updateFeaturePicture = async () => {
+      set_state({ loading: true })
+
+      let featurePicture = new FormData()
+      featurePicture.append("data", JSON.stringify({}))
+      featurePicture.append("files.featured_picture", featuredPicture, featuredPicture.name)
+
+      await axios({
+         url: `${process.env.REACT_APP_STRAPI_BASE_URL}/books/${props.book_id}`,
+         method: "PUT",
+         headers: {
+            Authorization: `Bearer ${JSON.parse(localStorage.getItem("user_information")).jwt}`,
+            "content-type": "multipart/form-data",
+         },
+         data: featurePicture,
       })
          .then(res => {
             set_state({ loading: false })
@@ -563,6 +594,17 @@ export default function UpdateBook(props) {
       set_send_cover_pic(e.target.files[0])
    }
 
+   const handleFeaturePicture = f => {
+      const reader = new FileReader()
+      reader.onload = () => {
+         if (reader.readyState === 2) {
+            setFeatureUrl(reader.result)
+         }
+      }
+      reader.readAsDataURL(f.target.files[0])
+      setFeaturedPicture(f.target.files[0])
+   }
+   
    const togglemodal = () => {
       props.setModal(!props.modal)
    }
@@ -861,6 +903,18 @@ export default function UpdateBook(props) {
                                           Зураг
                                        </Button>
                                     </Col>
+                                    <Col lg={12} className="px-5 py-2">
+                                       <Button
+                                          type="submit"
+                                          className="w-100 bg-primary font-size-15 m-2"
+                                          onClick={() => {
+                                             setChooseUpdateForm("featuredPicture")
+                                             toggleTab(activeTab + 1)
+                                          }}
+                                       >
+                                          Нэмэлт зураг
+                                       </Button>
+                                    </Col>
                                  </Row>
                               </TabPane>
 
@@ -1068,6 +1122,20 @@ export default function UpdateBook(props) {
                                              <label htmlFor="input" className="image-upload d-flex justify-content-center" style={{ cursor: "pointer" }}>
                                                 <i className="bx bx-image-add font-size-20 mr-2"></i>
                                                 <p>Зураг оруулах</p>
+                                             </label>
+                                          </div>
+                                       </FormGroup>
+                                    </Col>
+                                 ) : chooseUpdateForm == 'featuredPicture' ? (
+                                    <Col lg={6}>
+                                       <FormGroup className="mx-auto" style={{ width: "85%" }}>
+                                          <Label htmlFor="productdesc">Нэмэлт зураг</Label>
+                                          <img className="rounded" src={featureUrl} alt={edit_book_name} id="img" className="img-fluid" style={{ width: "100%", height: "30vh" }} />
+                                          <input type="file" id="input" accept="image/*" className="invisible" onChange={handleFeaturePicture} />
+                                          <div className="label">
+                                             <label htmlFor="input" className="image-upload d-flex justify-content-center" style={{ cursor: "pointer" }}>
+                                                <i className="bx bx-image-add font-size-20 mr-2"></i>
+                                                <p>Нэмэлт зураг оруулах</p>
                                              </label>
                                           </div>
                                        </FormGroup>
@@ -1533,6 +1601,9 @@ export default function UpdateBook(props) {
                                                 togglemodal()
                                              } else if (chooseUpdateForm == "removeComments") {
                                                 updateRemoveRef()
+                                                togglemodal()
+                                             } else if (chooseUpdateForm == "featuredPicture") {
+                                                updateFeaturePicture()
                                                 togglemodal()
                                              }
                                           }
