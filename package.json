@@ -109,8 +109,8 @@
     "toastr": "^2.1.4"
   },
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
+    "start": "npm rebuild node-sass && react-scripts start",
+    "build": "npm rebuild node-sass && react-scripts build",
     "lint": "eslint .",
     "format": "prettier --write \"**/*.{js,jsx,json,md,html,css,less,scss}\"",
     "test": "react-scripts test",

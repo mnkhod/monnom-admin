@@ -491,14 +491,14 @@ export default function UpdateBook(props) {
    const fetchBookData = () => {
       axios({ url: `${process.env.REACT_APP_STRAPI_BASE_URL}/books/${props.book_id}`, method: "GET", headers: { Authorization: `Bearer ${JSON.parse(localStorage.getItem("user_information")).jwt}` } })
          .then(res => {
-            res.data.pdf_book_path != null && set_book_files([...book_files, res.data.pdf_book_path])
-            res.data.epub_book_path.length > 0 && set_epub_file([...epub_file, res.data.epub_book_path[0]])
+            res.data.pdf_book_path && set_book_files([...book_files, res.data.pdf_book_path])
+            res.data.epub_book_path && set_epub_file([...epub_file, res.data.epub_book_path])
             set_edit_book_name(res.data.name)
             set_edit_has_pdf(res.data.has_pdf)
             set_edit_has_mp3(res.data.has_audio)
             set_edit_has_sale(res.data.has_sale)
-            setCoverImage(res.data.picture.url)
-            set_send_cover_pic(res.data.picture.url)
+            setCoverImage(res.data.picture?.url)
+            set_send_cover_pic(res.data.picture?.url)
             getAuthorsInfo(res.data.book_authors)
             getCategoryInfo(res.data.book_categories)
             set_sale_book_price(res.data.book_price)
@@ -513,7 +513,7 @@ export default function UpdateBook(props) {
             console.log('res.data')
             console.log(res.data)
          })
-         .catch(err => {})
+         .catch(err => {console.log(err)})
    }
 
    useEffect(() => {
@@ -578,6 +578,7 @@ export default function UpdateBook(props) {
             value: category.id,
          }
       })
+      console.log(allBookCategories)
       set_optionGroup_categories(allBookCategories)
       setselectedMulti_category(oldBookCategories)
    }
@@ -860,7 +861,7 @@ export default function UpdateBook(props) {
                                              toggleTab(activeTab + 2)
                                           }}
                                        >
-                                          Ишлэл устгах
+                                          Эшлэл устгах
                                        </Button>
                                     </Col>
                                     {!edit_has_pdf && (
