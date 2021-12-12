@@ -262,8 +262,8 @@ const PromoCode = () => {
             const products = (await axios.get(`${process.env.REACT_APP_STRAPI_BASE_URL}/promo-code-products?deletedAt_null=true`, config)).data
             const nowParam = moment().format('YYYY-MM-DD+HH:mm:ss')
             const promises = products.map(async (p) => {
-                const nonExpiredCount = (await axios.get(`${process.env.REACT_APP_STRAPI_BASE_URL}/promo-codes/count?end_date_lt=${nowParam}&product=${p.id}`)).data || 0
-                const usedCount = (await axios.get(`${process.env.REACT_APP_STRAPI_BASE_URL}/users-promo-codes/count?&promo_code.product=${p.id}`)).data || 0
+                const nonExpiredCount = (await axios.get(`${process.env.REACT_APP_STRAPI_BASE_URL}/promo-codes/count?end_date_lt=${nowParam}&product=${p.id}`, config)).data || 0
+                const usedCount = (await axios.get(`${process.env.REACT_APP_STRAPI_BASE_URL}/users-promo-codes/count?&promo_code.product=${p.id}`, config)).data || 0
                 p.avlCount = Math.max(nonExpiredCount - usedCount, 0);
                 return p;
             })

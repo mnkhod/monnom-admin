@@ -64,9 +64,14 @@ const PromoCodeList = () => {
     useEffect(() => {
         (async () => {
             setIsLoading(true);
+            const config = {
+                headers: {
+                    Authorization: `Bearer ${JSON.parse(localStorage.getItem("user_information")).jwt}`,
+                },
+            }
             const offset = Math.max((page - 1) * perPage, 0);
             const limit = perPage;
-            const totalRows = (await axios.get(`${process.env.REACT_APP_STRAPI_BASE_URL}/promo-codes/count?product=${productId}`)).data;
+            const totalRows = (await axios.get(`${process.env.REACT_APP_STRAPI_BASE_URL}/promo-codes/count?product=${productId}`, config)).data;
             let getParams = `/promo-codes?product=${productId}`
             if (searchCode?.length) {
                 getParams += `&code_contains=${searchCode}`
