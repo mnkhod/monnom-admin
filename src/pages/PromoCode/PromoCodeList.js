@@ -80,7 +80,7 @@ const PromoCodeList = () => {
             }
             const response = await axios.get(`${process.env.REACT_APP_STRAPI_BASE_URL}${getParams}`);
             setData(response.data);
-            setTotalRows(totalRows + 1);
+            setTotalRows(totalRows);
             setIsLoading(false);
         })();
     }, [sortParams, page, perPage, searchCode])
