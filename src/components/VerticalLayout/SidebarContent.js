@@ -146,6 +146,15 @@ const SidebarContent = props => {
 
                      {userRole == 1 && (
                         <li>
+                           <Link to="/promo-code" className=" waves-effect">
+                              <i className="bx bx-purchase-tag"></i>
+                              <span>{props.t("Promo Code")}</span>
+                           </Link>
+                        </li>
+                     )}
+
+                     {userRole == 1 && (
+                        <li>
                            <Link to="/settings" className=" waves-effect">
                               <i className="bx bx-wrench"></i>
                               <span>{props.t("Тохиргоо")}</span>

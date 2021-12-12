@@ -26,6 +26,9 @@ import BlogsList from "../pages/BlogsList"
 // import LandingAdmin from "../pages/LandingAdmin"
 import Notifications from '../pages/Notifications';
 
+import PromoCode from "../pages/PromoCode"
+import PromoCodeList from "pages/PromoCode/PromoCodeList"
+
 // import Logout from "../pages/Authentication/Logout"
 
 const bookPulisherRoutes = [
@@ -48,6 +51,8 @@ const managerRoutes = [
    { verbose: "Радио", path: "/live-list", component: LiveChannel },
    { path: "/blogs-list", component: BlogsList },
    { path: "/blog/:id?", component: BlogSingle },
+   {verbose: 'PromoCode', path: '/promo-code', component: PromoCode},
+   {verbose: 'PromoCodeList', path: '/promo-code-list/:productId', component: PromoCodeList},
 
    { path: "/notifications", component: Notifications },
 ]

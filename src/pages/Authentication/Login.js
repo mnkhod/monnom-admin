@@ -49,8 +49,6 @@ const Login = props => {
          })
          .catch(error => {
             set_state({ loading: false })
-            setUsername("")
-            setPassword("")
             setErrorMessage("Нэвтрэх нэр эсвэл нууц үг буруу")
          })
    }
@@ -74,11 +72,6 @@ const Login = props => {
          login()
       }
    }
-
-   useEffect(() => {
-      setPassword("")
-      setUsername("")
-   }, [])
 
    return (
       <React.Fragment>
@@ -106,13 +99,13 @@ const Login = props => {
                                     <AvForm onSubmit={(a, b, c) => handleSumbit(a, b, c)}>
                                        <AvGroup>
                                           <Label for="username">Нэвтрэх нэр</Label>
-                                          <AvInput placeholder="Нэвтрэх нэр оруулах" name="username" id="username" required onChange={e => setUsername(e.target.value)} />
+                                          <AvInput placeholder="Нэвтрэх нэр оруулах" name="username" id="username" value={username} required onChange={e => setUsername(e.target.value)} />
                                           <AvFeedback>Нэвтрэх нэр оруулна уу !</AvFeedback>
                                        </AvGroup>
 
                                        <AvGroup>
                                           <Label for="userpassword">Нууц үг</Label>
-                                          <AvInput type="password" placeholder="Нууц үг оруулах" name="password" id="password" required onChange={e => setPassword(e.target.value)} />
+                                          <AvInput type="password" placeholder="Нууц үг оруулах" name="password" id="password" value={password} required onChange={e => setPassword(e.target.value)} />
                                           <AvFeedback>Нууц үг оруулна уу !</AvFeedback>
                                        </AvGroup>
 
