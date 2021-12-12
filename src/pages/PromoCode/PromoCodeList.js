@@ -9,40 +9,12 @@ import axios from 'axios';
 import moment from "moment"
 import DataTable from 'react-data-table-component';
 
-
-const columns = [
-    {
-        name: 'Id',
-        selector: row => row.id,
-        sortable: true,
-        sortField: 'id',
-    },
-    {
-        name: 'code',
-        selector: row => row.code,
-        sortable: true,
-        sortField: 'code',
-    },
-    {
-        name: 'Дуусах огноо',
-        selector: row => moment(row.end_date).format('YYYY-MM-DD HH:mm:ss'),
-        sortable: true,
-        sortField: 'end_date',
-    },
-    {
-        name: 'Үүсгэсэн огноо',
-        sortable: true,
-        selector: row => moment(row.created_at).format('YYYY-MM-DD HH:mm:ss'),
-        sortField: 'created_at',
-    },
-    {
-        name: 'Төлөв',
-        selector: row => isUsable(row) ? (<p className="text-success">Хүчинтэй</p>) : (<p className="text-warning">Хүчингүй</p>),
-    },
-];
-
 const PromoCodeList = () => {
 
+    const [errorMsg, setErrorMsg] = useState(null)
+    const [successMsg, setSuccessMsg] = useState(null)
+    const [selectedRow, setSelectedRow] = useState(null)
+    const [isDeleting, setIsDeleting] = useState(false)
     const [isLoading, setIsLoading] = useState(false)
     const params = useParams();
 
@@ -62,27 +34,7 @@ const PromoCodeList = () => {
     })
 
     useEffect(() => {
-        (async () => {
-            setIsLoading(true);
-            const config = {
-                headers: {
-                    Authorization: `Bearer ${JSON.parse(localStorage.getItem("user_information")).jwt}`,
-                },
-            }
-            const offset = Math.max((page - 1) * perPage, 0);
-            const limit = perPage;
-            const totalRows = (await axios.get(`${process.env.REACT_APP_STRAPI_BASE_URL}/promo-codes/count?product=${productId}`, config)).data;
-            let getParams = `/promo-codes?product=${productId}`
-            if (searchCode?.length) {
-                getParams += `&code_contains=${searchCode}`
-            } else {
-                getParams += `&_start=${offset}&_limit=${limit}&_sort=${sortParams.column}:${sortParams.direction}`
-            }
-            const response = await axios.get(`${process.env.REACT_APP_STRAPI_BASE_URL}${getParams}`);
-            setData(response.data);
-            setTotalRows(totalRows);
-            setIsLoading(false);
-        })();
+        refreshDatatable();
     }, [sortParams, page, perPage, searchCode])
 
 	const handlePageChange = page => {
@@ -101,13 +53,129 @@ const PromoCodeList = () => {
         })
 	};
 
+    const columns = useMemo(() => {
+        return [
+            {
+                name: 'Id',
+                selector: row => row.id,
+                sortable: true,
+                sortField: 'id',
+            },
+            {
+                name: 'code',
+                selector: row => row.code,
+                sortable: true,
+                sortField: 'code',
+            },
+            {
+                name: 'Дуусах огноо',
+                selector: row => moment(row.end_date).format('YYYY-MM-DD HH:mm:ss'),
+                sortable: true,
+                sortField: 'end_date',
+            },
+            {
+                name: 'Үүсгэсэн огноо',
+                sortable: true,
+                selector: row => moment(row.created_at).format('YYYY-MM-DD HH:mm:ss'),
+                sortField: 'created_at',
+            },
+            {
+                name: 'Төлөв',
+                selector: row => isUsable(row) ? (<p className="text-success">Хүчинтэй</p>) : (<p className="text-warning">Хүчингүй</p>),
+            },
+            {
+                name: 'Үйлдэл',
+                selector: row => (
+                    <button onClick={() => {
+                        setSelectedRow(row)
+                        setIsDeleting(true);
+                    }} className="btn btn-danger">
+                        Устгах
+                    </button>
+                )
+            }
+        ]
+    }, [setSelectedRow, setIsDeleting])
+
+    async function refreshDatatable() {
+        setIsLoading(true);
+            const config = {
+                headers: {
+                    Authorization: `Bearer ${JSON.parse(localStorage.getItem("user_information")).jwt}`,
+                },
+            }
+            const offset = Math.max((page - 1) * perPage, 0);
+            const limit = perPage;
+            const totalRows = (await axios.get(`${process.env.REACT_APP_STRAPI_BASE_URL}/promo-codes/count?product=${productId}`, config)).data;
+            let getParams = `/promo-codes?product=${productId}`
+            if (searchCode?.length) {
+                getParams += `&code_contains=${searchCode}`
+            } else {
+                getParams += `&_start=${offset}&_limit=${limit}&_sort=${sortParams.column}:${sortParams.direction}`
+            }
+            const response = await axios.get(`${process.env.REACT_APP_STRAPI_BASE_URL}${getParams}`);
+            setData(response.data);
+            setTotalRows(totalRows);
+            setIsLoading(false)
+    }
+
+    async function deleteRow(row) {
+        setIsLoading(true);
+        const config = {
+            headers: {
+                Authorization: `Bearer ${JSON.parse(localStorage.getItem("user_information")).jwt}`,
+            },
+        }
+        try {
+            await axios.delete(`${process.env.REACT_APP_STRAPI_BASE_URL}/promo-codes/${row.id}`, config).data;
+            refreshDatatable();
+            setSuccessMsg('Promo code амжилттай усгагдлаа')
+        } catch(e) {
+            setErrorMsg(e?.response?.data?.message || `${e}`)
+        }
+        setIsLoading(false)
+    }
+
    return (
       <React.Fragment>
+        {successMsg?.length && (
+        <SweetAlert
+            title={successMsg}
+            success
+            confirmBtnText="Ok"
+            confirmBtnBsStyle="success"
+            onConfirm={() => {
+                setSuccessMsg(null)
+            }}
+        />
+        )}
+        {isDeleting && (
+        <SweetAlert
+            title={`${selectedRow?.code} -г устгахдаа итгэлтэй байна уу?`}
+            warning
+            showCancel
+            confirmBtnText="Тийм"
+            cancelBtnText="Болих"
+            confirmBtnBsStyle="success"
+            cancelBtnBsStyle="danger"
+            onConfirm={() => {
+                deleteRow(selectedRow)
+                setIsDeleting(false)
+            }}
+            onCancel={() => {
+                setIsDeleting(false)
+            }}
+        />
+        )}
          <div className="page-content">
             <MetaTags>
                <title>Promo Code List {params.productId}</title>
             </MetaTags>
             <Container fluid>
+                {errorMsg?.length? (
+                    <Alert color="danger">
+                        {errorMsg}
+                    </Alert>):(<></>)}
                 {isLoading ? (
                 <Row>
                     <Col xs="12">
