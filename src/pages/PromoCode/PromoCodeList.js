@@ -19,6 +19,7 @@ const PromoCodeList = () => {
     const params = useParams();
 
     const [searchCode, setSearchCode] = useState(null)
+    const [bookId, setBookId] = useState(null)
 
     const productId = useMemo(() => {
         return params.productId
@@ -35,7 +36,7 @@ const PromoCodeList = () => {
 
     useEffect(() => {
         refreshDatatable();
-    }, [sortParams, page, perPage, searchCode])
+    }, [sortParams, page, perPage, searchCode, bookId])
 
 	const handlePageChange = page => {
 		setPage(page)
@@ -60,6 +61,10 @@ const PromoCodeList = () => {
                 selector: row => row.id,
                 sortable: true,
                 sortField: 'id',
+            },
+            {
+                name: 'Номны ID',
+                selector: row => row.book?.id,
             },
             {
                 name: 'code',
@@ -108,6 +113,9 @@ const PromoCodeList = () => {
             const limit = perPage;
             const totalRows = (await axios.get(`${process.env.REACT_APP_STRAPI_BASE_URL}/promo-codes/count?product=${productId}`, config)).data;
             let getParams = `/promo-codes?product=${productId}`
+            if (bookId) {
+                getParams += `&book=${bookId}`
+            }
             if (searchCode?.length) {
                 getParams += `&code_contains=${searchCode}`
             } else {
@@ -192,8 +200,12 @@ const PromoCodeList = () => {
                         <div className="d-flex justify-content-between justify-items-center mb-8 mt-2">
                             <h1>Promo Code</h1>
                             <FormGroup>
-                                <Label>Хайлт</Label>
+                                <Label>Code</Label>
                                 <Input placeholder="abc123" value={searchCode} onChange={(e) => setSearchCode(e.target.value)} />
+                            </FormGroup>
+                            <FormGroup>
+                                <Label>BookId</Label>
+                                <Input placeholder="123" value={bookId} onChange={(e) => setBookId(e.target.value)} />
                             </FormGroup>
                         </div>
                     <DataTable
