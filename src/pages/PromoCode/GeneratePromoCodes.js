@@ -11,6 +11,7 @@ export default function GeneratePromoCodes({onSubmit, product}) {
         const formProps = Object.fromEntries(formData);
         onSubmit({
             size: formProps.size,
+            bookId: formProps.bookId,
             endDate: moment(formProps.endDate).format('YYYY-MM-DD HH:mm:ss')
         })
     }
@@ -19,15 +20,19 @@ export default function GeneratePromoCodes({onSubmit, product}) {
         <div>
             <Form onSubmit={handleSubmit}>
                 <FormGroup>
-                    <Label for="exampleEmail">Тоо ширхэг</Label>
-                    <Input name="size" type="number" required required placeholder="1000" />
+                    <Label for="qty">Тоо ширхэг</Label>
+                    <Input id="qty" name="size" type="number" required required placeholder="1000" />
                 </FormGroup>
                 {product.is_discount ? (
                     <FormGroup>
-                        <Label for="exampleEmail">Хямдралын хувь:</Label>
+                        <Label>Хямдралын хувь:</Label>
                         <h5><b>{product?.discount_percent}%</b></h5>
                     </FormGroup>
                 ):(<></>)}
+                <FormGroup>
+                    <Label for="bookId">Номны ID</Label>
+                    <Input name="bookId" required type="number" id="bookId" />
+                </FormGroup>
                 <FormGroup>
                     <Label for="endDate">Дуусах огноо</Label>
                     <Input name="endDate" required type="date" id="endDate" />

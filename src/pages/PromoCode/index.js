@@ -42,12 +42,12 @@ const PromoCode = () => {
     )
 
     const handleGeneratePromoCodes = useCallback(
-        async ({size, endDate}) => {
+        async ({size, endDate, bookId}) => {
             setIsGeneratePromoVisible(false);
             setIsGeneratePromoInProgress(true)
             setGenerateProgress(0)
             for(let i=1; i<=size; i++) {
-                await generatePromoCode(selectedProduct, {endDate});
+                await generatePromoCode(selectedProduct, {endDate, bookId});
                 setGenerateProgress(((i / size)*100))
             }
             setIsGeneratePromoInProgress(false);
@@ -197,7 +197,7 @@ const PromoCode = () => {
       </React.Fragment>
    )
 
-   async function generatePromoCode(product, {endDate}) {
+   async function generatePromoCode(product, {endDate, bookId}) {
        try {
             const config = {
                 headers: {
@@ -208,7 +208,8 @@ const PromoCode = () => {
             const data = {
                 end_date: endDate,
                 code,
-                product: product.id
+                product: product.id,
+                book: bookId
             }
             await axios.post(`${process.env.REACT_APP_STRAPI_BASE_URL}/promo-codes`, data, config)
        } catch(e) {
