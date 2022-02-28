@@ -13,7 +13,6 @@ import SweetAlert from "react-bootstrap-sweetalert"
 export default function Notifications(props) {
 
     const [notifications, setNotifications] = useState([]);
-    const [users, setUsers] = useState([]);
 
     // Check network
     const [isNetworkError, setIsNetworkError] = useState(false)
@@ -52,22 +51,6 @@ export default function Notifications(props) {
         }
     }
 
-    const fetchUsers = async () => {
-        try {
-            const response = await axios({
-                url: `${process.env.REACT_APP_STRAPI_BASE_URL}/users`,
-                method: "GET",
-
-                headers: {
-                    Authorization: `Bearer ${JSON.parse(localStorage.getItem("user_information")).jwt}`,
-                },
-            });
-            setUsers(response.data || []);
-        } catch (e) {
-
-        }
-    }
-
     const saveNotification = async ({ title, body, image }) => {
         const formData = new FormData();
         formData.append('data', JSON.stringify({
@@ -94,46 +77,25 @@ export default function Notifications(props) {
         return response.data;
     }
 
-    const sendNotification = async ({ notification, tokens }) => {
-        const { title, body, imageUrl } = notification;
-        console.log('tokens:');
-        console.log(tokens.length);
-        console.log(tokens.length ? tokens[0] : null);
-        if (!tokens.length) {
-            return;
-        }
-        console.log(tokens);
-        const data = {
-            "registration_ids": tokens,
-            // registration_ids: ['e74-jFoxSKWkdltb_CdJjv:APA91bFvP4LcEImo2wHUsw9pdj6KdEdOaCaQGcmSAl7hoFSuarGKf8J4j-6Ub6WPRQDJuJOfB1LiRmol86ud-WkSUeoQ1TjBDfRFKuwePFktol6Yoqm8ql00s8mUZq33mv1a-ZV-YkJ3'],
-            notification: {
-                "title": title,
-                "body": body || null,
-            },
-            android: {
-            },
-        };
-        if (imageUrl) {
-            data.android = {
-                ...data.android,
-                icon: imageUrl
-            }
-        }
+    const sendNotification = async ({ notification }) => {
+        const { title, body } = notification;
         const response = await axios({
-            url: 'https://fcm.googleapis.com/fcm/send',
+            url: `${process.env.REACT_APP_EXPRESS_BASE_URL}/admin/notification`,
             method: 'POST',
             headers: {
-                Authorization: `key=${process.env.REACT_APP_FCM_KEY}`,
+                Authorization: `${JSON.parse(localStorage.getItem("user_information")).jwt}`,
             },
-            data
+            data: {
+                title,
+                body
+            }
         });
         return response;
     }
 
     useEffect(() => {
         (async () => {
-            await Promise.all([fetchNotfications(),
-            fetchUsers()])
+            await Promise.all([fetchNotfications()])
             SetIsNetworkLoading(false);
         })();
     }, []);
@@ -150,8 +112,7 @@ export default function Notifications(props) {
             return;
         }
         try {
-            const tokens = (users || []).map(u => u.fcm_token).filter(t => t);
-            const result = await sendNotification({ notification: createdNotification, tokens });
+            const result = await sendNotification({ notification: createdNotification });
             console.log('send notif response');
             console.log(result)
         } catch (e) {
